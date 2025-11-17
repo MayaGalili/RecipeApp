@@ -1,0 +1,1775 @@
+<!doctype html>
+<html lang="he" dir="rtl" style="height: 100%;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>בונה רשימת קניות אינטראקטיבי</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+       
+        .ingredient-item {
+            transition: all 0.2s ease;
+        }
+       
+        .ingredient-item:hover {
+            transform: translateX(-2px);
+        }
+       
+        .serving-button {
+            transition: all 0.2s ease;
+        }
+       
+        .serving-button:hover {
+            transform: scale(1.05);
+        }
+       
+        .recipe-button {
+            transition: all 0.2s ease;
+        }
+       
+        .recipe-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+       
+        .recipe-button.active {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            transform: scale(1.02);
+        }
+       
+        .shopping-item {
+            transition: all 0.2s ease;
+        }
+       
+        .shopping-item:hover {
+            background-color: #f8fafc;
+        }
+       
+        .category-section {
+            margin-bottom: 2rem;
+        }
+       
+        .category-title {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+       
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+       
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+</head>
+<body class="min-h-full bg-gradient-to-br from-orange-50 to-red-50">
+  <div class="container mx-auto px-4 py-8 max-w-4xl"><!-- Language Selector -->
+   <div class="text-center mb-6">
+    <div class="inline-flex bg-white rounded-lg shadow-md p-1"><button id="lang-he" class="language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 bg-orange-500 text-white" data-lang="he">עברית</button> <button id="lang-en" class="language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 text-gray-600 hover:bg-gray-100" data-lang="en">English</button>
+    </div>
+   </div><!-- Header -->
+   <div class="text-center mb-8">
+    <h1 id="recipe-title" class="text-4xl font-bold text-gray-800 mb-2">בונה רשימת קניות</h1>
+    <p id="subtitle" class="text-gray-600 text-lg">בחר מתכון ומספר מנות וקבל רשימת קניות מותאמת</p>
+   </div><!-- Recipe Selector -->
+   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <h2 id="recipe-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מתכון</h2>
+    <div id="recipe-selector"><!-- Recipe categories will be populated by JavaScript -->
+    </div>
+   </div><!-- Serving Size Selector -->
+   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <h2 id="serving-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מספר מנות</h2>
+    <div class="flex justify-center items-center gap-4 mb-4"><button id="decrease-btn" class="serving-button bg-red-500 hover:bg-red-600 text-white w-12 h-12 rounded-full text-xl font-bold shadow-md">-</button>
+     <div class="text-center"><span id="serving-count" class="text-4xl font-bold text-gray-800">4</span>
+      <p id="serving-label" class="text-gray-600 mt-1">מנות</p>
+     </div><button id="increase-btn" class="serving-button bg-green-500 hover:bg-green-600 text-white w-12 h-12 rounded-full text-xl font-bold shadow-md">+</button>
+    </div>
+    <div class="flex justify-center gap-2 flex-wrap" id="preset-buttons"><button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="2">2 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="4">4 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="6">6 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="8">8 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="12">12 מנות</button>
+    </div>
+   </div><!-- Recipe Ingredients -->
+   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <h2 id="ingredients-title" class="text-2xl font-semibold text-gray-800 mb-6">מרכיבי המתכון</h2>
+    <div id="ingredients-list" class="space-y-3"><!-- Ingredients will be populated by JavaScript -->
+    </div>
+   </div><!-- Recipe Instructions -->
+   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <h2 id="instructions-title" class="text-2xl font-semibold text-gray-800 mb-6">הוראות הכנה</h2>
+    <div id="instructions-list" class="space-y-3"><!-- Instructions will be populated by JavaScript -->
+    </div>
+   </div><!-- Shopping List -->
+   <div class="bg-white rounded-xl shadow-lg p-6">
+    <h2 id="shopping-list-title" class="text-2xl font-semibold text-gray-800 mb-6">רשימת קניות</h2>
+    <div id="shopping-list" class="space-y-2"><!-- Shopping list will be populated by JavaScript -->
+    </div>
+    <div class="mt-6 flex gap-3"><button id="print-btn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors"> <span id="print-text">🖨️ הדפס רשימת קניות</span> </button> <button id="reset-btn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors"> <span id="reset-text">🔄 איפוס סימונים</span> </button>
+    </div>
+   </div>
+  </div>
+  <script>
+        // Language translations
+        const translations = {
+            he: {
+                recipe_title: "בונה רשימת קניות",
+                subtitle: "בחר מתכון ומספר מנות וקבל רשימת קניות מותאמת",
+                recipe_selector_title: "בחר מתכון",
+                serving_selector_title: "בחר מספר מנות",
+                serving_label: "מנות",
+                ingredients_title: "מרכיבי המתכון",
+                instructions_title: "הוראות הכנה",
+                shopping_list_title: "רשימת קניות",
+                print_text: "🖨️ הדפס רשימת קניות",
+                reset_text: "🔄 איפוס סימונים",
+                servings_text: "מנות"
+            },
+            en: {
+                recipe_title: "Shopping List Builder",
+                subtitle: "Choose a recipe and serving size to get a customized shopping list",
+                recipe_selector_title: "Choose Recipe",
+                serving_selector_title: "Choose Serving Size",
+                serving_label: "servings",
+                ingredients_title: "Recipe Ingredients",
+                instructions_title: "Instructions",
+                shopping_list_title: "Shopping List",
+                print_text: "🖨️ Print Shopping List",
+                reset_text: "🔄 Reset Selections",
+                servings_text: "servings"
+            }
+        };
+
+        let currentLanguage = 'he';
+
+        // Default configuration
+        const defaultConfig = {
+            recipe_title: "בונה רשימת קניות",
+            serving_label: "מנות",
+            shopping_list_title: "רשימת קניות",
+            background_color: "#fef7f0",
+            surface_color: "#ffffff",
+            text_color: "#1f2937",
+            primary_action_color: "#ef4444",
+            secondary_action_color: "#3b82f6",
+            font_family: "Segoe UI",
+            font_size: 16
+        };
+
+        // Recipe categories
+        const recipeCategories = {
+            he: {
+                breakfast: "ארוחת בוקר",
+                lunch: "ארוחת צהריים",
+                dinner: "ארוחת ערב"
+            },
+            en: {
+                breakfast: "Breakfast",
+                lunch: "Lunch",
+                dinner: "Dinner"
+            }
+        };
+
+        // Recipe database with translations and categories
+        const recipeTranslations = {
+            he: {
+                // Breakfast
+                pancakes: "פנקייקים",
+                french_toast: "טוסט צרפתי",
+                scrambled_eggs: "ביצים מקושקשות",
+                fruit_salad: "סלט פירות",
+                oatmeal: "שיבולת שועל",
+                avocado_toast: "טוסט אבוקדו",
+               
+                // Lunch
+                greek_salad: "סלט יווני",
+                chicken_soup: "מרק עוף",
+                fish_tacos: "טאקו דגים",
+                pasta: "פסטה ברוטב עגבניות",
+                beef_burgers: "המבורגר בקר",
+                chicken_fajitas: "פחיתות עוף",
+                quinoa_salad: "סלט קינואה",
+               
+                // Dinner
+                bbq_chicken: "עוף ברביקיו",
+                beef_stir_fry: "בשר בוק צ'וי",
+                pizza: "פיצה מרגריטה",
+                salmon_teriyaki: "סלמון טריאקי",
+                vegetable_curry: "קארי ירקות",
+                mushroom_risotto: "ריזוטו פטריות",
+                chocolate_cake: "עוגת שוקולד"
+            },
+            en: {
+                // Breakfast
+                pancakes: "Pancakes",
+                french_toast: "French Toast",
+                scrambled_eggs: "Scrambled Eggs",
+                fruit_salad: "Fruit Salad",
+                oatmeal: "Oatmeal",
+                avocado_toast: "Avocado Toast",
+               
+                // Lunch
+                greek_salad: "Greek Salad",
+                chicken_soup: "Chicken Soup",
+                fish_tacos: "Fish Tacos",
+                pasta: "Pasta with Tomato Sauce",
+                beef_burgers: "Beef Burgers",
+                chicken_fajitas: "Chicken Fajitas",
+                quinoa_salad: "Quinoa Salad",
+               
+                // Dinner
+                bbq_chicken: "BBQ Chicken",
+                beef_stir_fry: "Beef Stir Fry",
+                pizza: "Margherita Pizza",
+                salmon_teriyaki: "Teriyaki Salmon",
+                vegetable_curry: "Vegetable Curry",
+                mushroom_risotto: "Mushroom Risotto",
+                chocolate_cake: "Chocolate Cake"
+            }
+        };
+
+        // Recipe categories mapping
+        const recipeCategoryMap = {
+            breakfast: ['pancakes', 'french_toast', 'scrambled_eggs', 'fruit_salad', 'oatmeal', 'avocado_toast'],
+            lunch: ['greek_salad', 'chicken_soup', 'fish_tacos', 'pasta', 'beef_burgers', 'chicken_fajitas', 'quinoa_salad'],
+            dinner: ['bbq_chicken', 'beef_stir_fry', 'pizza', 'salmon_teriyaki', 'vegetable_curry', 'mushroom_risotto', 'chocolate_cake']
+        };
+
+        // Recipe database with full translations
+        const recipes = {
+            // Breakfast Recipes
+            pancakes: {
+                name: "🥞 פנקייקים",
+                emoji: "🥞",
+                ingredients: {
+                    he: [
+                        { name: "קמח", amount: 200, unit: "גרם", category: "דגנים ופחמימות" },
+                        { name: "ביצים", amount: 2, unit: "יחידות", category: "מוצרי חלב" },
+                        { name: "חלב", amount: 300, unit: "מ\"ל", category: "מוצרי חלב" },
+                        { name: "סוכר", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "אבקת אפייה", amount: 2, unit: "כפיות", category: "מוצרי יסוד" },
+                        { name: "מלח", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "חמאה", amount: 50, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "וניל", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "דבש", amount: 3, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "פירות יער", amount: 150, unit: "גרם", category: "פירות" }
+                    ],
+                    en: [
+                        { name: "Flour", amount: 200, unit: "g", category: "Grains & Carbs" },
+                        { name: "Eggs", amount: 2, unit: "pieces", category: "Dairy Products" },
+                        { name: "Milk", amount: 300, unit: "ml", category: "Dairy Products" },
+                        { name: "Sugar", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Baking powder", amount: 2, unit: "tsp", category: "Basic Ingredients" },
+                        { name: "Salt", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Butter", amount: 50, unit: "g", category: "Dairy Products" },
+                        { name: "Vanilla", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Honey", amount: 3, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Berries", amount: 150, unit: "g", category: "Fruits" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מערבבים קמח, אבקת אפייה, סוכר ומלח",
+                        "מקציפים ביצים עם חלב ווניל",
+                        "מוסיפים חומרים רטובים ליבשים",
+                        "ממיסים חמאה ומוסיפים לבצק",
+                        "מחממים מחבת עם מעט שמן",
+                        "יוצקים בצק ומטגנים עד בועות",
+                        "הופכים ומטגנים עד הזהבה",
+                        "מגישים עם דבש ופירות יער"
+                    ],
+                    en: [
+                        "Mix flour, baking powder, sugar and salt",
+                        "Beat eggs with milk and vanilla",
+                        "Add wet ingredients to dry ingredients",
+                        "Melt butter and add to batter",
+                        "Heat pan with a little oil",
+                        "Pour batter and cook until bubbles form",
+                        "Flip and cook until golden",
+                        "Serve with honey and berries"
+                    ]
+                }
+            },
+            french_toast: {
+                name: "🍞 טוסט צרפתי",
+                emoji: "🍞",
+                ingredients: {
+                    he: [
+                        { name: "לחם בריוש", amount: 6, unit: "פרוסות", category: "דגנים ופחמימות" },
+                        { name: "ביצים", amount: 3, unit: "יחידות", category: "מוצרי חלב" },
+                        { name: "חלב", amount: 150, unit: "מ\"ל", category: "מוצרי חלב" },
+                        { name: "סוכר", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "קינמון", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "וניל", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "חמאה", amount: 30, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "אבקת סוכר", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "סירופ מייפל", amount: 4, unit: "כפות", category: "מוצרי יסוד" }
+                    ],
+                    en: [
+                        { name: "Brioche bread", amount: 6, unit: "slices", category: "Grains & Carbs" },
+                        { name: "Eggs", amount: 3, unit: "pieces", category: "Dairy Products" },
+                        { name: "Milk", amount: 150, unit: "ml", category: "Dairy Products" },
+                        { name: "Sugar", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Cinnamon", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Vanilla", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Butter", amount: 30, unit: "g", category: "Dairy Products" },
+                        { name: "Powdered sugar", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Maple syrup", amount: 4, unit: "tbsp", category: "Basic Ingredients" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מקציפים ביצים עם חלב, סוכר ווניל",
+                        "מוסיפים קינמון לתערובת",
+                        "טובלים פרוסות לחם בתערובת",
+                        "מחממים חמאה במחבת",
+                        "מטגנים פרוסות 2-3 דקות מכל צד",
+                        "מטגנים עד הזהבה יפה",
+                        "מפזרים אבקת סוכר",
+                        "מגישים עם סירופ מייפל"
+                    ],
+                    en: [
+                        "Beat eggs with milk, sugar and vanilla",
+                        "Add cinnamon to mixture",
+                        "Dip bread slices in mixture",
+                        "Heat butter in pan",
+                        "Fry slices 2-3 minutes each side",
+                        "Cook until golden brown",
+                        "Dust with powdered sugar",
+                        "Serve with maple syrup"
+                    ]
+                }
+            },
+            scrambled_eggs: {
+                name: "🍳 ביצים מקושקשות",
+                emoji: "🍳",
+                ingredients: {
+                    he: [
+                        { name: "ביצים", amount: 6, unit: "יחידות", category: "מוצרי חלב" },
+                        { name: "חמאה", amount: 30, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "שמנת מתוקה", amount: 3, unit: "כפות", category: "מוצרי חלב" },
+                        { name: "מלח", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פלפל שחור", amount: 0.25, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "בצל ירוק", amount: 2, unit: "גבעולים", category: "ירקות טריים" },
+                        { name: "גבינת עיזים", amount: 100, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "לחם טוסט", amount: 4, unit: "פרוסות", category: "דגנים ופחמימות" }
+                    ],
+                    en: [
+                        { name: "Eggs", amount: 6, unit: "pieces", category: "Dairy Products" },
+                        { name: "Butter", amount: 30, unit: "g", category: "Dairy Products" },
+                        { name: "Heavy cream", amount: 3, unit: "tbsp", category: "Dairy Products" },
+                        { name: "Salt", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Black pepper", amount: 0.25, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Green onions", amount: 2, unit: "stalks", category: "Fresh Vegetables" },
+                        { name: "Goat cheese", amount: 100, unit: "g", category: "Dairy Products" },
+                        { name: "Toast bread", amount: 4, unit: "slices", category: "Grains & Carbs" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "שוברים ביצים לקערה ומקציפים",
+                        "מוסיפים שמנת, מלח ופלפל",
+                        "מחממים חמאה במחבת על אש נמוכה",
+                        "יוצקים ביצים ומערבבים ברציפות",
+                        "מבשלים לאט תוך ערבוב עד קרישה",
+                        "מוסיפים גבינת עיזים בסוף",
+                        "מקשטים בבצל ירוק",
+                        "מגישים עם טוסט חם"
+                    ],
+                    en: [
+                        "Crack eggs into bowl and whisk",
+                        "Add cream, salt and pepper",
+                        "Heat butter in pan over low heat",
+                        "Pour eggs and stir continuously",
+                        "Cook slowly while stirring until set",
+                        "Add goat cheese at the end",
+                        "Garnish with green onions",
+                        "Serve with warm toast"
+                    ]
+                }
+            },
+            oatmeal: {
+                name: "🥣 שיבולת שועל",
+                emoji: "🥣",
+                ingredients: {
+                    he: [
+                        { name: "שיבולת שועל", amount: 100, unit: "גרם", category: "דגנים ופחמימות" },
+                        { name: "חלב", amount: 400, unit: "מ\"ל", category: "מוצרי חלב" },
+                        { name: "בננה", amount: 1, unit: "יחידה", category: "פירות" },
+                        { name: "אגוזי מלך", amount: 50, unit: "גרם", category: "אגוזים וזרעים" },
+                        { name: "דבש", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "קינמון", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פירות יער", amount: 100, unit: "גרם", category: "פירות" },
+                        { name: "זרעי צ'יה", amount: 1, unit: "כפית", category: "אגוזים וזרעים" }
+                    ],
+                    en: [
+                        { name: "Oats", amount: 100, unit: "g", category: "Grains & Carbs" },
+                        { name: "Milk", amount: 400, unit: "ml", category: "Dairy Products" },
+                        { name: "Banana", amount: 1, unit: "piece", category: "Fruits" },
+                        { name: "Walnuts", amount: 50, unit: "g", category: "Nuts & Seeds" },
+                        { name: "Honey", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Cinnamon", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Berries", amount: 100, unit: "g", category: "Fruits" },
+                        { name: "Chia seeds", amount: 1, unit: "tsp", category: "Nuts & Seeds" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מרתיחים חלב בסיר קטן",
+                        "מוסיפים שיבולת שועל וקינמון",
+                        "מבשלים 5-7 דקות תוך ערבוב",
+                        "פורסים בננה לעיגולים",
+                        "קוצצים אגוזי מלך גס",
+                        "מוסיפים דבש לשיבולת",
+                        "מעבירים לקערה ומקשטים",
+                        "מפזרים פירות יער וזרעי צ'יה"
+                    ],
+                    en: [
+                        "Boil milk in small pot",
+                        "Add oats and cinnamon",
+                        "Cook for 5-7 minutes while stirring",
+                        "Slice banana into rounds",
+                        "Chop walnuts coarsely",
+                        "Add honey to oatmeal",
+                        "Transfer to bowl and garnish",
+                        "Sprinkle berries and chia seeds"
+                    ]
+                }
+            },
+            avocado_toast: {
+                name: "🥑 טוסט אבוקדו",
+                emoji: "🥑",
+                ingredients: {
+                    he: [
+                        { name: "לחם מחמצת", amount: 4, unit: "פרוסות", category: "דגנים ופחמימות" },
+                        { name: "אבוקדו בשל", amount: 2, unit: "יחידות", category: "פירות" },
+                        { name: "לימון", amount: 1, unit: "יחידה", category: "פירות" },
+                        { name: "עגבניות שרי", amount: 150, unit: "גרם", category: "ירקות טריים" },
+                        { name: "גבינת פטה", amount: 100, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "שמן זית", amount: 2, unit: "כפות", category: "שמנים" },
+                        { name: "מלח ים", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פלפל שחור", amount: 0.25, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פתיתי צ'ילי", amount: 0.25, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Sourdough bread", amount: 4, unit: "slices", category: "Grains & Carbs" },
+                        { name: "Ripe avocado", amount: 2, unit: "pieces", category: "Fruits" },
+                        { name: "Lemon", amount: 1, unit: "piece", category: "Fruits" },
+                        { name: "Cherry tomatoes", amount: 150, unit: "g", category: "Fresh Vegetables" },
+                        { name: "Feta cheese", amount: 100, unit: "g", category: "Dairy Products" },
+                        { name: "Olive oil", amount: 2, unit: "tbsp", category: "Oils" },
+                        { name: "Sea salt", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Black pepper", amount: 0.25, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Chili flakes", amount: 0.25, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "קולים לחם עד הזהבה יפה",
+                        "קולפים ומועכים אבוקדו בקערה",
+                        "מוסיפים מיץ לימון, מלח ופלפל",
+                        "חותכים עגבניות שרי לחצאים",
+                        "פוררים גבינת פטה לחתיכות",
+                        "מורחים אבוקדו על הטוסט",
+                        "מפזרים עגבניות ופטה",
+                        "מזלפים שמן זית ופתיתי צ'ילי"
+                    ],
+                    en: [
+                        "Toast bread until golden brown",
+                        "Peel and mash avocado in bowl",
+                        "Add lemon juice, salt and pepper",
+                        "Cut cherry tomatoes in half",
+                        "Crumble feta cheese into pieces",
+                        "Spread avocado on toast",
+                        "Sprinkle tomatoes and feta",
+                        "Drizzle olive oil and chili flakes"
+                    ]
+                }
+            },
+            fruit_salad: {
+                name: "🍓 סלט פירות",
+                emoji: "🍓",
+                ingredients: {
+                    he: [
+                        { name: "תותים", amount: 300, unit: "גרם", category: "פירות" },
+                        { name: "תפוחים", amount: 2, unit: "יחידות", category: "פירות" },
+                        { name: "בננות", amount: 3, unit: "יחידות", category: "פירות" },
+                        { name: "אבטיח", amount: 500, unit: "גרם", category: "פירות" },
+                        { name: "ענבים", amount: 200, unit: "גרם", category: "פירות" },
+                        { name: "קיווי", amount: 3, unit: "יחידות", category: "פירות" },
+                        { name: "מיץ לימון", amount: 2, unit: "כפות", category: "פירות" },
+                        { name: "דבש", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "נענע טרי", amount: 1, unit: "חבילה", category: "עשבי תיבול" }
+                    ],
+                    en: [
+                        { name: "Strawberries", amount: 300, unit: "g", category: "Fruits" },
+                        { name: "Apples", amount: 2, unit: "pieces", category: "Fruits" },
+                        { name: "Bananas", amount: 3, unit: "pieces", category: "Fruits" },
+                        { name: "Watermelon", amount: 500, unit: "g", category: "Fruits" },
+                        { name: "Grapes", amount: 200, unit: "g", category: "Fruits" },
+                        { name: "Kiwi", amount: 3, unit: "pieces", category: "Fruits" },
+                        { name: "Lemon juice", amount: 2, unit: "tbsp", category: "Fruits" },
+                        { name: "Honey", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Fresh mint", amount: 1, unit: "bunch", category: "Herbs" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "שוטפים ומנקים את כל הפירות",
+                        "חותכים תותים לחצאים",
+                        "קולפים ופורסים תפוחים לקוביות",
+                        "פורסים בננות לעיגולים",
+                        "חותכים אבטיח לקוביות",
+                        "קולפים וחותכים קיווי לפרוסות",
+                        "מערבבים דבש עם מיץ לימון",
+                        "מערבבים את כל הפירות עם התערובת",
+                        "מקשטים בעלי נענע ומגישים קר"
+                    ],
+                    en: [
+                        "Wash and clean all fruits",
+                        "Cut strawberries in half",
+                        "Peel and dice apples",
+                        "Slice bananas into rounds",
+                        "Cut watermelon into cubes",
+                        "Peel and slice kiwi",
+                        "Mix honey with lemon juice",
+                        "Mix all fruits with the mixture",
+                        "Garnish with mint leaves and serve cold"
+                    ]
+                }
+            },
+            // Lunch Recipes
+            quinoa_salad: {
+                name: "🌾 סלט קינואה",
+                emoji: "🌾",
+                ingredients: {
+                    he: [
+                        { name: "קינואה", amount: 200, unit: "גרם", category: "דגנים ופחמימות" },
+                        { name: "מלפפון", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "עגבניות שרי", amount: 200, unit: "גרם", category: "ירקות טריים" },
+                        { name: "פלפל אדום", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "בצל אדום", amount: 0.5, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "פטרוזיליה", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "נענע", amount: 0.5, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "שמן זית", amount: 4, unit: "כפות", category: "שמנים" },
+                        { name: "מיץ לימון", amount: 3, unit: "כפות", category: "פירות" },
+                        { name: "גבינת עיזים", amount: 150, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "אגוזי פקאן", amount: 50, unit: "גרם", category: "אגוזים וזרעים" }
+                    ],
+                    en: [
+                        { name: "Quinoa", amount: 200, unit: "g", category: "Grains & Carbs" },
+                        { name: "Cucumber", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Cherry tomatoes", amount: 200, unit: "g", category: "Fresh Vegetables" },
+                        { name: "Red bell pepper", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Red onion", amount: 0.5, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Parsley", amount: 1, unit: "bunch", category: "Herbs" },
+                        { name: "Mint", amount: 0.5, unit: "bunch", category: "Herbs" },
+                        { name: "Olive oil", amount: 4, unit: "tbsp", category: "Oils" },
+                        { name: "Lemon juice", amount: 3, unit: "tbsp", category: "Fruits" },
+                        { name: "Goat cheese", amount: 150, unit: "g", category: "Dairy Products" },
+                        { name: "Pecans", amount: 50, unit: "g", category: "Nuts & Seeds" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "שוטפים קינואה במים קרים",
+                        "מבשלים קינואה ב-2 כוסות מים 15 דקות",
+                        "מצננים קינואה לטמפרטורת החדר",
+                        "חותכים מלפפון ופלפל לקוביות",
+                        "חוצים עגבניות שרי",
+                        "פורסים בצל אדום דק",
+                        "קוצצים עשבי תיבול דק",
+                        "מערבבים הכל עם שמן זית ולימון"
+                    ],
+                    en: [
+                        "Rinse quinoa in cold water",
+                        "Cook quinoa in 2 cups water for 15 minutes",
+                        "Cool quinoa to room temperature",
+                        "Dice cucumber and bell pepper",
+                        "Halve cherry tomatoes",
+                        "Slice red onion thinly",
+                        "Chop herbs finely",
+                        "Mix everything with olive oil and lemon"
+                    ]
+                }
+            },
+            bbq_chicken: {
+                name: "🍗 עוף ברביקיו",
+                emoji: "🍗",
+                ingredients: {
+                    he: [
+                        { name: "עוף שלם או חלקי עוף", amount: 1.5, unit: "ק\"ג", category: "בשר ועוף" },
+                        { name: "רוטב ברביקיו", amount: 200, unit: "מ\"ל", category: "רטבים ותבלינים" },
+                        { name: "דבש", amount: 3, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "שמן זית", amount: 4, unit: "כפות", category: "שמנים" },
+                        { name: "שום", amount: 4, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "בצל", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "פלפל אדום", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "פלפל שחור", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פפריקה", amount: 2, unit: "כפיות", category: "רטבים ותבלינים" },
+                        { name: "כמון", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "לימון", amount: 1, unit: "יחידה", category: "פירות" }
+                    ],
+                    en: [
+                        { name: "Whole chicken or chicken pieces", amount: 1.5, unit: "kg", category: "Meat & Poultry" },
+                        { name: "BBQ sauce", amount: 200, unit: "ml", category: "Sauces & Seasonings" },
+                        { name: "Honey", amount: 3, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Olive oil", amount: 4, unit: "tbsp", category: "Oils" },
+                        { name: "Garlic", amount: 4, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Red bell pepper", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Black pepper", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Paprika", amount: 2, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Cumin", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Lemon", amount: 1, unit: "piece", category: "Fruits" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מחממים תנור ל-200 מעלות",
+                        "חותכים את הבצל והפלפל לפרוסות",
+                        "כותשים את השום עם המלח",
+                        "מערבבים רוטב ברביקיו, דבש, שמן זית ותבלינים",
+                        "מושחים את העוף במרינדה ומשאירים 30 דקות",
+                        "מניחים בתבנית עם הירקות ואופים 45-60 דקות",
+                        "מזלפים במיץ לימון לפני הגשה"
+                    ],
+                    en: [
+                        "Preheat oven to 200°C",
+                        "Cut onion and bell pepper into slices",
+                        "Crush garlic with salt",
+                        "Mix BBQ sauce, honey, olive oil and seasonings",
+                        "Marinate chicken with mixture for 30 minutes",
+                        "Place in baking dish with vegetables and bake 45-60 minutes",
+                        "Drizzle with lemon juice before serving"
+                    ]
+                }
+            },
+            pasta: {
+                name: "🍝 פסטה ברוטב עגבניות",
+                emoji: "🍝",
+                ingredients: {
+                    he: [
+                        { name: "פסטה", amount: 400, unit: "גרם", category: "דגנים ופחמימות" },
+                        { name: "עגבניות מרוסקות", amount: 800, unit: "גרם", category: "שימורים" },
+                        { name: "בצל", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "שום", amount: 4, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "שמן זית", amount: 4, unit: "כפות", category: "שמנים" },
+                        { name: "בזיליקום טרי", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "גבינת פרמזן", amount: 100, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פלפל שחור", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Pasta", amount: 400, unit: "g", category: "Grains & Carbs" },
+                        { name: "Crushed tomatoes", amount: 800, unit: "g", category: "Canned Goods" },
+                        { name: "Onions", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Garlic", amount: 4, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Olive oil", amount: 4, unit: "tbsp", category: "Oils" },
+                        { name: "Fresh basil", amount: 1, unit: "bunch", category: "Herbs" },
+                        { name: "Parmesan cheese", amount: 100, unit: "g", category: "Dairy Products" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Black pepper", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מרתיחים מים מלוחים בסיר גדול",
+                        "חותכים בצל דק ומטגנים בשמן זית עד הזהבה",
+                        "מוסיפים שום כתוש ומטגנים דקה נוספת",
+                        "מוסיפים עגבניות מרוסקות ומתבלים במלח ופלפל",
+                        "מבשלים הרוטב 15-20 דקות על אש נמוכה",
+                        "מבשלים פסטה לפי הוראות על האריזה",
+                        "מערבבים פסטה עם רוטב ומוסיפים בזיליקום",
+                        "מגישים עם גבינת פרמזן מגורדת"
+                    ],
+                    en: [
+                        "Boil salted water in a large pot",
+                        "Slice onion thinly and fry in olive oil until golden",
+                        "Add crushed garlic and fry for another minute",
+                        "Add crushed tomatoes and season with salt and pepper",
+                        "Simmer sauce for 15-20 minutes on low heat",
+                        "Cook pasta according to package instructions",
+                        "Mix pasta with sauce and add basil",
+                        "Serve with grated Parmesan cheese"
+                    ]
+                }
+            },
+            beef_stir_fry: {
+                name: "🥩 בשר בוק צ'וי",
+                emoji: "🥩",
+                ingredients: {
+                    he: [
+                        { name: "בשר בקר לחיתוך", amount: 600, unit: "גרם", category: "בשר ועוף" },
+                        { name: "פלפל אדום", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "בצל", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "שום", amount: 3, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "ברוקולי", amount: 300, unit: "גרם", category: "ירקות טריים" },
+                        { name: "גזר", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "שמן צמחי", amount: 3, unit: "כפות", category: "שמנים" },
+                        { name: "רוטב סויה", amount: 4, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "רוטב צדפות", amount: 2, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "עמילן תירס", amount: 1, unit: "כפית", category: "מוצרי יסוד" },
+                        { name: "זנגביל טרי", amount: 1, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Beef for stir-fry", amount: 600, unit: "g", category: "Meat & Poultry" },
+                        { name: "Red bell pepper", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Garlic", amount: 3, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Broccoli", amount: 300, unit: "g", category: "Fresh Vegetables" },
+                        { name: "Carrots", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Vegetable oil", amount: 3, unit: "tbsp", category: "Oils" },
+                        { name: "Soy sauce", amount: 4, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Oyster sauce", amount: 2, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Corn starch", amount: 1, unit: "tsp", category: "Basic Ingredients" },
+                        { name: "Fresh ginger", amount: 1, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "חותכים את הבשר לרצועות דקות",
+                        "חותכים את כל הירקות לחתיכות אחידות",
+                        "מחממים מחבת או ווק על אש גבוהה",
+                        "מטגנים את הבשר 2-3 דקות עד השחמה",
+                        "מוציאים את הבשר ומטגנים את הירקות",
+                        "מחזירים את הבשר למחבת",
+                        "מוסיפים רטבים ומערבבים",
+                        "מגישים מיד עם אורז"
+                    ],
+                    en: [
+                        "Cut beef into thin strips",
+                        "Cut all vegetables into uniform pieces",
+                        "Heat wok or large pan over high heat",
+                        "Stir-fry beef for 2-3 minutes until browned",
+                        "Remove beef and stir-fry vegetables",
+                        "Return beef to pan",
+                        "Add sauces and mix well",
+                        "Serve immediately with rice"
+                    ]
+                }
+            },
+            chocolate_cake: {
+                name: "🍰 עוגת שוקולד",
+                emoji: "🍰",
+                ingredients: {
+                    he: [
+                        { name: "קמח", amount: 200, unit: "גרם", category: "דגנים ופחמימות" },
+                        { name: "סוכר", amount: 200, unit: "גרם", category: "מוצרי יסוד" },
+                        { name: "ביצים", amount: 3, unit: "יחידות", category: "מוצרי חלב" },
+                        { name: "חמאה", amount: 100, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "שוקולד מריר", amount: 150, unit: "גרם", category: "מוצרי יסוד" },
+                        { name: "חלב", amount: 120, unit: "מ\"ל", category: "מוצרי חלב" },
+                        { name: "אבקת אפייה", amount: 2, unit: "כפיות", category: "מוצרי יסוד" },
+                        { name: "וניל", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "מלח", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Flour", amount: 200, unit: "g", category: "Grains & Carbs" },
+                        { name: "Sugar", amount: 200, unit: "g", category: "Basic Ingredients" },
+                        { name: "Eggs", amount: 3, unit: "pieces", category: "Dairy Products" },
+                        { name: "Butter", amount: 100, unit: "g", category: "Dairy Products" },
+                        { name: "Dark chocolate", amount: 150, unit: "g", category: "Basic Ingredients" },
+                        { name: "Milk", amount: 120, unit: "ml", category: "Dairy Products" },
+                        { name: "Baking powder", amount: 2, unit: "tsp", category: "Basic Ingredients" },
+                        { name: "Vanilla", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Salt", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מחממים תנור ל-180 מעלות",
+                        "ממיסים שוקולד וחמאה במיקרוגל",
+                        "מקציפים ביצים עם סוכר",
+                        "מוסיפים שוקולד מומס וחלב",
+                        "מערבבים קמח, אבקת אפייה ומלח",
+                        "מוסיפים חומרים יבשים לתערובת רטובה",
+                        "יוצקים לתבנית משומנת",
+                        "אופים 25-30 דקות"
+                    ],
+                    en: [
+                        "Preheat oven to 180°C",
+                        "Melt chocolate and butter in microwave",
+                        "Beat eggs with sugar",
+                        "Add melted chocolate and milk",
+                        "Mix flour, baking powder and salt",
+                        "Add dry ingredients to wet mixture",
+                        "Pour into greased pan",
+                        "Bake for 25-30 minutes"
+                    ]
+                }
+            },
+            fish_tacos: {
+                name: "🌮 טאקו דגים",
+                emoji: "🌮",
+                ingredients: {
+                    he: [
+                        { name: "פילה דג לבן", amount: 500, unit: "גרם", category: "דגים ופירות ים" },
+                        { name: "טורטיות קטנות", amount: 8, unit: "יחידות", category: "דגנים ופחמימות" },
+                        { name: "כרוב לבן", amount: 200, unit: "גרם", category: "ירקות טריים" },
+                        { name: "עגבניות שרי", amount: 200, unit: "גרם", category: "ירקות טריים" },
+                        { name: "אבוקדו", amount: 2, unit: "יחידות", category: "פירות" },
+                        { name: "לימון", amount: 2, unit: "יחידות", category: "פירות" },
+                        { name: "מיונז", amount: 3, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "כוסברה טרייה", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "שמן לטיגון", amount: 2, unit: "כפות", category: "שמנים" },
+                        { name: "פלפל צ'ילי", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "White fish fillet", amount: 500, unit: "g", category: "Fish & Seafood" },
+                        { name: "Small tortillas", amount: 8, unit: "pieces", category: "Grains & Carbs" },
+                        { name: "White cabbage", amount: 200, unit: "g", category: "Fresh Vegetables" },
+                        { name: "Cherry tomatoes", amount: 200, unit: "g", category: "Fresh Vegetables" },
+                        { name: "Avocado", amount: 2, unit: "pieces", category: "Fruits" },
+                        { name: "Lime", amount: 2, unit: "pieces", category: "Fruits" },
+                        { name: "Mayonnaise", amount: 3, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Fresh cilantro", amount: 1, unit: "bunch", category: "Herbs" },
+                        { name: "Oil for frying", amount: 2, unit: "tbsp", category: "Oils" },
+                        { name: "Chili pepper", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "חותכים דג לחתיכות ומתבלים במלח ופלפל",
+                        "מטגנים דג במחבת עד הזהבה",
+                        "חותכים כרוב דק ועגבניות לחצאים",
+                        "מכינים רוטב מיונז עם לימון וצ'ילי",
+                        "מחממים טורטיות במחבת או מיקרוגל",
+                        "חותכים אבוקדו לפרוסות",
+                        "מרכיבים טאקו עם דג, ירקות ורוטב",
+                        "מקשטים בכוסברה ומגישים"
+                    ],
+                    en: [
+                        "Cut fish into pieces and season with salt and pepper",
+                        "Pan-fry fish until golden brown",
+                        "Slice cabbage thinly and halve tomatoes",
+                        "Make mayo sauce with lime and chili",
+                        "Warm tortillas in pan or microwave",
+                        "Slice avocado",
+                        "Assemble tacos with fish, vegetables and sauce",
+                        "Garnish with cilantro and serve"
+                    ]
+                }
+            },
+            chicken_soup: {
+                name: "🍲 מרק עוף",
+                emoji: "🍲",
+                ingredients: {
+                    he: [
+                        { name: "עוף שלם", amount: 1.2, unit: "ק\"ג", category: "בשר ועוף" },
+                        { name: "גזר", amount: 3, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "סלרי", amount: 3, unit: "גבעולים", category: "ירקות טריים" },
+                        { name: "בצל", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "שום", amount: 4, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "פטרוזיליה", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "שמיר", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "עלי דפנה", amount: 2, unit: "עלים", category: "רטבים ותבלינים" },
+                        { name: "מלח", amount: 2, unit: "כפיות", category: "רטבים ותבלינים" },
+                        { name: "פלפל שחור", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "לוקשן דק", amount: 200, unit: "גרם", category: "דגנים ופחמימות" }
+                    ],
+                    en: [
+                        { name: "Whole chicken", amount: 1.2, unit: "kg", category: "Meat & Poultry" },
+                        { name: "Carrots", amount: 3, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Celery stalks", amount: 3, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Onions", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Garlic", amount: 4, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Parsley", amount: 1, unit: "bunch", category: "Herbs" },
+                        { name: "Dill", amount: 1, unit: "bunch", category: "Herbs" },
+                        { name: "Bay leaves", amount: 2, unit: "leaves", category: "Sauces & Seasonings" },
+                        { name: "Salt", amount: 2, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Black pepper", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Thin noodles", amount: 200, unit: "g", category: "Grains & Carbs" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "שמים עוף בסיר גדול ומכסים במים קרים",
+                        "מביאים לרתיחה ומסירים קצף",
+                        "מוסיפים ירקות שלמים ועשבי תיבול",
+                        "מבשלים על אש נמוכה 1.5-2 שעות",
+                        "מוציאים עוף וירקות ומסננים מרק",
+                        "מפרקים עוף לחתיכות ומחזירים למרק",
+                        "חותכים ירקות לקוביות ומחזירים למרק",
+                        "מוסיפים לוקשן ומבשלים 8-10 דקות"
+                    ],
+                    en: [
+                        "Place chicken in large pot and cover with cold water",
+                        "Bring to boil and remove foam",
+                        "Add whole vegetables and herbs",
+                        "Simmer on low heat for 1.5-2 hours",
+                        "Remove chicken and vegetables, strain broth",
+                        "Shred chicken and return to broth",
+                        "Dice vegetables and return to broth",
+                        "Add noodles and cook for 8-10 minutes"
+                    ]
+                }
+            },
+            pizza: {
+                name: "🍕 פיצה מרגריטה",
+                emoji: "🍕",
+                ingredients: {
+                    he: [
+                        { name: "קמח", amount: 500, unit: "גרם", category: "דגנים ופחמימות" },
+                        { name: "שמרים יבשים", amount: 7, unit: "גרם", category: "מוצרי יסוד" },
+                        { name: "מים פושרים", amount: 320, unit: "מ\"ל", category: "מוצרי יסוד" },
+                        { name: "שמן זית", amount: 3, unit: "כפות", category: "שמנים" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "סוכר", amount: 1, unit: "כפית", category: "מוצרי יסוד" },
+                        { name: "רוטב עגבניות", amount: 300, unit: "גרם", category: "שימורים" },
+                        { name: "מוצרלה", amount: 250, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "בזיליקום טרי", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "שום", amount: 2, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "אורגנו", amount: 1, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Flour", amount: 500, unit: "g", category: "Grains & Carbs" },
+                        { name: "Dry yeast", amount: 7, unit: "g", category: "Basic Ingredients" },
+                        { name: "Warm water", amount: 320, unit: "ml", category: "Basic Ingredients" },
+                        { name: "Olive oil", amount: 3, unit: "tbsp", category: "Oils" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Sugar", amount: 1, unit: "tsp", category: "Basic Ingredients" },
+                        { name: "Tomato sauce", amount: 300, unit: "g", category: "Canned Goods" },
+                        { name: "Mozzarella cheese", amount: 250, unit: "g", category: "Dairy Products" },
+                        { name: "Fresh basil", amount: 1, unit: "bunch", category: "Herbs" },
+                        { name: "Garlic", amount: 2, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Oregano", amount: 1, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מערבבים שמרים עם מים פושרים וסוכר",
+                        "מוסיפים קמח, מלח ושמן זית ולשים",
+                        "מתפיחים הבצק שעה במקום חם",
+                        "מכינים רוטב עם עגבניות, שום ואורגנו",
+                        "מרדדים בצק לעיגול על תבנית",
+                        "מורחים רוטב ומפזרים מוצרלה",
+                        "אופים ב-220 מעלות 12-15 דקות",
+                        "מקשטים בבזיליקום טרי"
+                    ],
+                    en: [
+                        "Mix yeast with warm water and sugar",
+                        "Add flour, salt and olive oil, knead",
+                        "Let dough rise for 1 hour in warm place",
+                        "Make sauce with tomatoes, garlic and oregano",
+                        "Roll dough into circle on baking sheet",
+                        "Spread sauce and sprinkle mozzarella",
+                        "Bake at 220°C for 12-15 minutes",
+                        "Garnish with fresh basil"
+                    ]
+                }
+            },
+            salmon_teriyaki: {
+                name: "🐟 סלמון טריאקי",
+                emoji: "🐟",
+                ingredients: {
+                    he: [
+                        { name: "פילה סלמון", amount: 600, unit: "גרם", category: "דגים ופירות ים" },
+                        { name: "רוטב סויה", amount: 4, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "מירין", amount: 3, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "סוכר חום", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
+                        { name: "זנגביל טרי", amount: 2, unit: "כפיות", category: "רטבים ותבלינים" },
+                        { name: "שום", amount: 2, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "שמן צמחי", amount: 2, unit: "כפות", category: "שמנים" },
+                        { name: "בצל ירוק", amount: 3, unit: "גבעולים", category: "ירקות טריים" },
+                        { name: "שומשום", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "אורז", amount: 300, unit: "גרם", category: "דגנים ופחמימות" }
+                    ],
+                    en: [
+                        { name: "Salmon fillet", amount: 600, unit: "g", category: "Fish & Seafood" },
+                        { name: "Soy sauce", amount: 4, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Mirin", amount: 3, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Brown sugar", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
+                        { name: "Fresh ginger", amount: 2, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Garlic", amount: 2, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Vegetable oil", amount: 2, unit: "tbsp", category: "Oils" },
+                        { name: "Green onions", amount: 3, unit: "stalks", category: "Fresh Vegetables" },
+                        { name: "Sesame seeds", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Rice", amount: 300, unit: "g", category: "Grains & Carbs" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מערבבים רוטב סויה, מירין וסוכר חום",
+                        "מוסיפים זנגביל ושום כתושים",
+                        "מחממים שמן במחבת על אש בינונית",
+                        "מטגנים סלמון 3-4 דקות מכל צד",
+                        "יוצקים רוטב טריאקי על הדג",
+                        "מבשלים עד שהרוטב מתעבה",
+                        "מבשלים אורז בנפרד",
+                        "מגישים עם בצל ירוק ושומשום"
+                    ],
+                    en: [
+                        "Mix soy sauce, mirin and brown sugar",
+                        "Add crushed ginger and garlic",
+                        "Heat oil in pan over medium heat",
+                        "Pan-fry salmon 3-4 minutes each side",
+                        "Pour teriyaki sauce over fish",
+                        "Cook until sauce thickens",
+                        "Cook rice separately",
+                        "Serve with green onions and sesame seeds"
+                    ]
+                }
+            },
+            vegetable_curry: {
+                name: "🍛 קארי ירקות",
+                emoji: "🍛",
+                ingredients: {
+                    he: [
+                        { name: "בטטה", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "חצילים", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "פלפלים צבעוניים", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "בצל", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "שום", amount: 4, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "זנגביל טרי", amount: 2, unit: "כפיות", category: "רטבים ותבלינים" },
+                        { name: "חלב קוקוס", amount: 400, unit: "מ\"ל", category: "שימורים" },
+                        { name: "עגבניות מרוסקות", amount: 400, unit: "גרם", category: "שימורים" },
+                        { name: "אבקת קארי", amount: 2, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "כורכום", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "שמן קוקוס", amount: 2, unit: "כפות", category: "שמנים" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Sweet potatoes", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Eggplant", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Colorful bell peppers", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Garlic", amount: 4, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Fresh ginger", amount: 2, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Coconut milk", amount: 400, unit: "ml", category: "Canned Goods" },
+                        { name: "Crushed tomatoes", amount: 400, unit: "g", category: "Canned Goods" },
+                        { name: "Curry powder", amount: 2, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Turmeric", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Coconut oil", amount: 2, unit: "tbsp", category: "Oils" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "חותכים כל הירקות לקוביות",
+                        "מחממים שמן קוקוס במחבת גדולה",
+                        "מטגנים בצל, שום וזנגביל עד ריח",
+                        "מוסיפים תבלינים ומטגנים דקה",
+                        "מוסיפים ירקות קשים ומטגנים 5 דקות",
+                        "מוסיפים עגבניות וחלב קוקוס",
+                        "מבשלים 20-25 דקות עד שהירקות רכים",
+                        "מגישים עם אורז או נאן"
+                    ],
+                    en: [
+                        "Cut all vegetables into cubes",
+                        "Heat coconut oil in large pan",
+                        "Fry onion, garlic and ginger until fragrant",
+                        "Add spices and fry for 1 minute",
+                        "Add hard vegetables and fry for 5 minutes",
+                        "Add tomatoes and coconut milk",
+                        "Cook for 20-25 minutes until vegetables are tender",
+                        "Serve with rice or naan"
+                    ]
+                }
+            },
+            beef_burgers: {
+                name: "🍔 המבורגר בקר",
+                emoji: "🍔",
+                ingredients: {
+                    he: [
+                        { name: "בשר בקר טחון", amount: 600, unit: "גרם", category: "בשר ועוף" },
+                        { name: "לחמניות המבורגר", amount: 4, unit: "יחידות", category: "דגנים ופחמימות" },
+                        { name: "גבינה צהובה", amount: 4, unit: "פרוסות", category: "מוצרי חלב" },
+                        { name: "חסה", amount: 4, unit: "עלים", category: "ירקות טריים" },
+                        { name: "עגבניות", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "בצל", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "מלפפון חמוץ", amount: 4, unit: "פרוסות", category: "שימורים" },
+                        { name: "מיונז", amount: 3, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "קטשופ", amount: 2, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פלפל שחור", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "שמן לטיגון", amount: 2, unit: "כפות", category: "שמנים" }
+                    ],
+                    en: [
+                        { name: "Ground beef", amount: 600, unit: "g", category: "Meat & Poultry" },
+                        { name: "Burger buns", amount: 4, unit: "pieces", category: "Grains & Carbs" },
+                        { name: "Cheese slices", amount: 4, unit: "slices", category: "Dairy Products" },
+                        { name: "Lettuce", amount: 4, unit: "leaves", category: "Fresh Vegetables" },
+                        { name: "Tomatoes", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Pickles", amount: 4, unit: "slices", category: "Canned Goods" },
+                        { name: "Mayonnaise", amount: 3, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Ketchup", amount: 2, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Black pepper", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Oil for frying", amount: 2, unit: "tbsp", category: "Oils" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מערבבים בשר עם מלח ופלפל",
+                        "יוצרים 4 קציצות שטוחות",
+                        "מחממים מחבת עם שמן",
+                        "מטגנים קציצות 3-4 דקות מכל צד",
+                        "מוסיפים גבינה בדקה האחרונה",
+                        "חותכים עגבניות ובצל לפרוסות",
+                        "מחממים לחמניות בטוסטר",
+                        "מרכיבים המבורגר עם כל התוספות"
+                    ],
+                    en: [
+                        "Mix meat with salt and pepper",
+                        "Form 4 flat patties",
+                        "Heat pan with oil",
+                        "Fry patties 3-4 minutes each side",
+                        "Add cheese in last minute",
+                        "Slice tomatoes and onion",
+                        "Toast buns in toaster",
+                        "Assemble burger with all toppings"
+                    ]
+                }
+            },
+            greek_salad: {
+                name: "🥗 סלט יווני",
+                emoji: "🥗",
+                ingredients: {
+                    he: [
+                        { name: "עגבניות", amount: 4, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "מלפפונים", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "פלפל ירוק", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "בצל אדום", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "גבינת פטה", amount: 200, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "זיתים שחורים", amount: 100, unit: "גרם", category: "שימורים" },
+                        { name: "שמן זית", amount: 4, unit: "כפות", category: "שמנים" },
+                        { name: "חומץ יין לבן", amount: 2, unit: "כפות", category: "רטבים ותבלינים" },
+                        { name: "אורגנו יבש", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "מלח", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פלפל שחור", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Tomatoes", amount: 4, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Cucumbers", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Green bell pepper", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Red onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Feta cheese", amount: 200, unit: "g", category: "Dairy Products" },
+                        { name: "Black olives", amount: 100, unit: "g", category: "Canned Goods" },
+                        { name: "Olive oil", amount: 4, unit: "tbsp", category: "Oils" },
+                        { name: "White wine vinegar", amount: 2, unit: "tbsp", category: "Sauces & Seasonings" },
+                        { name: "Dried oregano", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Salt", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Black pepper", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "חותכים עגבניות לחתיכות גדולות",
+                        "פורסים מלפפונים לעיגולים עבים",
+                        "חותכים פלפל לרצועות",
+                        "פורסים בצל אדום דק",
+                        "מערבבים כל הירקות בקערה",
+                        "מוסיפים זיתים וקוביות פטה",
+                        "מכינים רוטב מזית, חומץ ותבלינים",
+                        "יוצקים רוטב ומערבבים בעדינות"
+                    ],
+                    en: [
+                        "Cut tomatoes into large chunks",
+                        "Slice cucumbers into thick rounds",
+                        "Cut bell pepper into strips",
+                        "Slice red onion thinly",
+                        "Mix all vegetables in bowl",
+                        "Add olives and feta cubes",
+                        "Make dressing with oil, vinegar and seasonings",
+                        "Pour dressing and mix gently"
+                    ]
+                }
+            },
+            mushroom_risotto: {
+                name: "🍄 ריזוטו פטריות",
+                emoji: "🍄",
+                ingredients: {
+                    he: [
+                        { name: "אורז ארבוריו", amount: 300, unit: "גרם", category: "דגנים ופחמימות" },
+                        { name: "פטריות מעורבות", amount: 400, unit: "גרם", category: "ירקות טריים" },
+                        { name: "בצל", amount: 1, unit: "יחידה", category: "ירקות טריים" },
+                        { name: "שום", amount: 3, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "יין לבן יבש", amount: 150, unit: "מ\"ל", category: "משקאות" },
+                        { name: "מרק ירקות", amount: 1, unit: "ליטר", category: "שימורים" },
+                        { name: "חמאה", amount: 50, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "גבינת פרמזן", amount: 100, unit: "גרם", category: "מוצרי חלב" },
+                        { name: "שמן זית", amount: 3, unit: "כפות", category: "שמנים" },
+                        { name: "פטרוזיליה", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "פלפל שחור", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" }
+                    ],
+                    en: [
+                        { name: "Arborio rice", amount: 300, unit: "g", category: "Grains & Carbs" },
+                        { name: "Mixed mushrooms", amount: 400, unit: "g", category: "Fresh Vegetables" },
+                        { name: "Onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
+                        { name: "Garlic", amount: 3, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Dry white wine", amount: 150, unit: "ml", category: "Beverages" },
+                        { name: "Vegetable broth", amount: 1, unit: "liter", category: "Canned Goods" },
+                        { name: "Butter", amount: 50, unit: "g", category: "Dairy Products" },
+                        { name: "Parmesan cheese", amount: 100, unit: "g", category: "Dairy Products" },
+                        { name: "Olive oil", amount: 3, unit: "tbsp", category: "Oils" },
+                        { name: "Parsley", amount: 1, unit: "bunch", category: "Herbs" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Black pepper", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "מחממים מרק בסיר נפרד",
+                        "חותכים פטריות ומטגנים עד הזהבה",
+                        "מטגנים בצל ושום בשמן זית",
+                        "מוסיפים אורז ומערבבים 2 דקות",
+                        "מוסיפים יין ומחכים שיתאדה",
+                        "מוסיפים מרק בהדרגה תוך ערבוב",
+                        "מבשלים 18-20 דקות עד שהאורז רך",
+                        "מוסיפים חמאה, פרמזן ופטריות"
+                    ],
+                    en: [
+                        "Heat broth in separate pot",
+                        "Slice mushrooms and fry until golden",
+                        "Fry onion and garlic in olive oil",
+                        "Add rice and stir for 2 minutes",
+                        "Add wine and wait for it to evaporate",
+                        "Add broth gradually while stirring",
+                        "Cook for 18-20 minutes until rice is tender",
+                        "Add butter, parmesan and mushrooms"
+                    ]
+                }
+            },
+            chicken_fajitas: {
+                name: "🌯 פחיתות עוף",
+                emoji: "🌯",
+                ingredients: {
+                    he: [
+                        { name: "חזה עוף", amount: 600, unit: "גרם", category: "בשר ועוף" },
+                        { name: "טורטיות גדולות", amount: 6, unit: "יחידות", category: "דגנים ופחמימות" },
+                        { name: "פלפלים צבעוניים", amount: 3, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "בצל", amount: 2, unit: "יחידות", category: "ירקות טריים" },
+                        { name: "שום", amount: 3, unit: "שיניים", category: "ירקות טריים" },
+                        { name: "לימון", amount: 2, unit: "יחידות", category: "פירות" },
+                        { name: "שמן זית", amount: 3, unit: "כפות", category: "שמנים" },
+                        { name: "פפריקה", amount: 2, unit: "כפיות", category: "רטבים ותבלינים" },
+                        { name: "כמון", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "צ'ילי", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
+                        { name: "גואקמולה", amount: 200, unit: "גרם", category: "רטבים ותבלינים" },
+                        { name: "שמנת חמוצה", amount: 200, unit: "גרם", category: "מוצרי חלב" }
+                    ],
+                    en: [
+                        { name: "Chicken breast", amount: 600, unit: "g", category: "Meat & Poultry" },
+                        { name: "Large tortillas", amount: 6, unit: "pieces", category: "Grains & Carbs" },
+                        { name: "Colorful bell peppers", amount: 3, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Onions", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
+                        { name: "Garlic", amount: 3, unit: "cloves", category: "Fresh Vegetables" },
+                        { name: "Lime", amount: 2, unit: "pieces", category: "Fruits" },
+                        { name: "Olive oil", amount: 3, unit: "tbsp", category: "Oils" },
+                        { name: "Paprika", amount: 2, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Cumin", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Chili powder", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
+                        { name: "Guacamole", amount: 200, unit: "g", category: "Sauces & Seasonings" },
+                        { name: "Sour cream", amount: 200, unit: "g", category: "Dairy Products" }
+                    ]
+                },
+                instructions: {
+                    he: [
+                        "חותכים עוף לרצועות דקות",
+                        "מערבבים עוף עם תבלינים ומיץ לימון",
+                        "חותכים פלפלים ובצל לרצועות",
+                        "מחממים שמן במחבת גדולה",
+                        "מטגנים עוף 5-6 דקות עד הזהבה",
+                        "מוסיפים ירקות ומטגנים 4-5 דקות",
+                        "מחממים טורטיות במיקרוגל",
+                        "מגישים עם גואקמולה ושמנת חמוצה"
+                    ],
+                    en: [
+                        "Cut chicken into thin strips",
+                        "Mix chicken with spices and lime juice",
+                        "Cut peppers and onions into strips",
+                        "Heat oil in large pan",
+                        "Fry chicken for 5-6 minutes until golden",
+                        "Add vegetables and fry for 4-5 minutes",
+                        "Warm tortillas in microwave",
+                        "Serve with guacamole and sour cream"
+                    ]
+                }
+            }
+        };
+
+        let currentServings = 4;
+        let currentRecipe = 'pancakes';
+
+        // Language switching function
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+           
+            // Update language button states
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                if (btn.dataset.lang === lang) {
+                    btn.className = 'language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 bg-orange-500 text-white';
+                } else {
+                    btn.className = 'language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 text-gray-600 hover:bg-gray-100';
+                }
+            });
+
+            // Update page direction
+            const html = document.documentElement;
+            if (lang === 'he') {
+                html.setAttribute('dir', 'rtl');
+                html.setAttribute('lang', lang);
+            } else {
+                html.setAttribute('dir', 'ltr');
+                html.setAttribute('lang', lang);
+            }
+
+            // Update all text elements
+            updateLanguageTexts();
+        }
+
+        // Update all text elements based on current language
+        function updateLanguageTexts() {
+            const t = translations[currentLanguage];
+           
+            document.getElementById('recipe-title').textContent = t.recipe_title;
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('recipe-selector-title').textContent = t.recipe_selector_title;
+            document.getElementById('serving-selector-title').textContent = t.serving_selector_title;
+            document.getElementById('serving-label').textContent = t.serving_label;
+            document.getElementById('ingredients-title').textContent = t.ingredients_title;
+            document.getElementById('instructions-title').textContent = t.instructions_title;
+            document.getElementById('shopping-list-title').textContent = t.shopping_list_title;
+            document.getElementById('print-text').textContent = t.print_text;
+            document.getElementById('reset-text').textContent = t.reset_text;
+           
+            // Update preset buttons
+            updatePresetButtons();
+           
+            // Update recipe selector
+            updateRecipeSelector();
+           
+            // Update all content
+            updateAll();
+        }
+
+        // Update preset buttons with current language
+        function updatePresetButtons() {
+            const t = translations[currentLanguage];
+            const presetButtons = document.querySelectorAll('.preset-btn');
+            presetButtons.forEach(btn => {
+                const servings = btn.dataset.servings;
+                btn.textContent = `${servings} ${t.servings_text}`;
+            });
+        }
+
+        // Calculate scaled amount
+        function scaleAmount(baseAmount, servings) {
+            const scaleFactor = servings / 4;
+            const scaledAmount = baseAmount * scaleFactor;
+           
+            // Round to reasonable precision
+            if (scaledAmount < 1) {
+                return Math.round(scaledAmount * 10) / 10;
+            } else if (scaledAmount < 10) {
+                return Math.round(scaledAmount * 4) / 4;
+            } else {
+                return Math.round(scaledAmount * 2) / 2;
+            }
+        }
+
+        // Format amount for display
+        function formatAmount(amount) {
+            if (amount % 1 === 0) {
+                return amount.toString();
+            } else if (amount % 0.5 === 0) {
+                return amount.toString();
+            } else if (amount % 0.25 === 0) {
+                return amount.toString();
+            } else {
+                return amount.toFixed(1);
+            }
+        }
+
+        // Create recipe selector buttons organized by categories
+        function createRecipeSelector() {
+            const recipeSelector = document.getElementById('recipe-selector');
+            recipeSelector.innerHTML = '';
+
+            // Create categories
+            Object.keys(recipeCategoryMap).forEach(categoryKey => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category-section';
+               
+                // Category title
+                const categoryTitle = document.createElement('div');
+                categoryTitle.className = 'category-title';
+                categoryTitle.textContent = recipeCategories[currentLanguage][categoryKey];
+                categoryDiv.appendChild(categoryTitle);
+               
+                // Recipe buttons grid
+                const recipesGrid = document.createElement('div');
+                recipesGrid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3';
+               
+                recipeCategoryMap[categoryKey].forEach(recipeKey => {
+                    const recipe = recipes[recipeKey];
+                    const button = document.createElement('button');
+                    button.className = `recipe-button p-4 bg-white border-2 border-gray-200 rounded-lg text-center hover:border-orange-300 ${recipeKey === currentRecipe ? 'active' : ''}`;
+                    button.innerHTML = `
+                        <div class="text-3xl mb-2">${recipe.emoji}</div>
+                        <div class="text-sm font-medium text-gray-700">${recipeTranslations[currentLanguage][recipeKey]}</div>
+                    `;
+                    button.addEventListener('click', () => {
+                        currentRecipe = recipeKey;
+                        updateRecipeSelector();
+                        updateAll();
+                    });
+                    recipesGrid.appendChild(button);
+                });
+               
+                categoryDiv.appendChild(recipesGrid);
+                recipeSelector.appendChild(categoryDiv);
+            });
+        }
+
+        // Update recipe selector active state
+        function updateRecipeSelector() {
+            // Recreate the entire selector to update language
+            createRecipeSelector();
+        }
+
+        // Update ingredients display
+        function updateIngredients() {
+            const ingredientsList = document.getElementById('ingredients-list');
+            ingredientsList.innerHTML = '';
+
+            const recipe = recipes[currentRecipe];
+            const ingredients = recipe.ingredients[currentLanguage] || recipe.ingredients.he;
+           
+            ingredients.forEach((ingredient, index) => {
+                const scaledAmount = scaleAmount(ingredient.amount, currentServings);
+                const ingredientDiv = document.createElement('div');
+                ingredientDiv.className = 'ingredient-item flex justify-between items-center p-3 bg-gray-50 rounded-lg';
+                ingredientDiv.innerHTML = `
+                    <span class="font-medium text-gray-800">${ingredient.name}</span>
+                    <span class="text-orange-600 font-semibold">${formatAmount(scaledAmount)} ${ingredient.unit}</span>
+                `;
+                ingredientDiv.classList.add('fade-in');
+                ingredientsList.appendChild(ingredientDiv);
+            });
+        }
+
+        // Update instructions display
+        function updateInstructions() {
+            const instructionsList = document.getElementById('instructions-list');
+            instructionsList.innerHTML = '';
+
+            const recipe = recipes[currentRecipe];
+            const instructions = recipe.instructions[currentLanguage] || recipe.instructions.he;
+           
+            instructions.forEach((instruction, index) => {
+                const instructionDiv = document.createElement('div');
+                instructionDiv.className = 'instruction-item flex items-start p-3 bg-blue-50 rounded-lg';
+                const marginClass = (currentLanguage === 'he') ? 'mr-3' : 'ml-3';
+                instructionDiv.innerHTML = `
+                    <span class="flex-shrink-0 w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold ${marginClass}">${index + 1}</span>
+                    <span class="text-gray-800 leading-relaxed">${instruction}</span>
+                `;
+                instructionDiv.classList.add('fade-in');
+                instructionsList.appendChild(instructionDiv);
+            });
+        }
+
+        // Update shopping list
+        function updateShoppingList() {
+            const shoppingList = document.getElementById('shopping-list');
+            shoppingList.innerHTML = '';
+
+            const recipe = recipes[currentRecipe];
+            const ingredients = recipe.ingredients[currentLanguage] || recipe.ingredients.he;
+           
+            // Group ingredients by category
+            const categories = {};
+            ingredients.forEach((ingredient, index) => {
+                if (!categories[ingredient.category]) {
+                    categories[ingredient.category] = [];
+                }
+                const scaledAmount = scaleAmount(ingredient.amount, currentServings);
+                categories[ingredient.category].push({
+                    name: ingredient.name,
+                    amount: scaledAmount,
+                    unit: ingredient.unit,
+                    id: `item-${currentRecipe}-${index}`
+                });
+            });
+
+            // Display by categories
+            Object.keys(categories).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'mb-4';
+               
+                const categoryTitle = document.createElement('h3');
+                categoryTitle.className = 'font-semibold text-gray-700 mb-2 text-lg border-b border-gray-200 pb-1';
+                categoryTitle.textContent = category;
+                categoryDiv.appendChild(categoryTitle);
+
+                categories[category].forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'shopping-item flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-all duration-200';
+                    const checkboxMargin = (currentLanguage === 'he') ? 'ml-3' : 'mr-3';
+                    itemDiv.innerHTML = `
+                        <input type="checkbox" id="${item.id}" class="${checkboxMargin} w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 cursor-pointer">
+                        <label for="${item.id}" class="flex-1 flex justify-between items-center cursor-pointer">
+                            <span class="text-gray-800 font-medium">${item.name}</span>
+                            <span class="text-orange-600 font-semibold">${formatAmount(item.amount)} ${item.unit}</span>
+                        </label>
+                    `;
+                   
+                    // Add checkbox functionality
+                    const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+                    const label = itemDiv.querySelector('label');
+                   
+                    checkbox.addEventListener('change', function() {
+                        if (this.checked) {
+                            label.style.textDecoration = 'line-through';
+                            label.style.opacity = '0.6';
+                            itemDiv.style.backgroundColor = '#f0fdf4';
+                            itemDiv.style.borderColor = '#22c55e';
+                        } else {
+                            label.style.textDecoration = 'none';
+                            label.style.opacity = '1';
+                            itemDiv.style.backgroundColor = '';
+                            itemDiv.style.borderColor = '#d1d5db';
+                        }
+                    });
+                   
+                    categoryDiv.appendChild(itemDiv);
+                });
+
+                categoryDiv.classList.add('fade-in');
+                shoppingList.appendChild(categoryDiv);
+            });
+        }
+
+        // Update serving count display
+        function updateServingDisplay() {
+            document.getElementById('serving-count').textContent = currentServings;
+        }
+
+        // Update all displays
+        function updateAll() {
+            updateServingDisplay();
+            updateIngredients();
+            updateInstructions();
+            updateShoppingList();
+        }
+
+        // Event listeners
+        document.getElementById('decrease-btn').addEventListener('click', () => {
+            if (currentServings > 1) {
+                currentServings--;
+                updateAll();
+            }
+        });
+
+        document.getElementById('increase-btn').addEventListener('click', () => {
+            if (currentServings < 20) {
+                currentServings++;
+                updateAll();
+            }
+        });
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentServings = parseInt(btn.dataset.servings);
+                updateAll();
+            });
+        });
+
+        // Print functionality
+        document.getElementById('print-btn').addEventListener('click', () => {
+            const printWindow = window.open('', '_blank');
+            const shoppingListContent = document.getElementById('shopping-list').innerHTML;
+            const servingCount = document.getElementById('serving-count').textContent;
+            const recipeName = recipeTranslations[currentLanguage][currentRecipe];
+            const t = translations[currentLanguage];
+            const direction = (currentLanguage === 'he') ? 'rtl' : 'ltr';
+            const marginSide = (currentLanguage === 'he') ? 'margin-left' : 'margin-right';
+           
+            printWindow.document.write(`
+                <html dir="${direction}">
+                <head>
+                    <title>${t.shopping_list_title} - ${recipeName}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        h1 { color: #333; border-bottom: 2px solid #ff6b35; }
+                        h3 { color: #666; margin-top: 20px; }
+                        .shopping-item { padding: 5px 0; border-bottom: 1px solid #eee; }
+                        input[type="checkbox"] { ${marginSide}: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${recipeName} - ${servingCount} ${t.serving_label}</h1>
+                    <h2>${t.shopping_list_title}</h2>
+                    ${shoppingListContent}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        });
+
+        // Reset checkboxes functionality
+        document.getElementById('reset-btn').addEventListener('click', () => {
+            const checkboxes = document.querySelectorAll('#shopping-list input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkbox.checked = false;
+                    checkbox.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+
+        // Element SDK implementation
+        async function onConfigChange(config) {
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseFontStack = 'Tahoma, Geneva, Verdana, sans-serif';
+            const baseSize = config.font_size || defaultConfig.font_size;
+           
+            // Update colors
+            document.body.style.background = `linear-gradient(to bottom right, ${config.background_color || defaultConfig.background_color}, #fef2f2)`;
+           
+            // Update surface colors
+            document.querySelectorAll('.bg-white').forEach(el => {
+                el.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+            });
+           
+            // Update text colors
+            document.querySelectorAll('.text-gray-800').forEach(el => {
+                el.style.color = config.text_color || defaultConfig.text_color;
+            });
+           
+            // Update primary action colors
+            document.getElementById('decrease-btn').style.backgroundColor = config.primary_action_color || defaultConfig.primary_action_color;
+            document.getElementById('increase-btn').style.backgroundColor = '#10b981';
+           
+            // Update secondary action colors
+            document.getElementById('print-btn').style.backgroundColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+           
+            // Update fonts
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+           
+            // Update font sizes
+            document.getElementById('recipe-title').style.fontSize = `${baseSize * 2}px`;
+            document.querySelectorAll('h2').forEach(el => {
+                el.style.fontSize = `${baseSize * 1.5}px`;
+            });
+            document.body.style.fontSize = `${baseSize}px`;
+           
+            // Update text content
+            document.getElementById('recipe-title').textContent = config.recipe_title || defaultConfig.recipe_title;
+            document.getElementById('serving-label').textContent = config.serving_label || defaultConfig.serving_label;
+            document.getElementById('shopping-list-title').textContent = config.shopping_list_title || defaultConfig.shopping_list_title;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.surface_color || defaultConfig.surface_color,
+                        set: (value) => {
+                            config.surface_color = value;
+                            window.elementSdk.setConfig({ surface_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                        set: (value) => {
+                            config.primary_action_color = value;
+                            window.elementSdk.setConfig({ primary_action_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                        set: (value) => {
+                            config.secondary_action_color = value;
+                            window.elementSdk.setConfig({ secondary_action_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["recipe_title", config.recipe_title || defaultConfig.recipe_title],
+                ["serving_label", config.serving_label || defaultConfig.serving_label],
+                ["shopping_list_title", config.shopping_list_title || defaultConfig.shopping_list_title]
+            ]);
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+
+        // Language button event listeners
+        document.querySelectorAll('.language-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchLanguage(btn.dataset.lang);
+            });
+        });
+
+        // Initialize the app
+        createRecipeSelector();
+        updateAll();
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99fedee7c4b574f2',t:'MTc2MzM3ODc2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html> 
