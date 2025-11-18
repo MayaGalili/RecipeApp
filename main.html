@@ -184,369 +184,41 @@
         };
 
         // Recipe database with translations and categories
-        const recipeTranslations = {
-            he: {
-                // Breakfast
-                pancakes: "פנקייקים",
-                french_toast: "טוסט צרפתי",
-               
-                // Lunch
-                greek_salad: "סלט יווני",
-                chicken_soup: "מרק עוף",
-               
-                // Dinner
-                bbq_chicken: "עוף ברביקיו",
-                beef_stir_fry: "בשר בוק צ'וי"
-            },
-            en: {
-                // Breakfast
-                pancakes: "Pancakes",
-                french_toast: "French Toast",
-               
-                // Lunch
-                greek_salad: "Greek Salad",
-                chicken_soup: "Chicken Soup",
-               
-                // Dinner
-                bbq_chicken: "BBQ Chicken",
-                beef_stir_fry: "Beef Stir Fry"
-            }
-        };
+        // Recipe data will be loaded from external JSON file
+        let recipes = {};
+        let recipeTranslations = {};
+        let recipeCategoryMap = {};
 
-        // Recipe categories mapping
-        const recipeCategoryMap = {
-            breakfast: ['pancakes', 'french_toast'],
-            lunch: ['greek_salad', 'chicken_soup'],
-            dinner: ['bbq_chicken', 'beef_stir_fry']
-        };
-
-        // Recipe database with full translations
-        const recipes = {
-            // Breakfast Recipes
-            pancakes: {
-                name: "🥞 פנקייקים",
-                emoji: "🥞",
-                ingredients: {
-                    he: [
-                        { name: "קמח", amount: 200, unit: "גרם", category: "דגנים ופחמימות" },
-                        { name: "ביצים", amount: 2, unit: "יחידות", category: "מוצרי חלב" },
-                        { name: "חלב", amount: 300, unit: "מ\"ל", category: "מוצרי חלב" },
-                        { name: "סוכר", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
-                        { name: "אבקת אפייה", amount: 2, unit: "כפיות", category: "מוצרי יסוד" },
-                        { name: "מלח", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "חמאה", amount: 50, unit: "גרם", category: "מוצרי חלב" },
-                        { name: "וניל", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "דבש", amount: 3, unit: "כפות", category: "מוצרי יסוד" },
-                        { name: "פירות יער", amount: 150, unit: "גרם", category: "פירות" }
-                    ],
-                    en: [
-                        { name: "Flour", amount: 200, unit: "g", category: "Grains & Carbs" },
-                        { name: "Eggs", amount: 2, unit: "pieces", category: "Dairy Products" },
-                        { name: "Milk", amount: 300, unit: "ml", category: "Dairy Products" },
-                        { name: "Sugar", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
-                        { name: "Baking powder", amount: 2, unit: "tsp", category: "Basic Ingredients" },
-                        { name: "Salt", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Butter", amount: 50, unit: "g", category: "Dairy Products" },
-                        { name: "Vanilla", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Honey", amount: 3, unit: "tbsp", category: "Basic Ingredients" },
-                        { name: "Berries", amount: 150, unit: "g", category: "Fruits" }
-                    ]
-                },
-                instructions: {
-                    he: [
-                        "מערבבים קמח, אבקת אפייה, סוכר ומלח",
-                        "מקציפים ביצים עם חלב ווניל",
-                        "מוסיפים חומרים רטובים ליבשים",
-                        "ממיסים חמאה ומוסיפים לבצק",
-                        "מחממים מחבת עם מעט שמן",
-                        "יוצקים בצק ומטגנים עד בועות",
-                        "הופכים ומטגנים עד הזהבה",
-                        "מגישים עם דבש ופירות יער"
-                    ],
-                    en: [
-                        "Mix flour, baking powder, sugar and salt",
-                        "Beat eggs with milk and vanilla",
-                        "Add wet ingredients to dry ingredients",
-                        "Melt butter and add to batter",
-                        "Heat pan with a little oil",
-                        "Pour batter and cook until bubbles form",
-                        "Flip and cook until golden",
-                        "Serve with honey and berries"
-                    ]
+        // Load recipes from external JSON file
+        async function loadRecipes() {
+            try {
+                const response = await fetch('recipes.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            },
-            french_toast: {
-                name: "🍞 טוסט צרפתי",
-                emoji: "🍞",
-                ingredients: {
-                    he: [
-                        { name: "לחם בריוש", amount: 6, unit: "פרוסות", category: "דגנים ופחמימות" },
-                        { name: "ביצים", amount: 3, unit: "יחידות", category: "מוצרי חלב" },
-                        { name: "חלב", amount: 150, unit: "מ\"ל", category: "מוצרי חלב" },
-                        { name: "סוכר", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
-                        { name: "קינמון", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "וניל", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "חמאה", amount: 30, unit: "גרם", category: "מוצרי חלב" },
-                        { name: "אבקת סוכר", amount: 2, unit: "כפות", category: "מוצרי יסוד" },
-                        { name: "סירופ מייפל", amount: 4, unit: "כפות", category: "מוצרי יסוד" }
-                    ],
-                    en: [
-                        { name: "Brioche bread", amount: 6, unit: "slices", category: "Grains & Carbs" },
-                        { name: "Eggs", amount: 3, unit: "pieces", category: "Dairy Products" },
-                        { name: "Milk", amount: 150, unit: "ml", category: "Dairy Products" },
-                        { name: "Sugar", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
-                        { name: "Cinnamon", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Vanilla", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Butter", amount: 30, unit: "g", category: "Dairy Products" },
-                        { name: "Powdered sugar", amount: 2, unit: "tbsp", category: "Basic Ingredients" },
-                        { name: "Maple syrup", amount: 4, unit: "tbsp", category: "Basic Ingredients" }
-                    ]
-                },
-                instructions: {
-                    he: [
-                        "מקציפים ביצים עם חלב, סוכר ווניל",
-                        "מוסיפים קינמון לתערובת",
-                        "טובלים פרוסות לחם בתערובת",
-                        "מחממים חמאה במחבת",
-                        "מטגנים פרוסות 2-3 דקות מכל צד",
-                        "מטגנים עד הזהבה יפה",
-                        "מפזרים אבקת סוכר",
-                        "מגישים עם סירופ מייפל"
-                    ],
-                    en: [
-                        "Beat eggs with milk, sugar and vanilla",
-                        "Add cinnamon to mixture",
-                        "Dip bread slices in mixture",
-                        "Heat butter in pan",
-                        "Fry slices 2-3 minutes each side",
-                        "Cook until golden brown",
-                        "Dust with powdered sugar",
-                        "Serve with maple syrup"
-                    ]
-                }
-            },
-            // Lunch Recipes
-            greek_salad: {
-                name: "🥗 סלט יווני",
-                emoji: "🥗",
-                ingredients: {
-                    he: [
-                        { name: "עגבניות", amount: 4, unit: "יחידות", category: "ירקות טריים" },
-                        { name: "מלפפונים", amount: 2, unit: "יחידות", category: "ירקות טריים" },
-                        { name: "פלפל ירוק", amount: 1, unit: "יחידה", category: "ירקות טריים" },
-                        { name: "בצל אדום", amount: 1, unit: "יחידה", category: "ירקות טריים" },
-                        { name: "גבינת פטה", amount: 200, unit: "גרם", category: "מוצרי חלב" },
-                        { name: "זיתים שחורים", amount: 100, unit: "גרם", category: "שימורים" },
-                        { name: "שמן זית", amount: 4, unit: "כפות", category: "שמנים" },
-                        { name: "חומץ יין לבן", amount: 2, unit: "כפות", category: "רטבים ותבלינים" },
-                        { name: "אורגנו יבש", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "מלח", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "פלפל שחור", amount: 0.5, unit: "כפית", category: "רטבים ותבלינים" }
-                    ],
-                    en: [
-                        { name: "Tomatoes", amount: 4, unit: "pieces", category: "Fresh Vegetables" },
-                        { name: "Cucumbers", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
-                        { name: "Green bell pepper", amount: 1, unit: "piece", category: "Fresh Vegetables" },
-                        { name: "Red onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
-                        { name: "Feta cheese", amount: 200, unit: "g", category: "Dairy Products" },
-                        { name: "Black olives", amount: 100, unit: "g", category: "Canned Goods" },
-                        { name: "Olive oil", amount: 4, unit: "tbsp", category: "Oils" },
-                        { name: "White wine vinegar", amount: 2, unit: "tbsp", category: "Sauces & Seasonings" },
-                        { name: "Dried oregano", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Salt", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Black pepper", amount: 0.5, unit: "tsp", category: "Sauces & Seasonings" }
-                    ]
-                },
-                instructions: {
-                    he: [
-                        "חותכים עגבניות לחתיכות גדולות",
-                        "פורסים מלפפונים לעיגולים עבים",
-                        "חותכים פלפל לרצועות",
-                        "פורסים בצל אדום דק",
-                        "מערבבים כל הירקות בקערה",
-                        "מוסיפים זיתים וקוביות פטה",
-                        "מכינים רוטב מזית, חומץ ותבלינים",
-                        "יוצקים רוטב ומערבבים בעדינות"
-                    ],
-                    en: [
-                        "Cut tomatoes into large chunks",
-                        "Slice cucumbers into thick rounds",
-                        "Cut bell pepper into strips",
-                        "Slice red onion thinly",
-                        "Mix all vegetables in bowl",
-                        "Add olives and feta cubes",
-                        "Make dressing with oil, vinegar and seasonings",
-                        "Pour dressing and mix gently"
-                    ]
-                }
-            },
-            chicken_soup: {
-                name: "🍲 מרק עוף",
-                emoji: "🍲",
-                ingredients: {
-                    he: [
-                        { name: "עוף שלם", amount: 1.2, unit: "ק\"ג", category: "בשר ועוף" },
-                        { name: "גזר", amount: 3, unit: "יחידות", category: "ירקות טריים" },
-                        { name: "סלרי", amount: 3, unit: "גבעולים", category: "ירקות טריים" },
-                        { name: "בצל", amount: 2, unit: "יחידות", category: "ירקות טריים" },
-                        { name: "שום", amount: 4, unit: "שיניים", category: "ירקות טריים" },
-                        { name: "פטרוזיליה", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
-                        { name: "שמיר", amount: 1, unit: "חבילה", category: "עשבי תיבול" },
-                        { name: "עלי דפנה", amount: 2, unit: "עלים", category: "רטבים ותבלינים" },
-                        { name: "מלח", amount: 2, unit: "כפיות", category: "רטבים ותבלינים" },
-                        { name: "פלפל שחור", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "לוקשן דק", amount: 200, unit: "גרם", category: "דגנים ופחמימות" }
-                    ],
-                    en: [
-                        { name: "Whole chicken", amount: 1.2, unit: "kg", category: "Meat & Poultry" },
-                        { name: "Carrots", amount: 3, unit: "pieces", category: "Fresh Vegetables" },
-                        { name: "Celery stalks", amount: 3, unit: "pieces", category: "Fresh Vegetables" },
-                        { name: "Onions", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
-                        { name: "Garlic", amount: 4, unit: "cloves", category: "Fresh Vegetables" },
-                        { name: "Parsley", amount: 1, unit: "bunch", category: "Herbs" },
-                        { name: "Dill", amount: 1, unit: "bunch", category: "Herbs" },
-                        { name: "Bay leaves", amount: 2, unit: "leaves", category: "Sauces & Seasonings" },
-                        { name: "Salt", amount: 2, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Black pepper", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Thin noodles", amount: 200, unit: "g", category: "Grains & Carbs" }
-                    ]
-                },
-                instructions: {
-                    he: [
-                        "שמים עוף בסיר גדול ומכסים במים קרים",
-                        "מביאים לרתיחה ומסירים קצף",
-                        "מוסיפים ירקות שלמים ועשבי תיבול",
-                        "מבשלים על אש נמוכה 1.5-2 שעות",
-                        "מוציאים עוף וירקות ומסננים מרק",
-                        "מפרקים עוף לחתיכות ומחזירים למרק",
-                        "חותכים ירקות לקוביות ומחזירים למרק",
-                        "מוסיפים לוקשן ומבשלים 8-10 דקות"
-                    ],
-                    en: [
-                        "Place chicken in large pot and cover with cold water",
-                        "Bring to boil and remove foam",
-                        "Add whole vegetables and herbs",
-                        "Simmer on low heat for 1.5-2 hours",
-                        "Remove chicken and vegetables, strain broth",
-                        "Shred chicken and return to broth",
-                        "Dice vegetables and return to broth",
-                        "Add noodles and cook for 8-10 minutes"
-                    ]
-                }
-            },
-            // Dinner Recipes
-            bbq_chicken: {
-                name: "🍗 עוף ברביקיו",
-                emoji: "🍗",
-                ingredients: {
-                    he: [
-                        { name: "עוף שלם או חלקי עוף", amount: 1.5, unit: "ק\"ג", category: "בשר ועוף" },
-                        { name: "רוטב ברביקיו", amount: 200, unit: "מ\"ל", category: "רטבים ותבלינים" },
-                        { name: "דבש", amount: 3, unit: "כפות", category: "מוצרי יסוד" },
-                        { name: "שמן זית", amount: 4, unit: "כפות", category: "שמנים" },
-                        { name: "שום", amount: 4, unit: "שיניים", category: "ירקות טריים" },
-                        { name: "בצל", amount: 1, unit: "יחידה", category: "ירקות טריים" },
-                        { name: "פלפל אדום", amount: 1, unit: "יחידה", category: "ירקות טריים" },
-                        { name: "פלפל שחור", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "מלח", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "פפריקה", amount: 2, unit: "כפיות", category: "רטבים ותבלינים" },
-                        { name: "כמון", amount: 1, unit: "כפית", category: "רטבים ותבלינים" },
-                        { name: "לימון", amount: 1, unit: "יחידה", category: "פירות" }
-                    ],
-                    en: [
-                        { name: "Whole chicken or chicken pieces", amount: 1.5, unit: "kg", category: "Meat & Poultry" },
-                        { name: "BBQ sauce", amount: 200, unit: "ml", category: "Sauces & Seasonings" },
-                        { name: "Honey", amount: 3, unit: "tbsp", category: "Basic Ingredients" },
-                        { name: "Olive oil", amount: 4, unit: "tbsp", category: "Oils" },
-                        { name: "Garlic", amount: 4, unit: "cloves", category: "Fresh Vegetables" },
-                        { name: "Onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
-                        { name: "Red bell pepper", amount: 1, unit: "piece", category: "Fresh Vegetables" },
-                        { name: "Black pepper", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Salt", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Paprika", amount: 2, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Cumin", amount: 1, unit: "tsp", category: "Sauces & Seasonings" },
-                        { name: "Lemon", amount: 1, unit: "piece", category: "Fruits" }
-                    ]
-                },
-                instructions: {
-                    he: [
-                        "מחממים תנור ל-200 מעלות",
-                        "חותכים את הבצל והפלפל לפרוסות",
-                        "כותשים את השום עם המלח",
-                        "מערבבים רוטב ברביקיו, דבש, שמן זית ותבלינים",
-                        "מושחים את העוף במרינדה ומשאירים 30 דקות",
-                        "מניחים בתבנית עם הירקות ואופים 45-60 דקות",
-                        "מזלפים במיץ לימון לפני הגשה"
-                    ],
-                    en: [
-                        "Preheat oven to 200°C",
-                        "Cut onion and bell pepper into slices",
-                        "Crush garlic with salt",
-                        "Mix BBQ sauce, honey, olive oil and seasonings",
-                        "Marinate chicken with mixture for 30 minutes",
-                        "Place in baking dish with vegetables and bake 45-60 minutes",
-                        "Drizzle with lemon juice before serving"
-                    ]
-                }
-            },
-            beef_stir_fry: {
-                name: "🥩 בשר בוק צ'וי",
-                emoji: "🥩",
-                ingredients: {
-                    he: [
-                        { name: "בשר בקר לחיתוך", amount: 600, unit: "גרם", category: "בשר ועוף" },
-                        { name: "פלפל אדום", amount: 2, unit: "יחידות", category: "ירקות טריים" },
-                        { name: "בצל", amount: 1, unit: "יחידה", category: "ירקות טריים" },
-                        { name: "שום", amount: 3, unit: "שיניים", category: "ירקות טריים" },
-                        { name: "ברוקולי", amount: 300, unit: "גרם", category: "ירקות טריים" },
-                        { name: "גזר", amount: 2, unit: "יחידות", category: "ירקות טריים" },
-                        { name: "שמן צמחי", amount: 3, unit: "כפות", category: "שמנים" },
-                        { name: "רוטב סויה", amount: 4, unit: "כפות", category: "רטבים ותבלינים" },
-                        { name: "רוטב צדפות", amount: 2, unit: "כפות", category: "רטבים ותבלינים" },
-                        { name: "עמילן תירס", amount: 1, unit: "כפית", category: "מוצרי יסוד" },
-                        { name: "זנגביל טרי", amount: 1, unit: "כפית", category: "רטבים ותבלינים" }
-                    ],
-                    en: [
-                        { name: "Beef for stir-fry", amount: 600, unit: "g", category: "Meat & Poultry" },
-                        { name: "Red bell pepper", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
-                        { name: "Onion", amount: 1, unit: "piece", category: "Fresh Vegetables" },
-                        { name: "Garlic", amount: 3, unit: "cloves", category: "Fresh Vegetables" },
-                        { name: "Broccoli", amount: 300, unit: "g", category: "Fresh Vegetables" },
-                        { name: "Carrots", amount: 2, unit: "pieces", category: "Fresh Vegetables" },
-                        { name: "Vegetable oil", amount: 3, unit: "tbsp", category: "Oils" },
-                        { name: "Soy sauce", amount: 4, unit: "tbsp", category: "Sauces & Seasonings" },
-                        { name: "Oyster sauce", amount: 2, unit: "tbsp", category: "Sauces & Seasonings" },
-                        { name: "Corn starch", amount: 1, unit: "tsp", category: "Basic Ingredients" },
-                        { name: "Fresh ginger", amount: 1, unit: "tsp", category: "Sauces & Seasonings" }
-                    ]
-                },
-                instructions: {
-                    he: [
-                        "חותכים את הבשר לרצועות דקות",
-                        "חותכים את כל הירקות לחתיכות אחידות",
-                        "מחממים מחבת או ווק על אש גבוהה",
-                        "מטגנים את הבשר 2-3 דקות עד השחמה",
-                        "מוציאים את הבשר ומטגנים את הירקות",
-                        "מחזירים את הבשר למחבת",
-                        "מוסיפים רטבים ומערבבים",
-                        "מגישים מיד עם אורז"
-                    ],
-                    en: [
-                        "Cut beef into thin strips",
-                        "Cut all vegetables into uniform pieces",
-                        "Heat wok or large pan over high heat",
-                        "Stir-fry beef for 2-3 minutes until browned",
-                        "Remove beef and stir-fry vegetables",
-                        "Return beef to pan",
-                        "Add sauces and mix well",
-                        "Serve immediately with rice"
-                    ]
-                }
+                const data = await response.json();
+                recipes = data.recipes;
+                recipeTranslations = data.recipeTranslations;
+                recipeCategoryMap = data.recipeCategoryMap;
+                
+                // Initialize app after recipes are loaded
+                initializeApp();
+            } catch (error) {
+                console.error('Error loading recipes:', error);
+                // Show error message to user
+                document.body.innerHTML = '<div class="p-8 text-center"><h1 class="text-2xl font-bold text-red-600">Error loading recipes</h1><p class="mt-4 text-gray-600">Please make sure recipes.json file exists and is accessible.</p></div>';
             }
-        };
+        }
 
         let currentServings = 4;
         let currentRecipe = 'pancakes';
+
+        // Initialize the application after recipes are loaded
+        function initializeApp() {
+            // Initialize the UI
+            createRecipeSelector();
+            updateAll();
+        }
 
         // Language switching function
         function switchLanguage(lang) {
@@ -1129,8 +801,8 @@
         });
 
         // Initialize the app
-        createRecipeSelector();
-        updateAll();
+        // Load recipes when page loads
+        loadRecipes();
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99fedee7c4b574f2',t:'MTc2MzM3ODc2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html> 
