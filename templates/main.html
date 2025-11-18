@@ -89,10 +89,12 @@
 
         .falling-emoji {
             position: fixed;
-            font-size: 2rem;
+            font-size: 3rem;
             pointer-events: none;
             z-index: 9999;
             animation: fall 3s linear forwards;
+            user-select: none;
+            -webkit-user-select: none;
         }
     </style>
 </head>
@@ -1017,21 +1019,28 @@
                 // Reload recipes and update UI
                 await loadRecipes();
                 
-                // Show success message
+                // Show success message BEFORE closing form
                 const recipeName = recipeNameHe;
                 showFormMessage(`המתכון "${recipeName}" נוסף בהצלחה! 🎉`, 'success');
                 
+                // Show alert for visibility
+                alert(`המתכון "${recipeName}" נוסף בהצלחה! 🎉`);
+                
                 // Celebrate with food confetti
                 celebrateWithFoodConfetti();
-                
-                // Reset form
-                document.getElementById('recipe-form').reset();
-                document.getElementById('add-recipe-form').classList.add('hidden');
                 
                 // Switch to the new recipe
                 currentRecipe = recipeKey;
                 updateRecipeSelector();
                 updateAll();
+                
+                // Wait a bit before closing form so user can see the message
+                setTimeout(() => {
+                    // Reset form
+                    document.getElementById('recipe-form').reset();
+                    document.getElementById('add-recipe-form').classList.add('hidden');
+                    document.getElementById('form-message').classList.add('hidden');
+                }, 3000);
                 
             } catch (error) {
                 console.error('Error saving recipe:', error);
@@ -1052,15 +1061,17 @@
             // Food emojis
             const foodEmojis = ['🍳', '🥘', '🍲', '🍜', '🍝', '🍕', '🍔', '🌮', '🌯', '🥙', '🥗', '🍱', '🍣', '🍛', '🍙', '🍚', '🍞', '🥐', '🥖', '🥨', '🧀', '🥚', '🍳', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🌭', '🍟', '🍿', '🧂', '🥜', '🍪', '🍩', '🍰', '🎂', '🧁', '🍫', '🍬', '🍭', '🍮', '🍯', '🍼', '🥛', '☕', '🍵', '🧃', '🥤', '🍶', '🍺', '🍻', '🥂', '🍷', '🥃', '🍸', '🍹', '🧉', '🍾', '🧊', '🥟', '🥠', '🥡', '🦀', '🦞', '🦐', '🦑', '🦪', '🍤', '🍥', '🥮', '🍢', '🍡', '🍧', '🍨', '🍦', '🥧', '🍰', '🧁', '🍮', '🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🌰', '🥜', '🍯', '🥛', '🍼', '☕', '🍵', '🧃', '🥤', '🍶', '🍺', '🍻', '🥂', '🍷', '🥃', '🍸', '🍹', '🧉', '🍾', '🧊'];
             
-            // Create falling emojis
-            for (let i = 0; i < 50; i++) {
+            // Create falling emojis - more visible
+            for (let i = 0; i < 60; i++) {
                 setTimeout(() => {
                     const emoji = document.createElement('div');
                     emoji.className = 'falling-emoji';
                     emoji.textContent = foodEmojis[Math.floor(Math.random() * foodEmojis.length)];
                     emoji.style.left = Math.random() * 100 + '%';
-                    emoji.style.animationDelay = Math.random() * 0.5 + 's';
-                    emoji.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    emoji.style.top = '-50px';
+                    emoji.style.animationDelay = '0s';
+                    emoji.style.animationDuration = (2.5 + Math.random() * 1.5) + 's';
+                    emoji.style.transform = `rotate(${Math.random() * 360}deg)`;
                     document.body.appendChild(emoji);
                     
                     // Remove emoji after animation
@@ -1068,8 +1079,8 @@
                         if (emoji.parentNode) {
                             emoji.remove();
                         }
-                    }, 4000);
-                }, i * 30);
+                    }, 5000);
+                }, i * 25);
             }
             
             // Regular confetti bursts (colorful)
