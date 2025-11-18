@@ -1,0 +1,15 @@
+{
+  "name": "recipeapp",
+  "version": "1.0.0",
+  "description": "The application is used for many things, one of the main things is to quickly find the recipe.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}
