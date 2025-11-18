@@ -5,28 +5,128 @@
       "emoji": "🥞",
       "ingredients": {
         "he": [
-          { "name": "קמח", "amount": 200, "unit": "גרם", "category": "דגנים ופחמימות" },
-          { "name": "ביצים", "amount": 2, "unit": "יחידות", "category": "מוצרי חלב" },
-          { "name": "חלב", "amount": 300, "unit": "מ\"ל", "category": "מוצרי חלב" },
-          { "name": "סוכר", "amount": 2, "unit": "כפות", "category": "מוצרי יסוד" },
-          { "name": "אבקת אפייה", "amount": 2, "unit": "כפיות", "category": "מוצרי יסוד" },
-          { "name": "מלח", "amount": 0.5, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "חמאה", "amount": 50, "unit": "גרם", "category": "מוצרי חלב" },
-          { "name": "וניל", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "דבש", "amount": 3, "unit": "כפות", "category": "מוצרי יסוד" },
-          { "name": "פירות יער", "amount": 150, "unit": "גרם", "category": "פירות" }
+          {
+            "name": "קמח",
+            "amount": 200,
+            "unit": "גרם",
+            "category": "דגנים ופחמימות"
+          },
+          {
+            "name": "ביצים",
+            "amount": 2,
+            "unit": "יחידות",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "חלב",
+            "amount": 300,
+            "unit": "מ\"ל",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "סוכר",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "אבקת אפייה",
+            "amount": 2,
+            "unit": "כפיות",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "מלח",
+            "amount": 0.5,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "חמאה",
+            "amount": 50,
+            "unit": "גרם",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "וניל",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "דבש",
+            "amount": 3,
+            "unit": "כפות",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "פירות יער",
+            "amount": 150,
+            "unit": "גרם",
+            "category": "פירות"
+          }
         ],
         "en": [
-          { "name": "Flour", "amount": 200, "unit": "g", "category": "Grains & Carbs" },
-          { "name": "Eggs", "amount": 2, "unit": "pieces", "category": "Dairy Products" },
-          { "name": "Milk", "amount": 300, "unit": "ml", "category": "Dairy Products" },
-          { "name": "Sugar", "amount": 2, "unit": "tbsp", "category": "Basic Ingredients" },
-          { "name": "Baking powder", "amount": 2, "unit": "tsp", "category": "Basic Ingredients" },
-          { "name": "Salt", "amount": 0.5, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Butter", "amount": 50, "unit": "g", "category": "Dairy Products" },
-          { "name": "Vanilla", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Honey", "amount": 3, "unit": "tbsp", "category": "Basic Ingredients" },
-          { "name": "Berries", "amount": 150, "unit": "g", "category": "Fruits" }
+          {
+            "name": "Flour",
+            "amount": 200,
+            "unit": "g",
+            "category": "Grains & Carbs"
+          },
+          {
+            "name": "Eggs",
+            "amount": 2,
+            "unit": "pieces",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Milk",
+            "amount": 300,
+            "unit": "ml",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Sugar",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Baking powder",
+            "amount": 2,
+            "unit": "tsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Salt",
+            "amount": 0.5,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Butter",
+            "amount": 50,
+            "unit": "g",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Vanilla",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Honey",
+            "amount": 3,
+            "unit": "tbsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Berries",
+            "amount": 150,
+            "unit": "g",
+            "category": "Fruits"
+          }
         ]
       },
       "instructions": {
@@ -57,26 +157,116 @@
       "emoji": "🍞",
       "ingredients": {
         "he": [
-          { "name": "לחם בריוש", "amount": 6, "unit": "פרוסות", "category": "דגנים ופחמימות" },
-          { "name": "ביצים", "amount": 3, "unit": "יחידות", "category": "מוצרי חלב" },
-          { "name": "חלב", "amount": 150, "unit": "מ\"ל", "category": "מוצרי חלב" },
-          { "name": "סוכר", "amount": 2, "unit": "כפות", "category": "מוצרי יסוד" },
-          { "name": "קינמון", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "וניל", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "חמאה", "amount": 30, "unit": "גרם", "category": "מוצרי חלב" },
-          { "name": "אבקת סוכר", "amount": 2, "unit": "כפות", "category": "מוצרי יסוד" },
-          { "name": "סירופ מייפל", "amount": 4, "unit": "כפות", "category": "מוצרי יסוד" }
+          {
+            "name": "לחם בריוש",
+            "amount": 6,
+            "unit": "פרוסות",
+            "category": "דגנים ופחמימות"
+          },
+          {
+            "name": "ביצים",
+            "amount": 3,
+            "unit": "יחידות",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "חלב",
+            "amount": 150,
+            "unit": "מ\"ל",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "סוכר",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "קינמון",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "וניל",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "חמאה",
+            "amount": 30,
+            "unit": "גרם",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "אבקת סוכר",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "סירופ מייפל",
+            "amount": 4,
+            "unit": "כפות",
+            "category": "מוצרי יסוד"
+          }
         ],
         "en": [
-          { "name": "Brioche bread", "amount": 6, "unit": "slices", "category": "Grains & Carbs" },
-          { "name": "Eggs", "amount": 3, "unit": "pieces", "category": "Dairy Products" },
-          { "name": "Milk", "amount": 150, "unit": "ml", "category": "Dairy Products" },
-          { "name": "Sugar", "amount": 2, "unit": "tbsp", "category": "Basic Ingredients" },
-          { "name": "Cinnamon", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Vanilla", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Butter", "amount": 30, "unit": "g", "category": "Dairy Products" },
-          { "name": "Powdered sugar", "amount": 2, "unit": "tbsp", "category": "Basic Ingredients" },
-          { "name": "Maple syrup", "amount": 4, "unit": "tbsp", "category": "Basic Ingredients" }
+          {
+            "name": "Brioche bread",
+            "amount": 6,
+            "unit": "slices",
+            "category": "Grains & Carbs"
+          },
+          {
+            "name": "Eggs",
+            "amount": 3,
+            "unit": "pieces",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Milk",
+            "amount": 150,
+            "unit": "ml",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Sugar",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Cinnamon",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Vanilla",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Butter",
+            "amount": 30,
+            "unit": "g",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Powdered sugar",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Maple syrup",
+            "amount": 4,
+            "unit": "tbsp",
+            "category": "Basic Ingredients"
+          }
         ]
       },
       "instructions": {
@@ -107,30 +297,140 @@
       "emoji": "🥗",
       "ingredients": {
         "he": [
-          { "name": "עגבניות", "amount": 4, "unit": "יחידות", "category": "ירקות טריים" },
-          { "name": "מלפפונים", "amount": 2, "unit": "יחידות", "category": "ירקות טריים" },
-          { "name": "פלפל ירוק", "amount": 1, "unit": "יחידה", "category": "ירקות טריים" },
-          { "name": "בצל אדום", "amount": 1, "unit": "יחידה", "category": "ירקות טריים" },
-          { "name": "גבינת פטה", "amount": 200, "unit": "גרם", "category": "מוצרי חלב" },
-          { "name": "זיתים שחורים", "amount": 100, "unit": "גרם", "category": "שימורים" },
-          { "name": "שמן זית", "amount": 4, "unit": "כפות", "category": "שמנים" },
-          { "name": "חומץ יין לבן", "amount": 2, "unit": "כפות", "category": "רטבים ותבלינים" },
-          { "name": "אורגנו יבש", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "מלח", "amount": 0.5, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "פלפל שחור", "amount": 0.5, "unit": "כפית", "category": "רטבים ותבלינים" }
+          {
+            "name": "עגבניות",
+            "amount": 4,
+            "unit": "יחידות",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "מלפפונים",
+            "amount": 2,
+            "unit": "יחידות",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "פלפל ירוק",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "בצל אדום",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "גבינת פטה",
+            "amount": 200,
+            "unit": "גרם",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "זיתים שחורים",
+            "amount": 100,
+            "unit": "גרם",
+            "category": "שימורים"
+          },
+          {
+            "name": "שמן זית",
+            "amount": 4,
+            "unit": "כפות",
+            "category": "שמנים"
+          },
+          {
+            "name": "חומץ יין לבן",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "אורגנו יבש",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "מלח",
+            "amount": 0.5,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "פלפל שחור",
+            "amount": 0.5,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          }
         ],
         "en": [
-          { "name": "Tomatoes", "amount": 4, "unit": "pieces", "category": "Fresh Vegetables" },
-          { "name": "Cucumbers", "amount": 2, "unit": "pieces", "category": "Fresh Vegetables" },
-          { "name": "Green bell pepper", "amount": 1, "unit": "piece", "category": "Fresh Vegetables" },
-          { "name": "Red onion", "amount": 1, "unit": "piece", "category": "Fresh Vegetables" },
-          { "name": "Feta cheese", "amount": 200, "unit": "g", "category": "Dairy Products" },
-          { "name": "Black olives", "amount": 100, "unit": "g", "category": "Canned Goods" },
-          { "name": "Olive oil", "amount": 4, "unit": "tbsp", "category": "Oils" },
-          { "name": "White wine vinegar", "amount": 2, "unit": "tbsp", "category": "Sauces & Seasonings" },
-          { "name": "Dried oregano", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Salt", "amount": 0.5, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Black pepper", "amount": 0.5, "unit": "tsp", "category": "Sauces & Seasonings" }
+          {
+            "name": "Tomatoes",
+            "amount": 4,
+            "unit": "pieces",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Cucumbers",
+            "amount": 2,
+            "unit": "pieces",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Green bell pepper",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Red onion",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Feta cheese",
+            "amount": 200,
+            "unit": "g",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Black olives",
+            "amount": 100,
+            "unit": "g",
+            "category": "Canned Goods"
+          },
+          {
+            "name": "Olive oil",
+            "amount": 4,
+            "unit": "tbsp",
+            "category": "Oils"
+          },
+          {
+            "name": "White wine vinegar",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Dried oregano",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Salt",
+            "amount": 0.5,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Black pepper",
+            "amount": 0.5,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          }
         ]
       },
       "instructions": {
@@ -161,30 +461,140 @@
       "emoji": "🍲",
       "ingredients": {
         "he": [
-          { "name": "עוף שלם", "amount": 1.2, "unit": "ק\"ג", "category": "בשר ועוף" },
-          { "name": "גזר", "amount": 3, "unit": "יחידות", "category": "ירקות טריים" },
-          { "name": "סלרי", "amount": 3, "unit": "גבעולים", "category": "ירקות טריים" },
-          { "name": "בצל", "amount": 2, "unit": "יחידות", "category": "ירקות טריים" },
-          { "name": "שום", "amount": 4, "unit": "שיניים", "category": "ירקות טריים" },
-          { "name": "פטרוזיליה", "amount": 1, "unit": "חבילה", "category": "עשבי תיבול" },
-          { "name": "שמיר", "amount": 1, "unit": "חבילה", "category": "עשבי תיבול" },
-          { "name": "עלי דפנה", "amount": 2, "unit": "עלים", "category": "רטבים ותבלינים" },
-          { "name": "מלח", "amount": 2, "unit": "כפיות", "category": "רטבים ותבלינים" },
-          { "name": "פלפל שחור", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "לוקשן דק", "amount": 200, "unit": "גרם", "category": "דגנים ופחמימות" }
+          {
+            "name": "עוף שלם",
+            "amount": 1.2,
+            "unit": "ק\"ג",
+            "category": "בשר ועוף"
+          },
+          {
+            "name": "גזר",
+            "amount": 3,
+            "unit": "יחידות",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "סלרי",
+            "amount": 3,
+            "unit": "גבעולים",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "בצל",
+            "amount": 2,
+            "unit": "יחידות",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "שום",
+            "amount": 4,
+            "unit": "שיניים",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "פטרוזיליה",
+            "amount": 1,
+            "unit": "חבילה",
+            "category": "עשבי תיבול"
+          },
+          {
+            "name": "שמיר",
+            "amount": 1,
+            "unit": "חבילה",
+            "category": "עשבי תיבול"
+          },
+          {
+            "name": "עלי דפנה",
+            "amount": 2,
+            "unit": "עלים",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "מלח",
+            "amount": 2,
+            "unit": "כפיות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "פלפל שחור",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "לוקשן דק",
+            "amount": 200,
+            "unit": "גרם",
+            "category": "דגנים ופחמימות"
+          }
         ],
         "en": [
-          { "name": "Whole chicken", "amount": 1.2, "unit": "kg", "category": "Meat & Poultry" },
-          { "name": "Carrots", "amount": 3, "unit": "pieces", "category": "Fresh Vegetables" },
-          { "name": "Celery stalks", "amount": 3, "unit": "pieces", "category": "Fresh Vegetables" },
-          { "name": "Onions", "amount": 2, "unit": "pieces", "category": "Fresh Vegetables" },
-          { "name": "Garlic", "amount": 4, "unit": "cloves", "category": "Fresh Vegetables" },
-          { "name": "Parsley", "amount": 1, "unit": "bunch", "category": "Herbs" },
-          { "name": "Dill", "amount": 1, "unit": "bunch", "category": "Herbs" },
-          { "name": "Bay leaves", "amount": 2, "unit": "leaves", "category": "Sauces & Seasonings" },
-          { "name": "Salt", "amount": 2, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Black pepper", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Thin noodles", "amount": 200, "unit": "g", "category": "Grains & Carbs" }
+          {
+            "name": "Whole chicken",
+            "amount": 1.2,
+            "unit": "kg",
+            "category": "Meat & Poultry"
+          },
+          {
+            "name": "Carrots",
+            "amount": 3,
+            "unit": "pieces",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Celery stalks",
+            "amount": 3,
+            "unit": "pieces",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Onions",
+            "amount": 2,
+            "unit": "pieces",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Garlic",
+            "amount": 4,
+            "unit": "cloves",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Parsley",
+            "amount": 1,
+            "unit": "bunch",
+            "category": "Herbs"
+          },
+          {
+            "name": "Dill",
+            "amount": 1,
+            "unit": "bunch",
+            "category": "Herbs"
+          },
+          {
+            "name": "Bay leaves",
+            "amount": 2,
+            "unit": "leaves",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Salt",
+            "amount": 2,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Black pepper",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Thin noodles",
+            "amount": 200,
+            "unit": "g",
+            "category": "Grains & Carbs"
+          }
         ]
       },
       "instructions": {
@@ -215,32 +625,152 @@
       "emoji": "🍗",
       "ingredients": {
         "he": [
-          { "name": "עוף שלם או חלקי עוף", "amount": 1.5, "unit": "ק\"ג", "category": "בשר ועוף" },
-          { "name": "רוטב ברביקיו", "amount": 200, "unit": "מ\"ל", "category": "רטבים ותבלינים" },
-          { "name": "דבש", "amount": 3, "unit": "כפות", "category": "מוצרי יסוד" },
-          { "name": "שמן זית", "amount": 4, "unit": "כפות", "category": "שמנים" },
-          { "name": "שום", "amount": 4, "unit": "שיניים", "category": "ירקות טריים" },
-          { "name": "בצל", "amount": 1, "unit": "יחידה", "category": "ירקות טריים" },
-          { "name": "פלפל אדום", "amount": 1, "unit": "יחידה", "category": "ירקות טריים" },
-          { "name": "פלפל שחור", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "מלח", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "פפריקה", "amount": 2, "unit": "כפיות", "category": "רטבים ותבלינים" },
-          { "name": "כמון", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" },
-          { "name": "לימון", "amount": 1, "unit": "יחידה", "category": "פירות" }
+          {
+            "name": "עוף שלם או חלקי עוף",
+            "amount": 1.5,
+            "unit": "ק\"ג",
+            "category": "בשר ועוף"
+          },
+          {
+            "name": "רוטב ברביקיו",
+            "amount": 200,
+            "unit": "מ\"ל",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "דבש",
+            "amount": 3,
+            "unit": "כפות",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "שמן זית",
+            "amount": 4,
+            "unit": "כפות",
+            "category": "שמנים"
+          },
+          {
+            "name": "שום",
+            "amount": 4,
+            "unit": "שיניים",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "בצל",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "פלפל אדום",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "פלפל שחור",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "מלח",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "פפריקה",
+            "amount": 2,
+            "unit": "כפיות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "כמון",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "לימון",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "פירות"
+          }
         ],
         "en": [
-          { "name": "Whole chicken or chicken pieces", "amount": 1.5, "unit": "kg", "category": "Meat & Poultry" },
-          { "name": "BBQ sauce", "amount": 200, "unit": "ml", "category": "Sauces & Seasonings" },
-          { "name": "Honey", "amount": 3, "unit": "tbsp", "category": "Basic Ingredients" },
-          { "name": "Olive oil", "amount": 4, "unit": "tbsp", "category": "Oils" },
-          { "name": "Garlic", "amount": 4, "unit": "cloves", "category": "Fresh Vegetables" },
-          { "name": "Onion", "amount": 1, "unit": "piece", "category": "Fresh Vegetables" },
-          { "name": "Red bell pepper", "amount": 1, "unit": "piece", "category": "Fresh Vegetables" },
-          { "name": "Black pepper", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Salt", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Paprika", "amount": 2, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Cumin", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" },
-          { "name": "Lemon", "amount": 1, "unit": "piece", "category": "Fruits" }
+          {
+            "name": "Whole chicken or chicken pieces",
+            "amount": 1.5,
+            "unit": "kg",
+            "category": "Meat & Poultry"
+          },
+          {
+            "name": "BBQ sauce",
+            "amount": 200,
+            "unit": "ml",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Honey",
+            "amount": 3,
+            "unit": "tbsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Olive oil",
+            "amount": 4,
+            "unit": "tbsp",
+            "category": "Oils"
+          },
+          {
+            "name": "Garlic",
+            "amount": 4,
+            "unit": "cloves",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Onion",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Red bell pepper",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Black pepper",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Salt",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Paprika",
+            "amount": 2,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Cumin",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Lemon",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Fruits"
+          }
         ]
       },
       "instructions": {
@@ -269,30 +799,140 @@
       "emoji": "🥩",
       "ingredients": {
         "he": [
-          { "name": "בשר בקר לחיתוך", "amount": 600, "unit": "גרם", "category": "בשר ועוף" },
-          { "name": "פלפל אדום", "amount": 2, "unit": "יחידות", "category": "ירקות טריים" },
-          { "name": "בצל", "amount": 1, "unit": "יחידה", "category": "ירקות טריים" },
-          { "name": "שום", "amount": 3, "unit": "שיניים", "category": "ירקות טריים" },
-          { "name": "ברוקולי", "amount": 300, "unit": "גרם", "category": "ירקות טריים" },
-          { "name": "גזר", "amount": 2, "unit": "יחידות", "category": "ירקות טריים" },
-          { "name": "שמן צמחי", "amount": 3, "unit": "כפות", "category": "שמנים" },
-          { "name": "רוטב סויה", "amount": 4, "unit": "כפות", "category": "רטבים ותבלינים" },
-          { "name": "רוטב צדפות", "amount": 2, "unit": "כפות", "category": "רטבים ותבלינים" },
-          { "name": "עמילן תירס", "amount": 1, "unit": "כפית", "category": "מוצרי יסוד" },
-          { "name": "זנגביל טרי", "amount": 1, "unit": "כפית", "category": "רטבים ותבלינים" }
+          {
+            "name": "בשר בקר לחיתוך",
+            "amount": 600,
+            "unit": "גרם",
+            "category": "בשר ועוף"
+          },
+          {
+            "name": "פלפל אדום",
+            "amount": 2,
+            "unit": "יחידות",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "בצל",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "שום",
+            "amount": 3,
+            "unit": "שיניים",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "ברוקולי",
+            "amount": 300,
+            "unit": "גרם",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "גזר",
+            "amount": 2,
+            "unit": "יחידות",
+            "category": "ירקות טריים"
+          },
+          {
+            "name": "שמן צמחי",
+            "amount": 3,
+            "unit": "כפות",
+            "category": "שמנים"
+          },
+          {
+            "name": "רוטב סויה",
+            "amount": 4,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "רוטב צדפות",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "עמילן תירס",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "זנגביל טרי",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          }
         ],
         "en": [
-          { "name": "Beef for stir-fry", "amount": 600, "unit": "g", "category": "Meat & Poultry" },
-          { "name": "Red bell pepper", "amount": 2, "unit": "pieces", "category": "Fresh Vegetables" },
-          { "name": "Onion", "amount": 1, "unit": "piece", "category": "Fresh Vegetables" },
-          { "name": "Garlic", "amount": 3, "unit": "cloves", "category": "Fresh Vegetables" },
-          { "name": "Broccoli", "amount": 300, "unit": "g", "category": "Fresh Vegetables" },
-          { "name": "Carrots", "amount": 2, "unit": "pieces", "category": "Fresh Vegetables" },
-          { "name": "Vegetable oil", "amount": 3, "unit": "tbsp", "category": "Oils" },
-          { "name": "Soy sauce", "amount": 4, "unit": "tbsp", "category": "Sauces & Seasonings" },
-          { "name": "Oyster sauce", "amount": 2, "unit": "tbsp", "category": "Sauces & Seasonings" },
-          { "name": "Corn starch", "amount": 1, "unit": "tsp", "category": "Basic Ingredients" },
-          { "name": "Fresh ginger", "amount": 1, "unit": "tsp", "category": "Sauces & Seasonings" }
+          {
+            "name": "Beef for stir-fry",
+            "amount": 600,
+            "unit": "g",
+            "category": "Meat & Poultry"
+          },
+          {
+            "name": "Red bell pepper",
+            "amount": 2,
+            "unit": "pieces",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Onion",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Garlic",
+            "amount": 3,
+            "unit": "cloves",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Broccoli",
+            "amount": 300,
+            "unit": "g",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Carrots",
+            "amount": 2,
+            "unit": "pieces",
+            "category": "Fresh Vegetables"
+          },
+          {
+            "name": "Vegetable oil",
+            "amount": 3,
+            "unit": "tbsp",
+            "category": "Oils"
+          },
+          {
+            "name": "Soy sauce",
+            "amount": 4,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Oyster sauce",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Corn starch",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Fresh ginger",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          }
         ]
       },
       "instructions": {
@@ -317,6 +957,52 @@
           "Serve immediately with rice"
         ]
       }
+    },
+    "lev_viva": {
+      "name": ":) לביבות",
+      "emoji": ":)",
+      "ingredients": {
+        "he": [
+          {
+            "name": "עגבניות",
+            "amount": 2,
+            "unit": "יחידות",
+            "category": "ירקות"
+          },
+          {
+            "name": "חלב",
+            "amount": 1,
+            "unit": "ליטר",
+            "category": "מוצרי חלב"
+          }
+        ],
+        "en": [
+          {
+            "name": "a",
+            "amount": 3,
+            "unit": "kg",
+            "category": "ff"
+          },
+          {
+            "name": "b",
+            "amount": 3,
+            "unit": "l",
+            "category": "gg"
+          }
+        ]
+      },
+      "instructions": {
+        "he": [
+          "אלף",
+          "בית",
+          "גימל"
+        ],
+        "en": [
+          "aa",
+          "bb",
+          "cc"
+        ]
+      }
     }
   },
   "recipeTranslations": {
@@ -326,7 +1012,8 @@
       "greek_salad": "סלט יווני",
       "chicken_soup": "מרק עוף",
       "bbq_chicken": "עוף ברביקיו",
-      "beef_stir_fry": "בשר בוק צ'וי"
+      "beef_stir_fry": "בשר בוק צ'וי",
+      "lev_viva": "לביבות"
     },
     "en": {
       "pancakes": "Pancakes",
@@ -334,13 +1021,23 @@
       "greek_salad": "Greek Salad",
       "chicken_soup": "Chicken Soup",
       "bbq_chicken": "BBQ Chicken",
-      "beef_stir_fry": "Beef Stir Fry"
+      "beef_stir_fry": "Beef Stir Fry",
+      "lev_viva": "levivit"
     }
   },
   "recipeCategoryMap": {
-    "breakfast": ["pancakes", "french_toast"],
-    "lunch": ["greek_salad", "chicken_soup"],
-    "dinner": ["bbq_chicken", "beef_stir_fry"]
+    "breakfast": [
+      "pancakes",
+      "french_toast"
+    ],
+    "lunch": [
+      "greek_salad",
+      "chicken_soup",
+      "lev_viva"
+    ],
+    "dinner": [
+      "bbq_chicken",
+      "beef_stir_fry"
+    ]
   }
 }
-

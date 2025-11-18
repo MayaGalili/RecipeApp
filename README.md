@@ -1,27 +1,74 @@
 # RecipeApp
 
-the aplication is used for many things, one of the main things is to quicly find the recipy. 
+The application is used for many things, one of the main things is to quickly find the recipe.
 
+## Features
 
-## Instructions for running Python HTTP Server
+- Browse recipes by category (Breakfast, Lunch, Dinner)
+- Adjust serving sizes dynamically
+- Generate shopping lists
+- **Add new recipes** - Recipes are automatically added to the app and saved to `recipes.json`
 
-### To start the server:
+## Running the Application
 
-1. Open Terminal and navigate to your project directory:
+### Option 1: Flask Server (Recommended - Required for Adding Recipes)
 
-`cd /Users/maya/projects/RecipeApp`
+The Flask server is required if you want to add new recipes through the web interface.
 
-`cd /Users/maya/projects/RecipeApp`
+1. **Install dependencies:**
+   ```bash
+   pip3 install -r requirements.txt
+   ```
 
-2. Start the server:
+2. **Start the Flask server:**
+   ```bash
+   python3 server.py
+   ```
 
-`python3 -m http.server 8000`
+3. **Open your browser:**
+   Visit: http://localhost:5000
 
+4. **To stop the server:**
+   Press `Ctrl + C` in the terminal
 
-(You can use any port number like 3000, 8080, etc.)
+### Option 2: Simple Python HTTP Server (Read-Only)
 
-3. Open your browser and visit: http://localhost:8000/main.html
+If you only want to view recipes without adding new ones:
 
-To stop the server:
+1. **Navigate to project directory:**
+   ```bash
+   cd /Users/maya/projects/RecipeApp
+   ```
 
-Press Ctrl + C in the terminal
+2. **Start the server:**
+   ```bash
+   python3 -m http.server 8000
+   ```
+   (You can use any port number like 3000, 8080, etc.)
+
+3. **Open your browser:**
+   Visit: http://localhost:8000/main.html
+
+4. **To stop the server:**
+   Press `Ctrl + C` in the terminal
+
+## Adding New Recipes
+
+1. Start the Flask server (Option 1 above)
+2. Click the "הוסף מתכון חדש" (Add New Recipe) button
+3. Fill in the form:
+   - Recipe name in Hebrew and English
+   - Emoji
+   - Category (Breakfast/Lunch/Dinner)
+   - Recipe key (lowercase, underscores only, e.g., `my_recipe`)
+   - Ingredients (one per line, format: `name, amount, unit, category`)
+   - Instructions (one step per line)
+4. Click "שמור מתכון" (Save Recipe)
+5. The recipe will be automatically added to `recipes.json` and appear in the app!
+
+## Recipe Data Format
+
+Recipes are stored in `recipes.json`. The structure includes:
+- `recipes`: Recipe data with ingredients and instructions
+- `recipeTranslations`: Recipe names in Hebrew and English
+- `recipeCategoryMap`: Categories and their associated recipes

@@ -93,6 +93,59 @@
     <h2 id="recipe-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מתכון</h2>
     <div id="recipe-selector"><!-- Recipe categories will be populated by JavaScript -->
     </div>
+   </div><!-- Add Recipe Form -->
+   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <h2 id="add-recipe-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">הוסף מתכון חדש</h2>
+    <button id="toggle-form-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 mb-4">+ הוסף מתכון חדש</button>
+    <div id="add-recipe-form" class="hidden">
+     <form id="recipe-form" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+       <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">שם המתכון (עברית)</label>
+        <input type="text" id="recipe-name-he" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" required>
+       </div>
+       <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Recipe Name (English)</label>
+        <input type="text" id="recipe-name-en" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" required>
+       </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+       <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">אימוג'י</label>
+        <input type="text" id="recipe-emoji" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-2xl text-center" placeholder="🍕" required>
+       </div>
+       <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">קטגוריה</label>
+        <select id="recipe-category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" required>
+         <option value="breakfast">ארוחת בוקר</option>
+         <option value="lunch">ארוחת צהריים</option>
+         <option value="dinner">ארוחת ערב</option>
+        </select>
+       </div>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700 mb-2">מרכיבים (עברית) - כל שורה: שם, כמות, יחידה, קטגוריה (מופרדים בפסיק)</label>
+       <textarea id="ingredients-he" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="6" placeholder="קמח, 200, גרם, דגנים ופחמימות&#10;ביצים, 2, יחידות, מוצרי חלב"></textarea>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700 mb-2">Ingredients (English) - Each line: name, amount, unit, category (comma-separated)</label>
+       <textarea id="ingredients-en" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="6" placeholder="Flour, 200, g, Grains &amp; Carbs&#10;Eggs, 2, pieces, Dairy Products"></textarea>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700 mb-2">הוראות הכנה (עברית) - כל שורה = שלב אחד</label>
+       <textarea id="instructions-he" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="4" placeholder="מערבבים את כל המרכיבים&#10;מבשלים על אש בינונית"></textarea>
+      </div>
+      <div>
+       <label class="block text-sm font-medium text-gray-700 mb-2">Instructions (English) - Each line = one step</label>
+       <textarea id="instructions-en" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="4" placeholder="Mix all ingredients&#10;Cook on medium heat"></textarea>
+      </div>
+      <div class="flex gap-4">
+       <button type="submit" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">שמור מתכון</button>
+       <button type="button" id="cancel-form-btn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">ביטול</button>
+      </div>
+      <div id="form-message" class="hidden mt-4 p-4 rounded-lg"></div>
+     </form>
+    </div>
    </div><!-- Serving Size Selector -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
     <h2 id="serving-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מספר מנות</h2>
@@ -793,6 +846,180 @@
             });
         }
 
+        // Parse ingredients from textarea
+        function parseIngredients(text, lang) {
+            if (!text.trim()) return [];
+            const lines = text.split('\n').filter(line => line.trim());
+            return lines.map(line => {
+                const parts = line.split(',').map(p => p.trim());
+                if (parts.length >= 4) {
+                    return {
+                        name: parts[0],
+                        amount: parseFloat(parts[1]),
+                        unit: parts[2],
+                        category: parts[3]
+                    };
+                }
+                return null;
+            }).filter(item => item !== null);
+        }
+
+        // Parse instructions from textarea
+        function parseInstructions(text) {
+            if (!text.trim()) return [];
+            return text.split('\n').filter(line => line.trim());
+        }
+
+        // Generate recipe key from English name
+        function generateRecipeKey(recipeNameEn) {
+            if (!recipeNameEn) return '';
+            
+            // Convert to lowercase, replace spaces and special chars with underscores
+            let key = recipeNameEn
+                .toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9\s]/g, '') // Remove special characters
+                .replace(/\s+/g, '_') // Replace spaces with underscores
+                .replace(/_+/g, '_') // Replace multiple underscores with single
+                .replace(/^_|_$/g, ''); // Remove leading/trailing underscores
+            
+            // If key is empty, use a default
+            if (!key) {
+                key = 'recipe';
+            }
+            
+            // Check if key already exists, if so add a number suffix
+            let finalKey = key;
+            let counter = 1;
+            while (recipes[finalKey]) {
+                finalKey = `${key}_${counter}`;
+                counter++;
+            }
+            
+            return finalKey;
+        }
+
+        // Handle recipe form submission
+        async function handleRecipeSubmit(event) {
+            event.preventDefault();
+            
+            const formMessage = document.getElementById('form-message');
+            formMessage.classList.add('hidden');
+            
+            const recipeNameHe = document.getElementById('recipe-name-he').value.trim();
+            const recipeNameEn = document.getElementById('recipe-name-en').value.trim();
+            const emoji = document.getElementById('recipe-emoji').value.trim();
+            const category = document.getElementById('recipe-category').value;
+            const ingredientsHe = parseIngredients(document.getElementById('ingredients-he').value, 'he');
+            const ingredientsEn = parseIngredients(document.getElementById('ingredients-en').value, 'en');
+            const instructionsHe = parseInstructions(document.getElementById('instructions-he').value);
+            const instructionsEn = parseInstructions(document.getElementById('instructions-en').value);
+
+            // Validate
+            if (!recipeNameHe || !recipeNameEn || !emoji || !category) {
+                showFormMessage('אנא מלא את כל השדות הנדרשים', 'error');
+                return;
+            }
+
+            // Generate recipe key automatically
+            const recipeKey = generateRecipeKey(recipeNameEn);
+
+            if (ingredientsHe.length === 0 || ingredientsEn.length === 0) {
+                showFormMessage('אנא הוסף לפחות מרכיב אחד בכל שפה', 'error');
+                return;
+            }
+
+            // Create recipe object
+            const newRecipe = {
+                name: `${emoji} ${recipeNameHe}`,
+                emoji: emoji,
+                ingredients: {
+                    he: ingredientsHe,
+                    en: ingredientsEn
+                },
+                instructions: {
+                    he: instructionsHe,
+                    en: instructionsEn
+                }
+            };
+
+            // Send to server
+            try {
+                const response = await fetch('/api/add-recipe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        recipeKey: recipeKey,
+                        recipe: newRecipe,
+                        category: category,
+                        translations: {
+                            he: recipeNameHe,
+                            en: recipeNameEn
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to save recipe');
+                }
+
+                // Reload recipes and update UI
+                await loadRecipes();
+                showFormMessage('המתכון נוסף בהצלחה!', 'success');
+                
+                // Reset form
+                document.getElementById('recipe-form').reset();
+                document.getElementById('add-recipe-form').classList.add('hidden');
+                
+                // Switch to the new recipe
+                currentRecipe = recipeKey;
+                updateRecipeSelector();
+                updateAll();
+                
+            } catch (error) {
+                console.error('Error saving recipe:', error);
+                showFormMessage(`שגיאה בשמירת המתכון: ${error.message}`, 'error');
+            }
+        }
+
+        // Show form message
+        function showFormMessage(message, type) {
+            const formMessage = document.getElementById('form-message');
+            formMessage.textContent = message;
+            formMessage.className = `mt-4 p-4 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+            formMessage.classList.remove('hidden');
+        }
+
+        // Toggle form visibility
+        function toggleForm() {
+            const form = document.getElementById('add-recipe-form');
+            form.classList.toggle('hidden');
+        }
+
+        // Initialize form event listeners
+        function initializeFormListeners() {
+            const toggleBtn = document.getElementById('toggle-form-btn');
+            const cancelBtn = document.getElementById('cancel-form-btn');
+            const recipeForm = document.getElementById('recipe-form');
+
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', toggleForm);
+            }
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    document.getElementById('add-recipe-form').classList.add('hidden');
+                    document.getElementById('recipe-form').reset();
+                    document.getElementById('form-message').classList.add('hidden');
+                });
+            }
+            if (recipeForm) {
+                recipeForm.addEventListener('submit', handleRecipeSubmit);
+            }
+        }
+
         // Language button event listeners
         document.querySelectorAll('.language-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -803,6 +1030,13 @@
         // Initialize the app
         // Load recipes when page loads
         loadRecipes();
+        
+        // Initialize form listeners after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeFormListeners);
+        } else {
+            initializeFormListeners();
+        }
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99fedee7c4b574f2',t:'MTc2MzM3ODc2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html> 
