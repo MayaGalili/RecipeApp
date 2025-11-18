@@ -4,7 +4,7 @@ The application is used for many things, one of the main things is to quickly fi
 
 ## Features
 
-- Browse recipes by category (Breakfast, Lunch, Dinner)
+- Browse recipes by category (Meat/Fish, Pasta & Sauces, Sides, Salads, Soups, Desserts, Holidays & Celebrations)
 - Adjust serving sizes dynamically
 - Generate shopping lists
 - **Add new recipes** - Recipes are automatically added to the app and saved to `recipes.json`
@@ -59,8 +59,8 @@ If you only want to view recipes without adding new ones:
 3. Fill in the form:
    - Recipe name in Hebrew and English
    - Emoji
-   - Category (Breakfast/Lunch/Dinner)
-   - Recipe key (lowercase, underscores only, e.g., `my_recipe`)
+   - Category (Meat/Fish, Pasta & Sauces, Sides, Salads, Soups, Desserts, Holidays & Celebrations)
+   - Recipe key is automatically generated from the English recipe name
    - Ingredients (one per line, format: `name, amount, unit, category`)
    - Instructions (one step per line)
 4. Click "שמור מתכון" (Save Recipe)

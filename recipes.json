@@ -1026,18 +1026,24 @@
     }
   },
   "recipeCategoryMap": {
-    "breakfast": [
+    "meat_fish": [
+      "bbq_chicken",
+      "beef_stir_fry"
+    ],
+    "pasta_sauces": [],
+    "sides": [
+      "lev_viva"
+    ],
+    "salads": [
+      "greek_salad"
+    ],
+    "soups": [
+      "chicken_soup"
+    ],
+    "desserts": [
       "pancakes",
       "french_toast"
     ],
-    "lunch": [
-      "greek_salad",
-      "chicken_soup",
-      "lev_viva"
-    ],
-    "dinner": [
-      "bbq_chicken",
-      "beef_stir_fry"
-    ]
+    "holidays": []
   }
 }

@@ -22,7 +22,15 @@ def load_recipes():
     return {
         "recipes": {},
         "recipeTranslations": {"he": {}, "en": {}},
-        "recipeCategoryMap": {"breakfast": [], "lunch": [], "dinner": []}
+        "recipeCategoryMap": {
+            "meat_fish": [],
+            "pasta_sauces": [],
+            "sides": [],
+            "salads": [],
+            "soups": [],
+            "desserts": [],
+            "holidays": []
+        }
     }
 
 def save_recipes(data):
@@ -65,7 +73,8 @@ def add_recipe():
             return jsonify({"error": f"Recipe with key '{recipe_key}' already exists"}), 400
         
         # Validate category
-        if category not in ['breakfast', 'lunch', 'dinner']:
+        valid_categories = ['meat_fish', 'pasta_sauces', 'sides', 'salads', 'soups', 'desserts', 'holidays']
+        if category not in valid_categories:
             return jsonify({"error": "Invalid category"}), 400
         
         # Add recipe
