@@ -4,12 +4,12 @@ Simple Flask server for Recipe App
 Handles serving static files and API endpoints for adding recipes
 """
 
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import json
 import os
 
-app = Flask(__name__, static_folder='.')
+app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)  # Enable CORS for all routes
 
 RECIPES_FILE = 'recipes.json'
@@ -41,12 +41,12 @@ def save_recipes(data):
 @app.route('/')
 def index():
     """Serve main.html as index"""
-    return send_from_directory('.', 'main.html')
+    return render_template('main.html')
 
-@app.route('/<path:path>')
-def serve_static(path):
-    """Serve static files"""
-    return send_from_directory('.', path)
+@app.route('/recipes.json')
+def serve_recipes():
+    """Serve recipes.json file"""
+    return send_from_directory('.', 'recipes.json')
 
 @app.route('/api/add-recipe', methods=['POST'])
 def add_recipe():

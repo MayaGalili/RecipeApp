@@ -963,6 +963,38 @@
           "Open the lid and mix well with a fork, then close for a few more minutes"
         ]
       }
+    },
+    "a": {
+      "name": "🥯 ש",
+      "emoji": "🥯",
+      "ingredients": {
+        "he": [
+          {
+            "name": "קת",
+            "amount": 2,
+            "unit": "ק",
+            "category": "ר"
+          }
+        ],
+        "en": [
+          {
+            "name": "a",
+            "amount": 3,
+            "unit": "b",
+            "category": "c"
+          }
+        ]
+      },
+      "instructions": {
+        "he": [
+          "א",
+          "ב"
+        ],
+        "en": [
+          "a",
+          "b"
+        ]
+      }
     }
   },
   "recipeTranslations": {
@@ -973,7 +1005,8 @@
       "cold_sweet_potato_salad": "סלט בטטה קרה",
       "quick_bolognese": "בולונז בזק",
       "kids_cookies": "עוגיות לילדים",
-      "orange_rice_mom": "אורז כתום של אמא"
+      "orange_rice_mom": "אורז כתום של אמא",
+      "a": "ש"
     },
     "en": {
       "slow_cooked_beef": "Slow Cooked Beef",
@@ -982,7 +1015,8 @@
       "cold_sweet_potato_salad": "Cold Sweet Potato Salad",
       "quick_bolognese": "Quick Bolognese",
       "kids_cookies": "Kids Cookies",
-      "orange_rice_mom": "Mom's Orange Rice"
+      "orange_rice_mom": "Mom's Orange Rice",
+      "a": "a"
     }
   },
   "recipeCategoryMap": {
@@ -1002,7 +1036,8 @@
       "split_pea_soup"
     ],
     "desserts": [
-      "kids_cookies"
+      "kids_cookies",
+      "a"
     ],
     "holidays": [
       "passover_cake_grandma_minu"
