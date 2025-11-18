@@ -1,11 +1,11 @@
 # Python
 venv/
+env/
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -21,6 +21,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.env
 
 # Node.js
 node_modules/
@@ -35,7 +36,7 @@ yarn-error.log*
 *.swo
 *~
 
-# OS
+# OS / macOS
 .DS_Store
 .DS_Store?
 ._*
@@ -44,7 +45,13 @@ yarn-error.log*
 ehthumbs.db
 Thumbs.db
 
-# Build files (optional - uncomment if you want to rebuild Tailwind CSS)
+# Tailwind build output (uncomment if you want to rebuild Tailwind CSS)
 # static/css/tailwind.css
 # static/css/tailwind.min.css
 
+# Old files
+main.html
+
+# Flask instance data
+instance/
+static/css/tailwind.css

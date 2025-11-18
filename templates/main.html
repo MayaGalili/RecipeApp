@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>מתכונים ונהנים</title>
   <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <style>
         body {
             box-sizing: border-box;
@@ -73,6 +74,25 @@
        
         .fade-in {
             animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .falling-emoji {
+            position: fixed;
+            font-size: 2rem;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall 3s linear forwards;
         }
     </style>
 </head>
@@ -289,7 +309,8 @@
         // API endpoints (from Flask url_for)
         const API_ENDPOINTS = {
             recipes: '{{ url_for("serve_recipes") }}',
-            addRecipe: '{{ url_for("add_recipe") }}'
+            addRecipe: '{{ url_for("add_recipe") }}',
+            deleteRecipe: '{{ url_for("delete_recipe") }}'
         };
 
         // Recipe categories
@@ -573,8 +594,13 @@
                
                 recipeCategoryMap[categoryKey].forEach(recipeKey => {
                     const recipe = recipes[recipeKey];
+                    
+                    // Create container for recipe button and delete button
+                    const container = document.createElement('div');
+                    container.className = 'relative group';
+                    
                     const button = document.createElement('button');
-                    button.className = `recipe-button p-4 bg-white border-2 border-gray-200 rounded-lg text-center hover:border-orange-300 shadow-md hover:shadow-lg transition-all duration-200 ${recipeKey === currentRecipe ? 'active' : ''}`;
+                    button.className = `recipe-button w-full p-4 bg-white border-2 border-gray-200 rounded-lg text-center hover:border-orange-300 shadow-md hover:shadow-lg transition-all duration-200 ${recipeKey === currentRecipe ? 'border-orange-500 bg-orange-50' : ''}`;
                     button.innerHTML = `
                         <div class="text-3xl mb-2">${recipe.emoji}</div>
                         <div class="text-sm font-medium text-gray-700">${recipeTranslations[currentLanguage][recipeKey]}</div>
@@ -584,7 +610,20 @@
                         updateRecipeSelector();
                         updateAll();
                     });
-                    recipesGrid.appendChild(button);
+                    
+                    // Create delete button
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'absolute top-1 right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs';
+                    deleteBtn.innerHTML = '🗑️';
+                    deleteBtn.title = 'מחק מתכון';
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent triggering the recipe button click
+                        deleteRecipe(recipeKey);
+                    });
+                    
+                    container.appendChild(button);
+                    container.appendChild(deleteBtn);
+                    recipesGrid.appendChild(container);
                 });
                
                 categoryDiv.appendChild(recipesGrid);
@@ -596,6 +635,70 @@
         function updateRecipeSelector() {
             // Recreate the entire selector to update language
             createRecipeSelector();
+        }
+
+        // Delete recipe function
+        async function deleteRecipe(recipeKey) {
+            // Get recipe name for confirmation message
+            const recipeName = recipeTranslations[currentLanguage][recipeKey] || recipeKey;
+            
+            // Confirm deletion
+            const confirmMessage = currentLanguage === 'he' 
+                ? `האם אתה בטוח שברצונך למחוק את המתכון "${recipeName}"?`
+                : `Are you sure you want to delete the recipe "${recipeName}"?`;
+            
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(API_ENDPOINTS.deleteRecipe, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        recipeKey: recipeKey
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'Failed to delete recipe');
+                }
+                
+                // Reload recipes from server
+                await loadRecipes();
+                
+                // Update UI
+                if (currentRecipe === recipeKey) {
+                    // If deleted recipe was the current one, select first available recipe
+                    const allRecipeKeys = Object.keys(recipes);
+                    if (allRecipeKeys.length > 0) {
+                        currentRecipe = allRecipeKeys[0];
+                    } else {
+                        currentRecipe = null;
+                    }
+                }
+                
+                // Recreate recipe selector and update display
+                createRecipeSelector();
+                updateAll();
+                
+                // Show success message
+                const successMessage = currentLanguage === 'he'
+                    ? `המתכון "${recipeName}" נמחק בהצלחה`
+                    : `Recipe "${recipeName}" deleted successfully`;
+                alert(successMessage);
+                
+            } catch (error) {
+                console.error('Error deleting recipe:', error);
+                const errorMessage = currentLanguage === 'he'
+                    ? `שגיאה במחיקת המתכון: ${error.message}`
+                    : `Error deleting recipe: ${error.message}`;
+                alert(errorMessage);
+            }
         }
 
         // Update ingredients display
@@ -913,7 +1016,13 @@
 
                 // Reload recipes and update UI
                 await loadRecipes();
-                showFormMessage('המתכון נוסף בהצלחה!', 'success');
+                
+                // Show success message
+                const recipeName = recipeNameHe;
+                showFormMessage(`המתכון "${recipeName}" נוסף בהצלחה! 🎉`, 'success');
+                
+                // Celebrate with food confetti
+                celebrateWithFoodConfetti();
                 
                 // Reset form
                 document.getElementById('recipe-form').reset();
@@ -936,6 +1045,84 @@
             formMessage.textContent = message;
             formMessage.className = `mt-4 p-4 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
             formMessage.classList.remove('hidden');
+        }
+
+        // Celebrate with food emoji confetti
+        function celebrateWithFoodConfetti() {
+            // Food emojis
+            const foodEmojis = ['🍳', '🥘', '🍲', '🍜', '🍝', '🍕', '🍔', '🌮', '🌯', '🥙', '🥗', '🍱', '🍣', '🍛', '🍙', '🍚', '🍞', '🥐', '🥖', '🥨', '🧀', '🥚', '🍳', '🥞', '🧇', '🥓', '🥩', '🍗', '🍖', '🌭', '🍟', '🍿', '🧂', '🥜', '🍪', '🍩', '🍰', '🎂', '🧁', '🍫', '🍬', '🍭', '🍮', '🍯', '🍼', '🥛', '☕', '🍵', '🧃', '🥤', '🍶', '🍺', '🍻', '🥂', '🍷', '🥃', '🍸', '🍹', '🧉', '🍾', '🧊', '🥟', '🥠', '🥡', '🦀', '🦞', '🦐', '🦑', '🦪', '🍤', '🍥', '🥮', '🍢', '🍡', '🍧', '🍨', '🍦', '🥧', '🍰', '🧁', '🍮', '🍭', '🍬', '🍫', '🍿', '🍩', '🍪', '🌰', '🥜', '🍯', '🥛', '🍼', '☕', '🍵', '🧃', '🥤', '🍶', '🍺', '🍻', '🥂', '🍷', '🥃', '🍸', '🍹', '🧉', '🍾', '🧊'];
+            
+            // Create falling emojis
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const emoji = document.createElement('div');
+                    emoji.className = 'falling-emoji';
+                    emoji.textContent = foodEmojis[Math.floor(Math.random() * foodEmojis.length)];
+                    emoji.style.left = Math.random() * 100 + '%';
+                    emoji.style.animationDelay = Math.random() * 0.5 + 's';
+                    emoji.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    document.body.appendChild(emoji);
+                    
+                    // Remove emoji after animation
+                    setTimeout(() => {
+                        if (emoji.parentNode) {
+                            emoji.remove();
+                        }
+                    }, 4000);
+                }, i * 30);
+            }
+            
+            // Regular confetti bursts (colorful)
+            if (typeof confetti !== 'undefined') {
+                // Left burst
+                confetti({
+                    particleCount: 100,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
+                });
+                
+                // Right burst
+                confetti({
+                    particleCount: 100,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
+                });
+                
+                // Center burst
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
+                    });
+                }, 250);
+                
+                // Additional bursts for more celebration
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 80,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0 },
+                        colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
+                    });
+                }, 500);
+                
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 80,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 1 },
+                        colors: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8']
+                    });
+                }, 750);
+            }
         }
 
         // Toggle form visibility

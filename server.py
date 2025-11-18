@@ -105,6 +105,55 @@ def add_recipe():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/delete-recipe', methods=['DELETE'])
+def delete_recipe():
+    """Delete a recipe from the recipes.json file"""
+    try:
+        data = request.json
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        recipe_key = data.get('recipeKey')
+        
+        if not recipe_key:
+            return jsonify({"error": "Missing recipe key"}), 400
+        
+        # Load existing recipes
+        recipes_data = load_recipes()
+        
+        # Check if recipe exists
+        if recipe_key not in recipes_data['recipes']:
+            return jsonify({"error": f"Recipe with key '{recipe_key}' not found"}), 404
+        
+        # Remove recipe from recipes
+        del recipes_data['recipes'][recipe_key]
+        
+        # Remove translations
+        if recipe_key in recipes_data['recipeTranslations']['he']:
+            del recipes_data['recipeTranslations']['he'][recipe_key]
+        if recipe_key in recipes_data['recipeTranslations']['en']:
+            del recipes_data['recipeTranslations']['en'][recipe_key]
+        
+        # Remove from category map
+        for category in recipes_data['recipeCategoryMap']:
+            if recipe_key in recipes_data['recipeCategoryMap'][category]:
+                recipes_data['recipeCategoryMap'][category].remove(recipe_key)
+                break
+        
+        # Save to file
+        save_recipes(recipes_data)
+        
+        return jsonify({
+            "success": True,
+            "message": "Recipe deleted successfully"
+        }), 200
+        
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     print("Starting Recipe App server...")
     print("Server will be available at http://localhost:5001")
