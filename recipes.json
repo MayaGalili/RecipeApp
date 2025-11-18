@@ -1,507 +1,75 @@
 {
   "recipes": {
-    "pancakes": {
-      "name": "🥞 פנקייקים",
-      "emoji": "🥞",
+    "slow_cooked_beef": {
+      "name": "🥩 בקר בבישול איטי",
+      "emoji": "🥩",
       "ingredients": {
         "he": [
           {
-            "name": "קמח",
-            "amount": 200,
+            "name": "כתף בקר",
+            "amount": 900,
             "unit": "גרם",
-            "category": "דגנים ופחמימות"
-          },
-          {
-            "name": "ביצים",
-            "amount": 2,
-            "unit": "יחידות",
-            "category": "מוצרי חלב"
-          },
-          {
-            "name": "חלב",
-            "amount": 300,
-            "unit": "מ\"ל",
-            "category": "מוצרי חלב"
-          },
-          {
-            "name": "סוכר",
-            "amount": 2,
-            "unit": "כפות",
-            "category": "מוצרי יסוד"
-          },
-          {
-            "name": "אבקת אפייה",
-            "amount": 2,
-            "unit": "כפיות",
-            "category": "מוצרי יסוד"
-          },
-          {
-            "name": "מלח",
-            "amount": 0.5,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "חמאה",
-            "amount": 50,
-            "unit": "גרם",
-            "category": "מוצרי חלב"
-          },
-          {
-            "name": "וניל",
-            "amount": 1,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "דבש",
-            "amount": 3,
-            "unit": "כפות",
-            "category": "מוצרי יסוד"
-          },
-          {
-            "name": "פירות יער",
-            "amount": 150,
-            "unit": "גרם",
-            "category": "פירות"
-          }
-        ],
-        "en": [
-          {
-            "name": "Flour",
-            "amount": 200,
-            "unit": "g",
-            "category": "Grains & Carbs"
-          },
-          {
-            "name": "Eggs",
-            "amount": 2,
-            "unit": "pieces",
-            "category": "Dairy Products"
-          },
-          {
-            "name": "Milk",
-            "amount": 300,
-            "unit": "ml",
-            "category": "Dairy Products"
-          },
-          {
-            "name": "Sugar",
-            "amount": 2,
-            "unit": "tbsp",
-            "category": "Basic Ingredients"
-          },
-          {
-            "name": "Baking powder",
-            "amount": 2,
-            "unit": "tsp",
-            "category": "Basic Ingredients"
-          },
-          {
-            "name": "Salt",
-            "amount": 0.5,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Butter",
-            "amount": 50,
-            "unit": "g",
-            "category": "Dairy Products"
-          },
-          {
-            "name": "Vanilla",
-            "amount": 1,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Honey",
-            "amount": 3,
-            "unit": "tbsp",
-            "category": "Basic Ingredients"
-          },
-          {
-            "name": "Berries",
-            "amount": 150,
-            "unit": "g",
-            "category": "Fruits"
-          }
-        ]
-      },
-      "instructions": {
-        "he": [
-          "מערבבים קמח, אבקת אפייה, סוכר ומלח",
-          "מקציפים ביצים עם חלב ווניל",
-          "מוסיפים חומרים רטובים ליבשים",
-          "ממיסים חמאה ומוסיפים לבצק",
-          "מחממים מחבת עם מעט שמן",
-          "יוצקים בצק ומטגנים עד בועות",
-          "הופכים ומטגנים עד הזהבה",
-          "מגישים עם דבש ופירות יער"
-        ],
-        "en": [
-          "Mix flour, baking powder, sugar and salt",
-          "Beat eggs with milk and vanilla",
-          "Add wet ingredients to dry ingredients",
-          "Melt butter and add to batter",
-          "Heat pan with a little oil",
-          "Pour batter and cook until bubbles form",
-          "Flip and cook until golden",
-          "Serve with honey and berries"
-        ]
-      }
-    },
-    "french_toast": {
-      "name": "🍞 טוסט צרפתי",
-      "emoji": "🍞",
-      "ingredients": {
-        "he": [
-          {
-            "name": "לחם בריוש",
-            "amount": 6,
-            "unit": "פרוסות",
-            "category": "דגנים ופחמימות"
-          },
-          {
-            "name": "ביצים",
-            "amount": 3,
-            "unit": "יחידות",
-            "category": "מוצרי חלב"
-          },
-          {
-            "name": "חלב",
-            "amount": 150,
-            "unit": "מ\"ל",
-            "category": "מוצרי חלב"
-          },
-          {
-            "name": "סוכר",
-            "amount": 2,
-            "unit": "כפות",
-            "category": "מוצרי יסוד"
-          },
-          {
-            "name": "קינמון",
-            "amount": 1,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "וניל",
-            "amount": 1,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "חמאה",
-            "amount": 30,
-            "unit": "גרם",
-            "category": "מוצרי חלב"
-          },
-          {
-            "name": "אבקת סוכר",
-            "amount": 2,
-            "unit": "כפות",
-            "category": "מוצרי יסוד"
-          },
-          {
-            "name": "סירופ מייפל",
-            "amount": 4,
-            "unit": "כפות",
-            "category": "מוצרי יסוד"
-          }
-        ],
-        "en": [
-          {
-            "name": "Brioche bread",
-            "amount": 6,
-            "unit": "slices",
-            "category": "Grains & Carbs"
-          },
-          {
-            "name": "Eggs",
-            "amount": 3,
-            "unit": "pieces",
-            "category": "Dairy Products"
-          },
-          {
-            "name": "Milk",
-            "amount": 150,
-            "unit": "ml",
-            "category": "Dairy Products"
-          },
-          {
-            "name": "Sugar",
-            "amount": 2,
-            "unit": "tbsp",
-            "category": "Basic Ingredients"
-          },
-          {
-            "name": "Cinnamon",
-            "amount": 1,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Vanilla",
-            "amount": 1,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Butter",
-            "amount": 30,
-            "unit": "g",
-            "category": "Dairy Products"
-          },
-          {
-            "name": "Powdered sugar",
-            "amount": 2,
-            "unit": "tbsp",
-            "category": "Basic Ingredients"
-          },
-          {
-            "name": "Maple syrup",
-            "amount": 4,
-            "unit": "tbsp",
-            "category": "Basic Ingredients"
-          }
-        ]
-      },
-      "instructions": {
-        "he": [
-          "מקציפים ביצים עם חלב, סוכר ווניל",
-          "מוסיפים קינמון לתערובת",
-          "טובלים פרוסות לחם בתערובת",
-          "מחממים חמאה במחבת",
-          "מטגנים פרוסות 2-3 דקות מכל צד",
-          "מטגנים עד הזהבה יפה",
-          "מפזרים אבקת סוכר",
-          "מגישים עם סירופ מייפל"
-        ],
-        "en": [
-          "Beat eggs with milk, sugar and vanilla",
-          "Add cinnamon to mixture",
-          "Dip bread slices in mixture",
-          "Heat butter in pan",
-          "Fry slices 2-3 minutes each side",
-          "Cook until golden brown",
-          "Dust with powdered sugar",
-          "Serve with maple syrup"
-        ]
-      }
-    },
-    "greek_salad": {
-      "name": "🥗 סלט יווני",
-      "emoji": "🥗",
-      "ingredients": {
-        "he": [
-          {
-            "name": "עגבניות",
-            "amount": 4,
-            "unit": "יחידות",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "מלפפונים",
-            "amount": 2,
-            "unit": "יחידות",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "פלפל ירוק",
-            "amount": 1,
-            "unit": "יחידה",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "בצל אדום",
-            "amount": 1,
-            "unit": "יחידה",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "גבינת פטה",
-            "amount": 200,
-            "unit": "גרם",
-            "category": "מוצרי חלב"
-          },
-          {
-            "name": "זיתים שחורים",
-            "amount": 100,
-            "unit": "גרם",
-            "category": "שימורים"
-          },
-          {
-            "name": "שמן זית",
-            "amount": 4,
-            "unit": "כפות",
-            "category": "שמנים"
-          },
-          {
-            "name": "חומץ יין לבן",
-            "amount": 2,
-            "unit": "כפות",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "אורגנו יבש",
-            "amount": 1,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "מלח",
-            "amount": 0.5,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "פלפל שחור",
-            "amount": 0.5,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          }
-        ],
-        "en": [
-          {
-            "name": "Tomatoes",
-            "amount": 4,
-            "unit": "pieces",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Cucumbers",
-            "amount": 2,
-            "unit": "pieces",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Green bell pepper",
-            "amount": 1,
-            "unit": "piece",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Red onion",
-            "amount": 1,
-            "unit": "piece",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Feta cheese",
-            "amount": 200,
-            "unit": "g",
-            "category": "Dairy Products"
-          },
-          {
-            "name": "Black olives",
-            "amount": 100,
-            "unit": "g",
-            "category": "Canned Goods"
-          },
-          {
-            "name": "Olive oil",
-            "amount": 4,
-            "unit": "tbsp",
-            "category": "Oils"
-          },
-          {
-            "name": "White wine vinegar",
-            "amount": 2,
-            "unit": "tbsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Dried oregano",
-            "amount": 1,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Salt",
-            "amount": 0.5,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Black pepper",
-            "amount": 0.5,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          }
-        ]
-      },
-      "instructions": {
-        "he": [
-          "חותכים עגבניות לחתיכות גדולות",
-          "פורסים מלפפונים לעיגולים עבים",
-          "חותכים פלפל לרצועות",
-          "פורסים בצל אדום דק",
-          "מערבבים כל הירקות בקערה",
-          "מוסיפים זיתים וקוביות פטה",
-          "מכינים רוטב מזית, חומץ ותבלינים",
-          "יוצקים רוטב ומערבבים בעדינות"
-        ],
-        "en": [
-          "Cut tomatoes into large chunks",
-          "Slice cucumbers into thick rounds",
-          "Cut bell pepper into strips",
-          "Slice red onion thinly",
-          "Mix all vegetables in bowl",
-          "Add olives and feta cubes",
-          "Make dressing with oil, vinegar and seasonings",
-          "Pour dressing and mix gently"
-        ]
-      }
-    },
-    "chicken_soup": {
-      "name": "🍲 מרק עוף",
-      "emoji": "🍲",
-      "ingredients": {
-        "he": [
-          {
-            "name": "עוף שלם",
-            "amount": 1.2,
-            "unit": "ק\"ג",
-            "category": "בשר ועוף"
+            "category": "בשר ודגים"
           },
           {
             "name": "גזר",
-            "amount": 3,
-            "unit": "יחידות",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "סלרי",
-            "amount": 3,
-            "unit": "גבעולים",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "בצל",
             "amount": 2,
             "unit": "יחידות",
-            "category": "ירקות טריים"
+            "category": "ירקות"
+          },
+          {
+            "name": "תפוח אדמה",
+            "amount": 3,
+            "unit": "יחידות בינוניות",
+            "category": "ירקות"
+          },
+          {
+            "name": "בטטה",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "ירקות"
+          },
+          {
+            "name": "שורש פטרוזיליה",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "ירקות"
           },
           {
             "name": "שום",
-            "amount": 4,
-            "unit": "שיניים",
-            "category": "ירקות טריים"
+            "amount": 0.5,
+            "unit": "ראש",
+            "category": "ירקות"
           },
           {
-            "name": "פטרוזיליה",
-            "amount": 1,
-            "unit": "חבילה",
-            "category": "עשבי תיבול"
+            "name": "חרדל דיז'ון",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
           },
           {
-            "name": "שמיר",
+            "name": "שמן זית",
+            "amount": 3,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "מלח גס",
             "amount": 1,
-            "unit": "חבילה",
-            "category": "עשבי תיבול"
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "פפריקה מתוקה",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "אבקת מרק עוף",
+            "amount": 1,
+            "unit": "כף",
+            "category": "רטבים ותבלינים"
           },
           {
             "name": "עלי דפנה",
@@ -510,66 +78,78 @@
             "category": "רטבים ותבלינים"
           },
           {
-            "name": "מלח",
-            "amount": 2,
-            "unit": "כפיות",
+            "name": "פלפל אנגלי",
+            "amount": 3,
+            "unit": "גרגרים",
             "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "פלפל שחור",
-            "amount": 1,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "לוקשן דק",
-            "amount": 200,
-            "unit": "גרם",
-            "category": "דגנים ופחמימות"
           }
         ],
         "en": [
           {
-            "name": "Whole chicken",
-            "amount": 1.2,
-            "unit": "kg",
-            "category": "Meat & Poultry"
+            "name": "Beef shoulder",
+            "amount": 900,
+            "unit": "g",
+            "category": "Meat & Fish"
           },
           {
             "name": "Carrots",
-            "amount": 3,
-            "unit": "pieces",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Celery stalks",
-            "amount": 3,
-            "unit": "pieces",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Onions",
             "amount": 2,
             "unit": "pieces",
-            "category": "Fresh Vegetables"
+            "category": "Vegetables"
+          },
+          {
+            "name": "Potatoes",
+            "amount": 3,
+            "unit": "medium pieces",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Sweet potato",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Parsley root",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Vegetables"
           },
           {
             "name": "Garlic",
-            "amount": 4,
-            "unit": "cloves",
-            "category": "Fresh Vegetables"
+            "amount": 0.5,
+            "unit": "head",
+            "category": "Vegetables"
           },
           {
-            "name": "Parsley",
-            "amount": 1,
-            "unit": "bunch",
-            "category": "Herbs"
+            "name": "Dijon mustard",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
           },
           {
-            "name": "Dill",
+            "name": "Olive oil",
+            "amount": 3,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Coarse salt",
             "amount": 1,
-            "unit": "bunch",
-            "category": "Herbs"
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Sweet paprika",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Chicken soup powder",
+            "amount": 1,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
           },
           {
             "name": "Bay leaves",
@@ -578,99 +158,451 @@
             "category": "Sauces & Seasonings"
           },
           {
-            "name": "Salt",
-            "amount": 2,
-            "unit": "tsp",
+            "name": "Allspice",
+            "amount": 3,
+            "unit": "berries",
             "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Black pepper",
-            "amount": 1,
-            "unit": "tsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Thin noodles",
-            "amount": 200,
-            "unit": "g",
-            "category": "Grains & Carbs"
           }
         ]
       },
       "instructions": {
         "he": [
-          "שמים עוף בסיר גדול ומכסים במים קרים",
-          "מביאים לרתיחה ומסירים קצף",
-          "מוסיפים ירקות שלמים ועשבי תיבול",
-          "מבשלים על אש נמוכה 1.5-2 שעות",
-          "מוציאים עוף וירקות ומסננים מרק",
-          "מפרקים עוף לחתיכות ומחזירים למרק",
-          "חותכים ירקות לקוביות ומחזירים למרק",
-          "מוסיפים לוקשן ומבשלים 8-10 דקות"
+          "מורחים חרדל דיז'ון על הבשר ומניחים בתחתית הסיר",
+          "מפזרים את הירקות חתוכים מאוד גס",
+          "נועצים חמש שיני שום בתוך הבשר",
+          "בקערה קטנה מערבבים: שמן זית, מלח גס, פפריקה מתוקה, אבקת מרק עוף, עלי דפנה, פלפל אנגלי",
+          "מבשלים בסיר בישול איטי לפחות שבע שעות במצב אוטומטי"
         ],
         "en": [
-          "Place chicken in large pot and cover with cold water",
-          "Bring to boil and remove foam",
-          "Add whole vegetables and herbs",
-          "Simmer on low heat for 1.5-2 hours",
-          "Remove chicken and vegetables, strain broth",
-          "Shred chicken and return to broth",
-          "Dice vegetables and return to broth",
-          "Add noodles and cook for 8-10 minutes"
+          "Spread Dijon mustard on the meat and place at the bottom of the pot",
+          "Scatter the coarsely chopped vegetables",
+          "Insert five garlic cloves into the meat",
+          "In a small bowl, mix: olive oil, coarse salt, sweet paprika, chicken soup powder, bay leaves, allspice",
+          "Cook in a slow cooker for at least seven hours on automatic setting"
         ]
       }
     },
-    "bbq_chicken": {
-      "name": "🍗 עוף ברביקיו",
-      "emoji": "🍗",
+    "passover_cake_grandma_minu": {
+      "name": "🎂 עוגת פסח (סבתא מניו)",
+      "emoji": "🎂",
       "ingredients": {
         "he": [
           {
-            "name": "עוף שלם או חלקי עוף",
-            "amount": 1.5,
-            "unit": "ק\"ג",
-            "category": "בשר ועוף"
+            "name": "ביצים",
+            "amount": 6,
+            "unit": "יחידות",
+            "category": "מוצרי חלב"
           },
           {
-            "name": "רוטב ברביקיו",
-            "amount": 200,
-            "unit": "מ\"ל",
-            "category": "רטבים ותבלינים"
+            "name": "קמח תפוח אדמה",
+            "amount": 1,
+            "unit": "כף",
+            "category": "דגנים ופחמימות"
           },
           {
-            "name": "דבש",
-            "amount": 3,
-            "unit": "כפות",
+            "name": "אגוזים קצוצים",
+            "amount": 50,
+            "unit": "גרם",
+            "category": "אגוזים וזרעים"
+          },
+          {
+            "name": "אבקת אפייה",
+            "amount": 0.5,
+            "unit": "כפית",
             "category": "מוצרי יסוד"
           },
           {
-            "name": "שמן זית",
-            "amount": 4,
-            "unit": "כפות",
-            "category": "שמנים"
+            "name": "מרגרינה",
+            "amount": 0.25,
+            "unit": "חבילה",
+            "category": "מוצרי חלב"
           },
           {
-            "name": "שום",
-            "amount": 4,
-            "unit": "שיניים",
-            "category": "ירקות טריים"
+            "name": "קמח מצה",
+            "amount": 0.5,
+            "unit": "כוס",
+            "category": "דגנים ופחמימות"
+          },
+          {
+            "name": "מיץ תפוזים או חלב",
+            "amount": 0.25,
+            "unit": "כוס",
+            "category": "משקאות"
+          },
+          {
+            "name": "שוקולד מריר",
+            "amount": 1,
+            "unit": "חבילה",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "סוכר",
+            "amount": 1,
+            "unit": "כוס",
+            "category": "מוצרי יסוד"
+          }
+        ],
+        "en": [
+          {
+            "name": "Eggs",
+            "amount": 6,
+            "unit": "pieces",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Potato flour",
+            "amount": 1,
+            "unit": "tbsp",
+            "category": "Grains & Carbs"
+          },
+          {
+            "name": "Chopped nuts",
+            "amount": 50,
+            "unit": "g",
+            "category": "Nuts & Seeds"
+          },
+          {
+            "name": "Baking powder",
+            "amount": 0.5,
+            "unit": "tsp",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Margarine",
+            "amount": 0.25,
+            "unit": "pack",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Matzah meal",
+            "amount": 0.5,
+            "unit": "cup",
+            "category": "Grains & Carbs"
+          },
+          {
+            "name": "Orange juice or milk",
+            "amount": 0.25,
+            "unit": "cup",
+            "category": "Beverages"
+          },
+          {
+            "name": "Dark chocolate",
+            "amount": 1,
+            "unit": "pack",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Sugar",
+            "amount": 1,
+            "unit": "cup",
+            "category": "Basic Ingredients"
+          }
+        ]
+      },
+      "instructions": {
+        "he": [
+          "מקציפים חלבונים + כוס סוכר לקצף חזק",
+          "מערבבים החומרים היבשים (קמח מצה, קמח תפוח אדמה, אגוזים, אבקת אפייה) ובהדרגה מכניסים לתוך הקצף המוכן",
+          "בנפרד: מערבבים הנוזלים, ממיסים מרגרינה+שוקולד, מוסיפים את החלמונים ואת המיץ/חלב",
+          "מוסיפים בהדרגה לתערובת",
+          "אופים בחום בינוני (200 מעלות) כ-45 דקות"
+        ],
+        "en": [
+          "Whip egg whites + cup sugar to a stiff foam",
+          "Mix the dry ingredients (matzah meal, potato flour, nuts, baking powder) and gradually fold into the prepared foam",
+          "Separately: mix the liquids, melt margarine + chocolate, add the egg yolks and the juice/milk",
+          "Gradually add to the mixture",
+          "Bake in a medium oven (200°C) for about 45 minutes"
+        ]
+      }
+    },
+    "split_pea_soup": {
+      "name": "🍲 מרק אפונה",
+      "emoji": "🍲",
+      "ingredients": {
+        "he": [
+          {
+            "name": "אפונה יבשה",
+            "amount": 2,
+            "unit": "כוסות",
+            "category": "קטניות"
+          },
+          {
+            "name": "מים",
+            "amount": 8,
+            "unit": "כוסות",
+            "category": "משקאות"
           },
           {
             "name": "בצל",
             "amount": 1,
             "unit": "יחידה",
-            "category": "ירקות טריים"
+            "category": "ירקות"
           },
           {
-            "name": "פלפל אדום",
+            "name": "בטטה",
             "amount": 1,
             "unit": "יחידה",
-            "category": "ירקות טריים"
+            "category": "ירקות"
+          },
+          {
+            "name": "גזר",
+            "amount": 2.5,
+            "unit": "יחידות",
+            "category": "ירקות"
+          },
+          {
+            "name": "אבקת מרק עוף",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "שום",
+            "amount": 6,
+            "unit": "שיניים",
+            "category": "ירקות"
+          },
+          {
+            "name": "שמיר",
+            "amount": 1,
+            "unit": "חופן",
+            "category": "ירקות"
+          },
+          {
+            "name": "מלח",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
           },
           {
             "name": "פלפל שחור",
-            "amount": 1,
+            "amount": 0.5,
             "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          }
+        ],
+        "en": [
+          {
+            "name": "Dried split peas",
+            "amount": 2,
+            "unit": "cups",
+            "category": "Legumes"
+          },
+          {
+            "name": "Water",
+            "amount": 8,
+            "unit": "cups",
+            "category": "Beverages"
+          },
+          {
+            "name": "Onion",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Sweet potato",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Carrots",
+            "amount": 2.5,
+            "unit": "pieces",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Chicken soup powder",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Garlic",
+            "amount": 6,
+            "unit": "cloves",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Dill",
+            "amount": 1,
+            "unit": "handful",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Salt",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Black pepper",
+            "amount": 0.5,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          }
+        ]
+      },
+      "instructions": {
+        "he": [
+          "לטגן היטב את הבצל בסיר עמוק",
+          "להוסיף את האפונה היבשה וקצת לטגן",
+          "להוסיף את המים, אבקת מרק עוף, הגזר והבטטה",
+          "לבשל עד שהכל מתרכך בעיקר הגזר. כשעה וחצי. להוסיף מים אם צריך",
+          "לטחון הכל במטחנה ידנית",
+          "להוסיף את השום, שמיר, הפלפל והמלח ולערבב",
+          "לבשל שנית חמש דקות"
+        ],
+        "en": [
+          "Fry the onion well in a deep pot",
+          "Add the dried split peas and fry a bit",
+          "Add the water, chicken soup powder, carrots and sweet potato",
+          "Cook until everything softens, especially the carrots. About an hour and a half. Add water if needed",
+          "Blend everything with a hand blender",
+          "Add the garlic, dill, pepper and salt and mix",
+          "Cook again for five minutes"
+        ]
+      }
+    },
+    "cold_sweet_potato_salad": {
+      "name": "🥗 סלט בטטה קרה",
+      "emoji": "🥗",
+      "ingredients": {
+        "he": [
+          {
+            "name": "בטטה מתוקה",
+            "amount": 2,
+            "unit": "יחידות גדולות",
+            "category": "ירקות"
+          },
+          {
+            "name": "רוטב צ'ילי מתוק",
+            "amount": 5,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "שומשום",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "אגוזים וזרעים"
+          },
+          {
+            "name": "שום",
+            "amount": 2,
+            "unit": "שיניים",
+            "category": "ירקות"
+          },
+          {
+            "name": "כוסברה",
+            "amount": 1,
+            "unit": "צרור",
+            "category": "ירקות"
+          },
+          {
+            "name": "חמוציות",
+            "amount": 1,
+            "unit": "כוס",
+            "category": "פירות"
+          },
+          {
+            "name": "שמן זית",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          }
+        ],
+        "en": [
+          {
+            "name": "Sweet potatoes",
+            "amount": 2,
+            "unit": "large pieces",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Sweet chili sauce",
+            "amount": 5,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Sesame seeds",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Nuts & Seeds"
+          },
+          {
+            "name": "Garlic",
+            "amount": 2,
+            "unit": "cloves",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Cilantro",
+            "amount": 1,
+            "unit": "bunch",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Cranberries",
+            "amount": 1,
+            "unit": "cup",
+            "category": "Fruits"
+          },
+          {
+            "name": "Olive oil",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          }
+        ]
+      },
+      "instructions": {
+        "he": [
+          "חותכים את הבטטות לקוביות",
+          "אופים את קוביות הבטטה בתנור עם שמן זית",
+          "הבטטה מוכנה, מוסיפים אותה לקערה עם השום, רוטב הצ'ילי המתוק, כוסברה ושומשום ומערבבים טוב",
+          "מוסיפים את החמוציות ומערבבים",
+          "מגישים קר"
+        ],
+        "en": [
+          "Cut the sweet potatoes into cubes",
+          "Bake the sweet potato cubes in the oven with olive oil",
+          "When the sweet potato is ready, add it to a bowl with garlic, sweet chili sauce, cilantro and sesame seeds and mix well",
+          "Add the cranberries and mix",
+          "Serve cold"
+        ]
+      }
+    },
+    "quick_bolognese": {
+      "name": "🍝 בולונז בזק",
+      "emoji": "🍝",
+      "ingredients": {
+        "he": [
+          {
+            "name": "בשר בקר טחון",
+            "amount": 500,
+            "unit": "גרם",
+            "category": "בשר ודגים"
+          },
+          {
+            "name": "רסק עגבניות",
+            "amount": 200,
+            "unit": "גרם",
+            "category": "ירקות"
+          },
+          {
+            "name": "רוטב סויה",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "חומץ",
+            "amount": 2,
+            "unit": "כפות",
             "category": "רטבים ותבלינים"
           },
           {
@@ -680,71 +612,53 @@
             "category": "רטבים ותבלינים"
           },
           {
-            "name": "פפריקה",
-            "amount": 2,
-            "unit": "כפיות",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "כמון",
-            "amount": 1,
+            "name": "פלפל",
+            "amount": 0.5,
             "unit": "כפית",
             "category": "רטבים ותבלינים"
           },
           {
-            "name": "לימון",
-            "amount": 1,
-            "unit": "יחידה",
-            "category": "פירות"
+            "name": "קטשופ",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "שום",
+            "amount": 2,
+            "unit": "שיניים",
+            "category": "ירקות"
+          },
+          {
+            "name": "שמן",
+            "amount": 2,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
           }
         ],
         "en": [
           {
-            "name": "Whole chicken or chicken pieces",
-            "amount": 1.5,
-            "unit": "kg",
-            "category": "Meat & Poultry"
+            "name": "Ground beef",
+            "amount": 500,
+            "unit": "g",
+            "category": "Meat & Fish"
           },
           {
-            "name": "BBQ sauce",
+            "name": "Tomato paste",
             "amount": 200,
-            "unit": "ml",
+            "unit": "g",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Soy sauce",
+            "amount": 2,
+            "unit": "tbsp",
             "category": "Sauces & Seasonings"
           },
           {
-            "name": "Honey",
-            "amount": 3,
+            "name": "Vinegar",
+            "amount": 2,
             "unit": "tbsp",
-            "category": "Basic Ingredients"
-          },
-          {
-            "name": "Olive oil",
-            "amount": 4,
-            "unit": "tbsp",
-            "category": "Oils"
-          },
-          {
-            "name": "Garlic",
-            "amount": 4,
-            "unit": "cloves",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Onion",
-            "amount": 1,
-            "unit": "piece",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Red bell pepper",
-            "amount": 1,
-            "unit": "piece",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Black pepper",
-            "amount": 1,
-            "unit": "tsp",
             "category": "Sauces & Seasonings"
           },
           {
@@ -754,296 +668,344 @@
             "category": "Sauces & Seasonings"
           },
           {
-            "name": "Paprika",
-            "amount": 2,
+            "name": "Pepper",
+            "amount": 0.5,
             "unit": "tsp",
             "category": "Sauces & Seasonings"
           },
           {
-            "name": "Cumin",
-            "amount": 1,
-            "unit": "tsp",
+            "name": "Ketchup",
+            "amount": 2,
+            "unit": "tbsp",
             "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Lemon",
-            "amount": 1,
-            "unit": "piece",
-            "category": "Fruits"
-          }
-        ]
-      },
-      "instructions": {
-        "he": [
-          "מחממים תנור ל-200 מעלות",
-          "חותכים את הבצל והפלפל לפרוסות",
-          "כותשים את השום עם המלח",
-          "מערבבים רוטב ברביקיו, דבש, שמן זית ותבלינים",
-          "מושחים את העוף במרינדה ומשאירים 30 דקות",
-          "מניחים בתבנית עם הירקות ואופים 45-60 דקות",
-          "מזלפים במיץ לימון לפני הגשה"
-        ],
-        "en": [
-          "Preheat oven to 200°C",
-          "Cut onion and bell pepper into slices",
-          "Crush garlic with salt",
-          "Mix BBQ sauce, honey, olive oil and seasonings",
-          "Marinate chicken with mixture for 30 minutes",
-          "Place in baking dish with vegetables and bake 45-60 minutes",
-          "Drizzle with lemon juice before serving"
-        ]
-      }
-    },
-    "beef_stir_fry": {
-      "name": "🥩 בשר בוק צ'וי",
-      "emoji": "🥩",
-      "ingredients": {
-        "he": [
-          {
-            "name": "בשר בקר לחיתוך",
-            "amount": 600,
-            "unit": "גרם",
-            "category": "בשר ועוף"
-          },
-          {
-            "name": "פלפל אדום",
-            "amount": 2,
-            "unit": "יחידות",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "בצל",
-            "amount": 1,
-            "unit": "יחידה",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "שום",
-            "amount": 3,
-            "unit": "שיניים",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "ברוקולי",
-            "amount": 300,
-            "unit": "גרם",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "גזר",
-            "amount": 2,
-            "unit": "יחידות",
-            "category": "ירקות טריים"
-          },
-          {
-            "name": "שמן צמחי",
-            "amount": 3,
-            "unit": "כפות",
-            "category": "שמנים"
-          },
-          {
-            "name": "רוטב סויה",
-            "amount": 4,
-            "unit": "כפות",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "רוטב צדפות",
-            "amount": 2,
-            "unit": "כפות",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "עמילן תירס",
-            "amount": 1,
-            "unit": "כפית",
-            "category": "מוצרי יסוד"
-          },
-          {
-            "name": "זנגביל טרי",
-            "amount": 1,
-            "unit": "כפית",
-            "category": "רטבים ותבלינים"
-          }
-        ],
-        "en": [
-          {
-            "name": "Beef for stir-fry",
-            "amount": 600,
-            "unit": "g",
-            "category": "Meat & Poultry"
-          },
-          {
-            "name": "Red bell pepper",
-            "amount": 2,
-            "unit": "pieces",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Onion",
-            "amount": 1,
-            "unit": "piece",
-            "category": "Fresh Vegetables"
           },
           {
             "name": "Garlic",
-            "amount": 3,
+            "amount": 2,
             "unit": "cloves",
-            "category": "Fresh Vegetables"
+            "category": "Vegetables"
           },
           {
-            "name": "Broccoli",
-            "amount": 300,
-            "unit": "g",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Carrots",
-            "amount": 2,
-            "unit": "pieces",
-            "category": "Fresh Vegetables"
-          },
-          {
-            "name": "Vegetable oil",
-            "amount": 3,
-            "unit": "tbsp",
-            "category": "Oils"
-          },
-          {
-            "name": "Soy sauce",
-            "amount": 4,
-            "unit": "tbsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Oyster sauce",
+            "name": "Oil",
             "amount": 2,
             "unit": "tbsp",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Corn starch",
-            "amount": 1,
-            "unit": "tsp",
-            "category": "Basic Ingredients"
-          },
-          {
-            "name": "Fresh ginger",
-            "amount": 1,
-            "unit": "tsp",
             "category": "Sauces & Seasonings"
           }
         ]
       },
       "instructions": {
         "he": [
-          "חותכים את הבשר לרצועות דקות",
-          "חותכים את כל הירקות לחתיכות אחידות",
-          "מחממים מחבת או ווק על אש גבוהה",
-          "מטגנים את הבשר 2-3 דקות עד השחמה",
-          "מוציאים את הבשר ומטגנים את הירקות",
-          "מחזירים את הבשר למחבת",
-          "מוסיפים רטבים ומערבבים",
-          "מגישים מיד עם אורז"
+          "להוציא את הבשר מהמקרר כרבע שעה לפני הטיגון",
+          "לחמם מחבת גדולה בלי שמן על האש 2-3 דקות",
+          "להוסיף 2 כפות שמן ולחכות כמה שניות",
+          "להוסיף את הבשר הטחון ולפורר לכמה גושים גדולים",
+          "מפוררים את הבשר כמה שניות ונותנים לו כדקה טיגון כמה פעמים",
+          "מוסיפים את רסק העגבניות, סויה, חומץ, התבלינים וקטשופ ושום אם רוצים",
+          "מערבבים היטב ומביאים לרתיחה",
+          "מנמיכים את האש ומבשלים כ-20 דקות",
+          "מתאים לפסטה, לזניה, אורז, סלופי ג'ו ועוד"
         ],
         "en": [
-          "Cut beef into thin strips",
-          "Cut all vegetables into uniform pieces",
-          "Heat wok or large pan over high heat",
-          "Stir-fry beef for 2-3 minutes until browned",
-          "Remove beef and stir-fry vegetables",
-          "Return beef to pan",
-          "Add sauces and mix well",
-          "Serve immediately with rice"
+          "Take the meat out of the refrigerator about 15 minutes before frying",
+          "Heat a large pan without oil over the fire for 2-3 minutes",
+          "Add 2 tablespoons of oil and wait a few seconds",
+          "Add the ground meat and break into several large chunks",
+          "Break up the meat for a few seconds and let it fry for about a minute, several times",
+          "Add the tomato paste, soy sauce, vinegar, seasonings and ketchup and garlic if desired",
+          "Mix well and bring to a boil",
+          "Lower the heat and cook for about 20 minutes",
+          "Suitable for pasta, lasagna, rice, sloppy joe and more"
         ]
       }
     },
-    "lev_viva": {
-      "name": ":) לביבות",
-      "emoji": ":)",
+    "kids_cookies": {
+      "name": "🍪 עוגיות לילדים",
+      "emoji": "🍪",
       "ingredients": {
         "he": [
           {
-            "name": "עגבניות",
-            "amount": 2,
-            "unit": "יחידות",
-            "category": "ירקות"
+            "name": "ביצה",
+            "amount": 1,
+            "unit": "יחידה",
+            "category": "מוצרי חלב"
+          },
+          {
+            "name": "קמח רגיל",
+            "amount": 3,
+            "unit": "כוסות",
+            "category": "דגנים ופחמימות"
+          },
+          {
+            "name": "אבקת אפייה",
+            "amount": 1,
+            "unit": "שקית",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "אבקת סוכר",
+            "amount": 1,
+            "unit": "כוס",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "תמצית וניל",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "חמאה",
+            "amount": 150,
+            "unit": "גרם",
+            "category": "מוצרי חלב"
           },
           {
             "name": "חלב",
-            "amount": 1,
-            "unit": "ליטר",
+            "amount": 2,
+            "unit": "כפות",
             "category": "מוצרי חלב"
+          },
+          {
+            "name": "קקאו",
+            "amount": 0.5,
+            "unit": "כוס",
+            "category": "מוצרי יסוד"
+          },
+          {
+            "name": "סוכר",
+            "amount": 0.25,
+            "unit": "כוס",
+            "category": "מוצרי יסוד"
           }
         ],
         "en": [
           {
-            "name": "a",
-            "amount": 3,
-            "unit": "kg",
-            "category": "ff"
+            "name": "Egg",
+            "amount": 1,
+            "unit": "piece",
+            "category": "Dairy Products"
           },
           {
-            "name": "b",
+            "name": "All-purpose flour",
             "amount": 3,
-            "unit": "l",
-            "category": "gg"
+            "unit": "cups",
+            "category": "Grains & Carbs"
+          },
+          {
+            "name": "Baking powder",
+            "amount": 1,
+            "unit": "pack",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Powdered sugar",
+            "amount": 1,
+            "unit": "cup",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Vanilla extract",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Butter",
+            "amount": 150,
+            "unit": "g",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Milk",
+            "amount": 2,
+            "unit": "tbsp",
+            "category": "Dairy Products"
+          },
+          {
+            "name": "Cocoa powder",
+            "amount": 0.5,
+            "unit": "cup",
+            "category": "Basic Ingredients"
+          },
+          {
+            "name": "Sugar",
+            "amount": 0.25,
+            "unit": "cup",
+            "category": "Basic Ingredients"
           }
         ]
       },
       "instructions": {
         "he": [
-          "אלף",
-          "בית",
-          "גימל"
+          "לערבב וללוש את כל המצרכים של בצק העוגיות (ביצה, קמח, אבקת אפייה, אבקת סוכר, תמצית וניל, חמאה, חלב)",
+          "לערבב בנפרד את הממרח השחור (קקאו, סוכר, תמצית וניל, חלב)",
+          "להפריד את הבצק לשני חצאים",
+          "להוסיף את הממרח השחור לאחד החצאים ולערבב עד לקבלת בצק שוקולד",
+          "ליצור עוגיות מהבצק הלבן והבצק השחור",
+          "לאפות בתנור בחום בינוני (180 מעלות) כ-12-15 דקות עד שהעוגיות זהובות"
         ],
         "en": [
-          "aa",
-          "bb",
-          "cc"
+          "Mix and knead all the cookie dough ingredients (egg, flour, baking powder, powdered sugar, vanilla extract, butter, milk)",
+          "Mix the black spread separately (cocoa, sugar, vanilla extract, milk)",
+          "Divide the dough into two halves",
+          "Add the black spread to one half and mix until you get chocolate dough",
+          "Create cookies from the white and black dough",
+          "Bake in the oven at medium heat (180°C) for about 12-15 minutes until the cookies are golden"
+        ]
+      }
+    },
+    "orange_rice_mom": {
+      "name": "🍚 אורז כתום של אמא",
+      "emoji": "🍚",
+      "ingredients": {
+        "he": [
+          {
+            "name": "גזר",
+            "amount": 2,
+            "unit": "יחידות גדולות",
+            "category": "ירקות"
+          },
+          {
+            "name": "אורז",
+            "amount": 2.5,
+            "unit": "כוסות",
+            "category": "דגנים ופחמימות"
+          },
+          {
+            "name": "מים רותחים",
+            "amount": 3.5,
+            "unit": "כוסות",
+            "category": "משקאות"
+          },
+          {
+            "name": "אבקת מרק עוף",
+            "amount": 2,
+            "unit": "כפות שטוחות",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "מלח",
+            "amount": 1,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "פלפל",
+            "amount": 0.5,
+            "unit": "כפית",
+            "category": "רטבים ותבלינים"
+          },
+          {
+            "name": "שמן",
+            "amount": 8,
+            "unit": "כפות",
+            "category": "רטבים ותבלינים"
+          }
+        ],
+        "en": [
+          {
+            "name": "Carrots",
+            "amount": 2,
+            "unit": "large pieces",
+            "category": "Vegetables"
+          },
+          {
+            "name": "Rice",
+            "amount": 2.5,
+            "unit": "cups",
+            "category": "Grains & Carbs"
+          },
+          {
+            "name": "Boiling water",
+            "amount": 3.5,
+            "unit": "cups",
+            "category": "Beverages"
+          },
+          {
+            "name": "Chicken soup powder",
+            "amount": 2,
+            "unit": "level tbsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Salt",
+            "amount": 1,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Pepper",
+            "amount": 0.5,
+            "unit": "tsp",
+            "category": "Sauces & Seasonings"
+          },
+          {
+            "name": "Oil",
+            "amount": 8,
+            "unit": "tbsp",
+            "category": "Sauces & Seasonings"
+          }
+        ]
+      },
+      "instructions": {
+        "he": [
+          "לטגן את הגזרים המגוררים עם שמונה כפות שמן",
+          "להוסיף את האורז ולטגן כמה דקות יחד",
+          "להוסיף את המים הרותחים, לבחוש בעדינות ולהוסיף את אבקת המרק, המלח ואת הפלפל",
+          "לכסות את הסיר, להקטין את הלהבה ולבשל רבע שעה בלי לפתוח מכסה",
+          "פותחים מכסה ומערבבים היטב עם מזלג ואז סוגרים לעוד כמה דקות"
+        ],
+        "en": [
+          "Fry the grated carrots with eight tablespoons of oil",
+          "Add the rice and fry together for a few minutes",
+          "Add the boiling water, stir gently and add the soup powder, salt and pepper",
+          "Cover the pot, reduce the heat and cook for a quarter of an hour without opening the lid",
+          "Open the lid and mix well with a fork, then close for a few more minutes"
         ]
       }
     }
   },
   "recipeTranslations": {
     "he": {
-      "pancakes": "פנקייקים",
-      "french_toast": "טוסט צרפתי",
-      "greek_salad": "סלט יווני",
-      "chicken_soup": "מרק עוף",
-      "bbq_chicken": "עוף ברביקיו",
-      "beef_stir_fry": "בשר בוק צ'וי",
-      "lev_viva": "לביבות"
+      "slow_cooked_beef": "בקר בבישול איטי",
+      "passover_cake_grandma_minu": "עוגת פסח (סבתא מניו)",
+      "split_pea_soup": "מרק אפונה",
+      "cold_sweet_potato_salad": "סלט בטטה קרה",
+      "quick_bolognese": "בולונז בזק",
+      "kids_cookies": "עוגיות לילדים",
+      "orange_rice_mom": "אורז כתום של אמא"
     },
     "en": {
-      "pancakes": "Pancakes",
-      "french_toast": "French Toast",
-      "greek_salad": "Greek Salad",
-      "chicken_soup": "Chicken Soup",
-      "bbq_chicken": "BBQ Chicken",
-      "beef_stir_fry": "Beef Stir Fry",
-      "lev_viva": "levivit"
+      "slow_cooked_beef": "Slow Cooked Beef",
+      "passover_cake_grandma_minu": "Passover Cake (Grandma Minu's)",
+      "split_pea_soup": "Split Pea Soup",
+      "cold_sweet_potato_salad": "Cold Sweet Potato Salad",
+      "quick_bolognese": "Quick Bolognese",
+      "kids_cookies": "Kids Cookies",
+      "orange_rice_mom": "Mom's Orange Rice"
     }
   },
   "recipeCategoryMap": {
     "meat_fish": [
-      "bbq_chicken",
-      "beef_stir_fry"
+      "slow_cooked_beef"
     ],
-    "pasta_sauces": [],
+    "pasta_sauces": [
+      "quick_bolognese"
+    ],
     "sides": [
-      "lev_viva"
+      "orange_rice_mom"
     ],
     "salads": [
-      "greek_salad"
+      "cold_sweet_potato_salad"
     ],
     "soups": [
-      "chicken_soup"
+      "split_pea_soup"
     ],
     "desserts": [
-      "pancakes",
-      "french_toast"
+      "kids_cookies"
     ],
-    "holidays": []
+    "holidays": [
+      "passover_cake_grandma_minu"
+    ]
   }
 }

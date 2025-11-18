@@ -15,21 +15,40 @@ The application is used for many things, one of the main things is to quickly fi
 
 The Flask server is required if you want to add new recipes through the web interface.
 
-1. **Install dependencies:**
+1. **Create and activate virtual environment (first time only):**
    ```bash
-   pip3 install -r requirements.txt
+   python3 -m venv venv
+   source venv/bin/activate
    ```
 
-2. **Start the Flask server:**
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   (If you encounter authentication issues, use: `pip install --index-url https://pypi.org/simple Flask flask-cors`)
+
+3. **Activate virtual environment (if not already activated):**
+   ```bash
+   source venv/bin/activate
+   ```
+
+4. **Start the Flask server:**
    ```bash
    python3 server.py
    ```
 
-3. **Open your browser:**
-   Visit: http://localhost:5000
+5. **Open your browser:**
+   Visit: http://localhost:5001
 
-4. **To stop the server:**
+6. **To stop the server:**
    Press `Ctrl + C` in the terminal
+
+**Note:** The server runs on port 5001 (instead of 5000) to avoid conflicts with macOS AirPlay Receiver service.
+
+**Quick Start (after initial setup):**
+```bash
+source venv/bin/activate && python3 server.py
+```
 
 ### Option 2: Simple Python HTTP Server (Read-Only)
 
