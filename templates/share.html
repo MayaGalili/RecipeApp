@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="he" dir="rtl" style="height: 100%;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if not error %}{{ translations.he or translations.en or 'Recipe' }}{% else %}Recipe Not Found{% endif %} - מתכונים ונהנים</title>
+  <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+  <style>
+        body {
+            box-sizing: border-box;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+       
+        .ingredient-item {
+            transition: all 0.2s ease;
+        }
+       
+        .ingredient-item:hover {
+            transform: translateX(-2px);
+        }
+       
+        .serving-button {
+            transition: all 0.2s ease;
+        }
+       
+        .serving-button:hover {
+            transform: scale(1.05);
+        }
+       
+        .shopping-item {
+            transition: all 0.2s ease;
+        }
+       
+        .shopping-item:hover {
+            background-color: #f8fafc;
+        }
+       
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+       
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-full bg-gradient-to-br from-orange-50 to-red-50">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    {% if error %}
+    <!-- Error State -->
+    <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+      <h1 class="text-3xl font-bold text-red-600 mb-4">מתכון לא נמצא</h1>
+      <p class="text-gray-600 mb-6">המתכון שביקשת לא קיים או נמחק.</p>
+      <a href="{{ url_for('index') }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md">חזור לדף הראשי</a>
+    </div>
+    {% else %}
+    <!-- Language Selector -->
+    <div class="text-center mb-6">
+      <div class="inline-flex bg-white rounded-lg shadow-md p-1">
+        <button id="lang-he" class="language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 bg-orange-500 text-white" data-lang="he">עברית</button>
+        <button id="lang-en" class="language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 text-gray-600 hover:bg-gray-100" data-lang="en">English</button>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 id="recipe-title" class="text-4xl font-bold text-gray-800 mb-2">{{ recipe.emoji }} {{ translations.he or translations.en or 'Recipe' }}</h1>
+      <p class="text-gray-600 text-lg">מתכון משותף</p>
+      <a href="{{ url_for('index') }}" class="text-blue-500 hover:text-blue-600 text-sm mt-2 inline-block">← חזור לכל המתכונים</a>
+    </div>
+
+    <!-- Serving Size Selector -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 id="serving-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מספר מנות</h2>
+      <div class="flex justify-center items-center gap-4 mb-4">
+        <button id="decrease-btn" class="serving-button bg-red-500 hover:bg-red-600 text-white w-12 h-12 rounded-full text-xl font-bold shadow-md">-</button>
+        <div class="text-center">
+          <span id="serving-count" class="text-4xl font-bold text-gray-800">4</span>
+          <p id="serving-label" class="text-gray-600 mt-1">מנות</p>
+        </div>
+        <button id="increase-btn" class="serving-button bg-green-500 hover:bg-green-600 text-white w-12 h-12 rounded-full text-xl font-bold shadow-md">+</button>
+      </div>
+      <div class="flex justify-center gap-2 flex-wrap" id="preset-buttons">
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="2">2 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="4">4 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="6">6 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="8">8 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="12">12 מנות</button>
+      </div>
+    </div>
+
+    <!-- Recipe Ingredients -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 id="ingredients-title" class="text-2xl font-semibold text-gray-800 mb-6">מרכיבי המתכון</h2>
+      <div id="ingredients-list" class="space-y-3"></div>
+    </div>
+
+    <!-- Recipe Instructions -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <h2 id="instructions-title" class="text-2xl font-semibold text-gray-800 mb-6">הוראות הכנה</h2>
+      <div id="instructions-list" class="space-y-3"></div>
+    </div>
+
+    <!-- Shopping List -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h2 id="shopping-list-title" class="text-2xl font-semibold text-gray-800 mb-6">רשימת קניות</h2>
+      <div id="shopping-list" class="space-y-2"></div>
+      <div class="mt-6 flex gap-3">
+        <button id="print-btn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors">
+          <span id="print-text">🖨️ הדפס רשימת קניות</span>
+        </button>
+        <button id="reset-btn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors">
+          <span id="reset-text">🔄 איפוס סימונים</span>
+        </button>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    {% if not error %}
+    // Recipe data from server
+    const recipeData = {{ recipe | tojson }};
+    const recipeKey = '{{ recipe_key }}';
+    const translations = {
+      he: '{{ translations.he }}',
+      en: '{{ translations.en }}'
+    };
+
+    let currentLanguage = 'he';
+    let currentServings = 4;
+
+    // Language translations
+    const langTranslations = {
+      he: {
+        serving_selector_title: "בחר מספר מנות",
+        serving_label: "מנות",
+        ingredients_title: "מרכיבי המתכון",
+        instructions_title: "הוראות הכנה",
+        shopping_list_title: "רשימת קניות",
+        print_text: "🖨️ הדפס רשימת קניות",
+        reset_text: "🔄 איפוס סימונים",
+        servings_text: "מנות"
+      },
+      en: {
+        serving_selector_title: "Choose Serving Size",
+        serving_label: "servings",
+        ingredients_title: "Recipe Ingredients",
+        instructions_title: "Instructions",
+        shopping_list_title: "Shopping List",
+        print_text: "🖨️ Print Shopping List",
+        reset_text: "🔄 Reset Selections",
+        servings_text: "servings"
+      }
+    };
+
+    // Update language texts
+    function updateLanguageTexts() {
+      const lang = langTranslations[currentLanguage];
+      document.getElementById('serving-selector-title').textContent = lang.serving_selector_title;
+      document.getElementById('serving-label').textContent = lang.serving_label;
+      document.getElementById('ingredients-title').textContent = lang.ingredients_title;
+      document.getElementById('instructions-title').textContent = lang.instructions_title;
+      document.getElementById('shopping-list-title').textContent = lang.shopping_list_title;
+      document.getElementById('print-text').textContent = lang.print_text;
+      document.getElementById('reset-text').textContent = lang.reset_text;
+      
+      // Update recipe title
+      document.getElementById('recipe-title').innerHTML = `${recipeData.emoji} ${translations[currentLanguage] || translations.he || translations.en}`;
+      
+      updateIngredients();
+      updateInstructions();
+      updateShoppingList();
+    }
+
+    // Language button handlers
+    document.querySelectorAll('.language-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentLanguage = btn.dataset.lang;
+        document.querySelectorAll('.language-btn').forEach(b => {
+          b.classList.remove('bg-orange-500', 'text-white');
+          b.classList.add('text-gray-600', 'hover:bg-gray-100');
+        });
+        btn.classList.add('bg-orange-500', 'text-white');
+        btn.classList.remove('text-gray-600', 'hover:bg-gray-100');
+        updateLanguageTexts();
+      });
+    });
+
+    // Update ingredients display
+    function updateIngredients() {
+      const ingredients = currentLanguage === 'he' ? (recipeData.ingredients?.he || recipeData.ingredientsHe) : (recipeData.ingredients?.en || recipeData.ingredientsEn);
+      const container = document.getElementById('ingredients-list');
+      container.innerHTML = '';
+      
+      if (!ingredients || ingredients.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center">אין מרכיבים זמינים</p>';
+        return;
+      }
+
+      const defaultServings = recipeData.servings || 4;
+      ingredients.forEach((ing, index) => {
+        const adjustedAmount = (ing.amount * currentServings / defaultServings).toFixed(1);
+        const item = document.createElement('div');
+        item.className = 'ingredient-item bg-gray-50 rounded-lg p-4 flex items-center justify-between fade-in';
+        item.innerHTML = `
+          <div class="flex items-center gap-3">
+            <input type="checkbox" class="ingredient-checkbox w-5 h-5 text-orange-500 rounded" data-ingredient="${index}" data-lang="${currentLanguage}">
+            <span class="font-medium text-gray-800">${ing.name}</span>
+          </div>
+          <span class="text-gray-600">${adjustedAmount} ${ing.unit}</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Update instructions display
+    function updateInstructions() {
+      const instructions = currentLanguage === 'he' ? (recipeData.instructions?.he || recipeData.instructionsHe) : (recipeData.instructions?.en || recipeData.instructionsEn);
+      const container = document.getElementById('instructions-list');
+      container.innerHTML = '';
+      
+      if (!instructions || instructions.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center">אין הוראות זמינות</p>';
+        return;
+      }
+
+      instructions.forEach((instruction, index) => {
+        const item = document.createElement('div');
+        item.className = 'bg-gray-50 rounded-lg p-4 fade-in';
+        item.innerHTML = `
+          <div class="flex items-start gap-3">
+            <span class="bg-orange-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">${index + 1}</span>
+            <p class="text-gray-800 flex-1">${instruction}</p>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Update shopping list
+    function updateShoppingList() {
+      const ingredients = currentLanguage === 'he' ? (recipeData.ingredients?.he || recipeData.ingredientsHe) : (recipeData.ingredients?.en || recipeData.ingredientsEn);
+      const container = document.getElementById('shopping-list');
+      container.innerHTML = '';
+      
+      if (!ingredients || ingredients.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center">אין מרכיבים לרשימת קניות</p>';
+        return;
+      }
+
+      const checkedItems = Array.from(document.querySelectorAll('.ingredient-checkbox:checked'))
+        .map(cb => parseInt(cb.dataset.ingredient));
+
+      if (checkedItems.length === 0) {
+        container.innerHTML = '<p class="text-gray-500 text-center">סמן מרכיבים כדי לראות אותם ברשימת הקניות</p>';
+        return;
+      }
+
+      checkedItems.forEach(index => {
+        const ing = ingredients[index];
+        if (!ing) return;
+        
+        const defaultServings = recipeData.servings || 4;
+        const adjustedAmount = (ing.amount * currentServings / defaultServings).toFixed(1);
+        const item = document.createElement('div');
+        item.className = 'shopping-item bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-center justify-between';
+        item.innerHTML = `
+          <span class="font-medium text-gray-800">${ing.name}</span>
+          <span class="text-gray-600">${adjustedAmount} ${ing.unit}</span>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    // Serving size controls
+    document.getElementById('increase-btn').addEventListener('click', () => {
+      currentServings = Math.min(currentServings + 1, 20);
+      document.getElementById('serving-count').textContent = currentServings;
+      updateIngredients();
+      updateShoppingList();
+    });
+
+    document.getElementById('decrease-btn').addEventListener('click', () => {
+      currentServings = Math.max(currentServings - 1, 1);
+      document.getElementById('serving-count').textContent = currentServings;
+      updateIngredients();
+      updateShoppingList();
+    });
+
+    // Preset buttons
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentServings = parseInt(btn.dataset.servings);
+        document.getElementById('serving-count').textContent = currentServings;
+        updateIngredients();
+        updateShoppingList();
+      });
+    });
+
+    // Checkbox change handlers
+    document.addEventListener('change', (e) => {
+      if (e.target.classList.contains('ingredient-checkbox')) {
+        updateShoppingList();
+      }
+    });
+
+    // Print button
+    document.getElementById('print-btn').addEventListener('click', () => {
+      window.print();
+    });
+
+    // Reset button
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      document.querySelectorAll('.ingredient-checkbox').forEach(cb => cb.checked = false);
+      updateShoppingList();
+    });
+
+    // Initialize
+    updateLanguageTexts();
+    {% endif %}
+  </script>
+</body>
+</html>
+
