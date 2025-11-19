@@ -532,6 +532,7 @@
                     // Create container for recipe button and delete button
                     const container = document.createElement('div');
                     container.className = 'relative group';
+                    container.style.position = 'relative';
                     
                     const button = document.createElement('button');
                     button.className = `recipe-button w-full p-4 bg-white border-2 border-gray-200 rounded-lg text-center hover:border-orange-300 shadow-md hover:shadow-lg transition-all duration-200 ${recipeKey === currentRecipe ? 'border-orange-500 bg-orange-50' : ''}`;
@@ -544,29 +545,22 @@
                         editRecipe(recipeKey);
                     });
                     
-                    // Create delete button
+                    // Create delete button (top-right corner)
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'absolute top-1 right-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs';
+                    deleteBtn.className = 'absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl opacity-70 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110';
+                    deleteBtn.style.zIndex = '20';
+                    deleteBtn.style.position = 'absolute';
                     deleteBtn.innerHTML = '🗑️';
                     deleteBtn.title = 'מחק מתכון';
+                    deleteBtn.style.fontSize = '0.875rem';
+                    deleteBtn.style.lineHeight = '1';
                     deleteBtn.addEventListener('click', (e) => {
                         e.stopPropagation(); // Prevent triggering the recipe button click
                         deleteRecipe(recipeKey);
                     });
                     
-                    // Create share button
-                    const shareBtn = document.createElement('button');
-                    shareBtn.className = 'absolute top-1 left-1 w-6 h-6 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs';
-                    shareBtn.innerHTML = '🔗';
-                    shareBtn.title = 'שתף מתכון';
-                    shareBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        copyShareLink(recipeKey);
-                    });
-                    
                     container.appendChild(button);
                     container.appendChild(deleteBtn);
-                    container.appendChild(shareBtn);
                     recipesGrid.appendChild(container);
                 });
                
@@ -1086,7 +1080,7 @@
             document.getElementById('parse-result').classList.add('hidden');
             parsedRecipeData = null;
         }
-        
+
         // Initialize form event listeners
         function initializeFormListeners() {
             const toggleBtn = document.getElementById('toggle-form-btn');
