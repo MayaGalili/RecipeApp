@@ -59,4 +59,6 @@ instance/
 data/*.json
 !data/recipes.json
 !data/.gitkeep
-static/css/tailwind.css
+
+# Tailwind CSS - keep in git for deployment (needed for Render)
+# static/css/tailwind.css is included in repository
