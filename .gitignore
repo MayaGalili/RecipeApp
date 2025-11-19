@@ -54,4 +54,9 @@ main.html
 
 # Flask instance data
 instance/
+
+# Data directory (runtime data, but keep initial recipes.json for deployment)
+data/*.json
+!data/recipes.json
+!data/.gitkeep
 static/css/tailwind.css

@@ -12,7 +12,12 @@ import os
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)  # Enable CORS for all routes
 
-RECIPES_FILE = 'recipes.json'
+# Create data directory if it doesn't exist
+DATA_DIR = 'data'
+os.makedirs(DATA_DIR, exist_ok=True)
+
+# Path to recipes.json in data directory
+RECIPES_FILE = os.path.join(DATA_DIR, 'recipes.json')
 
 def load_recipes():
     """Load recipes from JSON file"""
@@ -51,7 +56,7 @@ def manage():
 @app.route('/recipes.json')
 def serve_recipes():
     """Serve recipes.json file"""
-    return send_from_directory('.', 'recipes.json')
+    return send_from_directory(DATA_DIR, 'recipes.json')
 
 @app.route('/api/add-recipe', methods=['POST'])
 def add_recipe():
@@ -236,8 +241,10 @@ def delete_recipe():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    # Only use Flask's development server for local development
     print("Starting Recipe App server...")
     print("Server will be available at http://localhost:5001")
     print("Press Ctrl+C to stop the server")
+    print("Note: For production, use gunicorn: gunicorn app:app")
     app.run(host='0.0.0.0', port=5001, debug=True)
 
