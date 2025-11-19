@@ -52,7 +52,7 @@ The Flask server is required if you want to add new recipes through the web inte
 
 2. **Start the Flask server:**
    ```bash
-   python3 server.py
+   python3 app.py
    ```
 
 3. **Open your browser:**
@@ -65,7 +65,7 @@ The Flask server is required if you want to add new recipes through the web inte
 
 **Quick Start (after initial setup):**
 ```bash
-source venv/bin/activate && python3 server.py
+source venv/bin/activate && python3 app.py
 ```
 
 ### Rebuilding Tailwind CSS
@@ -105,8 +105,10 @@ RecipeApp/
 │   ├── css/
 │   │   └── tailwind.css  # Compiled Tailwind CSS
 │   └── js/
-├── recipes.json       # Recipe data storage
-├── server.py          # Flask server
+├── data/              # Data directory (writable files)
+│   └── recipes.json   # Recipe data storage
+├── app.py             # Flask application (main entry point)
+├── render.yaml        # Render deployment configuration
 ├── input.css          # Tailwind CSS source file
 ├── tailwind.config.js # Tailwind configuration
 ├── package.json       # Node.js dependencies
@@ -126,4 +128,55 @@ Recipes are stored in `recipes.json`. The structure includes:
 - The application uses Flask for the backend and serves static files from the `static/` folder
 - Templates are stored in the `templates/` folder
 - Tailwind CSS is built locally (not using CDN) for better reliability
-- The app is fully decoupled - recipes are stored in `recipes.json` separate from the HTML
+- The app is fully decoupled - recipes are stored in `data/recipes.json` separate from the HTML
+- Recipe data is stored in the `data/` directory to allow write operations on Render
+
+## Deployment to Render
+
+This application is configured for deployment on Render.com.
+
+### Prerequisites for Deployment
+
+1. **Project Structure:**
+   - Main entry point: `app.py` (Flask app object named `app`)
+   - Static files: `static/` folder
+   - Templates: `templates/` folder
+   - Data directory: `data/` folder (for writable files)
+
+2. **Configuration Files:**
+   - `requirements.txt` - Python dependencies (includes gunicorn)
+   - `render.yaml` - Render deployment configuration
+
+### Deployment Steps
+
+1. **Push to Git Repository:**
+   ```bash
+   git add .
+   git commit -m "Prepare for Render deployment"
+   git push origin main
+   ```
+
+2. **Deploy on Render:**
+   - Go to [Render Dashboard](https://dashboard.render.com)
+   - Click "New +" → "Web Service"
+   - Connect your Git repository
+   - Render will automatically detect `render.yaml` and configure the service
+   - The service will be deployed automatically
+
+3. **What Render Does:**
+   - Installs dependencies from `requirements.txt`
+   - Runs `gunicorn app:app` to start the production server
+   - Creates the `data/` directory at runtime (if it doesn't exist)
+   - Serves the application on a public URL
+
+### Important Notes for Render
+
+- **Data Persistence:** The `data/` directory is created at runtime. Initial `data/recipes.json` is included in the repository for the first deployment.
+- **File Writes:** All write operations (adding/editing/deleting recipes) are saved to `data/recipes.json`
+- **Static Files:** Tailwind CSS is pre-built and stored in `static/css/tailwind.css`
+- **Production Server:** Uses gunicorn (configured in `render.yaml`), Flask dev server only for local development
+
+### Local Development vs Production
+
+- **Local:** Run `python3 app.py` (uses Flask dev server on port 5001)
+- **Production (Render):** Uses `gunicorn app:app` (configured automatically via `render.yaml`)
