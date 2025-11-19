@@ -963,38 +963,6 @@
           "Open the lid and mix well with a fork, then close for a few more minutes"
         ]
       }
-    },
-    "recipe": {
-      "name": "🥗 מתכון מצויין!",
-      "emoji": "🥗",
-      "ingredients": {
-        "he": [
-          {
-            "name": "ש",
-            "amount": 2,
-            "unit": "3",
-            "category": "ר"
-          }
-        ],
-        "en": [
-          {
-            "name": "ש",
-            "amount": 4,
-            "unit": "א",
-            "category": "ע"
-          }
-        ]
-      },
-      "instructions": {
-        "he": [
-          "ש",
-          "ש"
-        ],
-        "en": [
-          "ג",
-          "ג"
-        ]
-      }
     }
   },
   "recipeTranslations": {
@@ -1005,8 +973,7 @@
       "cold_sweet_potato_salad": "סלט בטטה קרה",
       "quick_bolognese": "בולונז בזק",
       "kids_cookies": "עוגיות לילדים",
-      "orange_rice_mom": "אורז כתום של אמא",
-      "recipe": "מתכון מצויין!"
+      "orange_rice_mom": "אורז כתום של אמא"
     },
     "en": {
       "slow_cooked_beef": "Slow Cooked Beef",
@@ -1015,8 +982,7 @@
       "cold_sweet_potato_salad": "Cold Sweet Potato Salad",
       "quick_bolognese": "Quick Bolognese",
       "kids_cookies": "Kids Cookies",
-      "orange_rice_mom": "Mom's Orange Rice",
-      "recipe": "כ"
+      "orange_rice_mom": "Mom's Orange Rice"
     }
   },
   "recipeCategoryMap": {
@@ -1024,8 +990,7 @@
       "slow_cooked_beef"
     ],
     "pasta_sauces": [
-      "quick_bolognese",
-      "recipe"
+      "quick_bolognese"
     ],
     "sides": [
       "orange_rice_mom"

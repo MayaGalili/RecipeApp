@@ -40,8 +40,13 @@ def save_recipes(data):
 
 @app.route('/')
 def index():
-    """Serve main.html as index"""
-    return render_template('main.html')
+    """Serve index.html as main page"""
+    return render_template('index.html')
+
+@app.route('/manage')
+def manage():
+    """Serve manage.html for recipe management"""
+    return render_template('manage.html')
 
 @app.route('/recipes.json')
 def serve_recipes():
@@ -97,6 +102,82 @@ def add_recipe():
         return jsonify({
             "success": True,
             "message": "Recipe added successfully",
+            "recipeKey": recipe_key
+        }), 200
+        
+    except json.JSONDecodeError:
+        return jsonify({"error": "Invalid JSON"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/update-recipe', methods=['PUT'])
+def update_recipe():
+    """Update an existing recipe in the recipes.json file"""
+    try:
+        data = request.json
+        
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        recipe_key = data.get('recipeKey')
+        recipe = data.get('recipe')
+        category = data.get('category')
+        translations = data.get('translations', {})
+        
+        if not recipe_key or not recipe or not category:
+            return jsonify({"error": "Missing required fields"}), 400
+        
+        # Load existing recipes
+        recipes_data = load_recipes()
+        
+        # Check if recipe exists
+        if recipe_key not in recipes_data['recipes']:
+            return jsonify({"error": f"Recipe with key '{recipe_key}' not found"}), 404
+        
+        # Validate category
+        valid_categories = ['meat_fish', 'pasta_sauces', 'sides', 'salads', 'soups', 'desserts', 'holidays']
+        if category not in valid_categories:
+            return jsonify({"error": "Invalid category"}), 400
+        
+        # Get old category to remove from
+        old_category = None
+        for cat in recipes_data['recipeCategoryMap']:
+            if recipe_key in recipes_data['recipeCategoryMap'][cat]:
+                old_category = cat
+                break
+        
+        # Update recipe
+        recipes_data['recipes'][recipe_key] = recipe
+        
+        # Update translations
+        if 'he' in translations:
+            recipes_data['recipeTranslations']['he'][recipe_key] = translations['he']
+        if 'en' in translations:
+            recipes_data['recipeTranslations']['en'][recipe_key] = translations['en']
+        
+        # Update category if changed
+        if old_category and old_category != category:
+            # Remove from old category
+            if recipe_key in recipes_data['recipeCategoryMap'][old_category]:
+                recipes_data['recipeCategoryMap'][old_category].remove(recipe_key)
+            # Add to new category
+            if category not in recipes_data['recipeCategoryMap']:
+                recipes_data['recipeCategoryMap'][category] = []
+            if recipe_key not in recipes_data['recipeCategoryMap'][category]:
+                recipes_data['recipeCategoryMap'][category].append(recipe_key)
+        elif not old_category:
+            # Recipe wasn't in any category, add it
+            if category not in recipes_data['recipeCategoryMap']:
+                recipes_data['recipeCategoryMap'][category] = []
+            if recipe_key not in recipes_data['recipeCategoryMap'][category]:
+                recipes_data['recipeCategoryMap'][category].append(recipe_key)
+        
+        # Save to file
+        save_recipes(recipes_data)
+        
+        return jsonify({
+            "success": True,
+            "message": "Recipe updated successfully",
             "recipeKey": recipe_key
         }), 200
         
