@@ -8,14 +8,18 @@ The application is used for many things, one of the main things is to quickly fi
 - Adjust serving sizes dynamically
 - Generate shopping lists
 - **Add new recipes** - Recipes are automatically added to the app and saved to `recipes.json`
+- **AI-Powered Recipe Parser** - Paste a free-text recipe and the AI will automatically parse it into the structured format
 - Modern UI with Tailwind CSS
 
 ## Prerequisites
 
 - Python 3.7+
 - Node.js 14+ (for building Tailwind CSS)
+- OpenAI API key (for AI-powered recipe parsing) - Get one at [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 
-## Running the Application
+## Running the Application Locally
+
+**Note:** You can run the application locally even after deploying to Render. Local development and production deployment are independent.
 
 ### Initial Setup (First Time Only)
 
@@ -68,6 +72,11 @@ The Flask server is required if you want to add new recipes through the web inte
 source venv/bin/activate && python3 app.py
 ```
 
+**Troubleshooting:**
+- If port 5001 is already in use, you can change the port in `app.py` (line 249)
+- Make sure the virtual environment is activated (you should see `(venv)` in your terminal prompt)
+- If you see "ModuleNotFoundError", make sure you've installed dependencies: `pip install -r requirements.txt`
+
 ### Rebuilding Tailwind CSS
 
 If you modify the HTML templates and need to rebuild Tailwind CSS to include new classes:
@@ -83,6 +92,19 @@ node node_modules/tailwindcss/lib/cli.js -i ./input.css -o ./static/css/tailwind
 
 ## Adding New Recipes
 
+### Method 1: AI-Powered Free Text Parsing (Recommended)
+
+1. Start the Flask server (see above)
+2. Make sure you have set the `OPENAI_API_KEY` environment variable (see Configuration below)
+3. Go to the "ניהול מתכונים" (Manage Recipes) page
+4. In the "הוסף מתכון מטקסט חופשי" section, paste or type your recipe in free text format
+5. Click "פרסם מתכון" (Parse Recipe)
+6. Review the parsed recipe preview
+7. Click "אשר ומלא טופס" (Approve and Fill Form) to automatically fill the form
+8. Review and adjust if needed, then click "שמור מתכון" (Save Recipe)
+
+### Method 2: Manual Form Entry
+
 1. Start the Flask server (see above)
 2. Click the "הוסף מתכון חדש" (Add New Recipe) button
 3. Fill in the form:
@@ -94,6 +116,36 @@ node node_modules/tailwindcss/lib/cli.js -i ./input.css -o ./static/css/tailwind
    - Instructions (one step per line)
 4. Click "שמור מתכון" (Save Recipe)
 5. The recipe will be automatically added to `recipes.json` and appear in the app!
+
+## Configuration
+
+### OpenAI API Key (for AI Recipe Parsing)
+
+To use the AI-powered recipe parser, you need to set up an OpenAI API key:
+
+1. **Get an API key:**
+   - Sign up at [https://platform.openai.com](https://platform.openai.com)
+   - Go to [API Keys](https://platform.openai.com/api-keys) and create a new key
+
+2. **Set the environment variable:**
+   
+   **Local Development:**
+   ```bash
+   export OPENAI_API_KEY='your-api-key-here'
+   ```
+   
+   Or create a `.env` file in the project root:
+   ```
+   OPENAI_API_KEY=your-api-key-here
+   ```
+   
+   **Render Deployment:**
+   - Go to your Render service dashboard
+   - Navigate to "Environment" tab
+   - Add environment variable: `OPENAI_API_KEY` with your API key value
+   - Save and redeploy
+
+**Note:** The AI parser uses `gpt-4o-mini` model which is cost-effective. Without the API key, you can still use the manual form entry method.
 
 ## Project Structure
 
@@ -175,8 +227,16 @@ This application is configured for deployment on Render.com.
 - **File Writes:** All write operations (adding/editing/deleting recipes) are saved to `data/recipes.json`
 - **Static Files:** Tailwind CSS is pre-built and stored in `static/css/tailwind.css`
 - **Production Server:** Uses gunicorn (configured in `render.yaml`), Flask dev server only for local development
+- **OpenAI API Key:** Add `OPENAI_API_KEY` environment variable in Render dashboard for AI recipe parsing feature
 
 ### Local Development vs Production
 
-- **Local:** Run `python3 app.py` (uses Flask dev server on port 5001)
-- **Production (Render):** Uses `gunicorn app:app` (configured automatically via `render.yaml`)
+- **Local Development:** 
+  - Run `python3 app.py` (uses Flask dev server on port 5001)
+  - Access at: http://localhost:5001
+  - Works independently from the deployed version on Render
+  - Changes are local only until you commit and push to Git
+- **Production (Render):** 
+  - Uses `gunicorn app:app` (configured automatically via `render.yaml`)
+  - Deployed automatically when you push to Git
+  - Accessible via public URL provided by Render
