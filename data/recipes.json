@@ -963,98 +963,6 @@
           "Open the lid and mix well with a fork, then close for a few more minutes"
         ]
       }
-    },
-    "cold_sweet_potato_salad_1": {
-      "name": "🥗 סלט בטטה קרה",
-      "emoji": "🥗",
-      "ingredients": {
-        "he": [
-          {
-            "name": "רוטב צ'ילי מתוק",
-            "amount": 5,
-            "unit": "כפות",
-            "category": "רטבים ותבלינים"
-          },
-          {
-            "name": "שומשום",
-            "amount": 2,
-            "unit": "כפות",
-            "category": "אגוזים וזרעים"
-          },
-          {
-            "name": "שום",
-            "amount": 2,
-            "unit": "שיניים",
-            "category": "ירקות"
-          },
-          {
-            "name": "בטטה מתוקה",
-            "amount": 2,
-            "unit": "גדולות",
-            "category": "דגנים ופחמימות"
-          },
-          {
-            "name": "כוסברה",
-            "amount": 1,
-            "unit": "צרור",
-            "category": "ירקות"
-          },
-          {
-            "name": "חמוציות",
-            "amount": 1,
-            "unit": "כוס",
-            "category": "פירות"
-          }
-        ],
-        "en": [
-          {
-            "name": "Sweet chili sauce",
-            "amount": 5,
-            "unit": "tablespoons",
-            "category": "Sauces & Seasonings"
-          },
-          {
-            "name": "Sesame",
-            "amount": 2,
-            "unit": "tablespoons",
-            "category": "Nuts & Seeds"
-          },
-          {
-            "name": "Garlic",
-            "amount": 2,
-            "unit": "cloves",
-            "category": "Vegetables"
-          },
-          {
-            "name": "Sweet potato",
-            "amount": 2,
-            "unit": "large",
-            "category": "Grains & Carbs"
-          },
-          {
-            "name": "Cilantro",
-            "amount": 1,
-            "unit": "bunch",
-            "category": "Vegetables"
-          },
-          {
-            "name": "Cranberries",
-            "amount": 1,
-            "unit": "cup",
-            "category": "Fruits"
-          }
-        ]
-      },
-      "instructions": {
-        "he": [
-          "אופים את קוביות הבטטה בתנור עם שמן זית.",
-          "כשהבטטה מוכנה מוסיפים אותה לקערה עם השום, הצ'ילי מתוק, כוסברה ושומשום ומערבבים טוב."
-        ],
-        "en": [
-          "Bake the sweet potato cubes in the oven with olive oil.",
-          "Once the sweet potato is ready, add it to a bowl with garlic, sweet chili sauce, cilantro, and sesame, and mix well."
-        ]
-      }
     }
   },
   "recipeTranslations": {
@@ -1065,8 +973,7 @@
       "cold_sweet_potato_salad": "סלט בטטה קרה",
       "quick_bolognese": "בולונז בזק",
       "kids_cookies": "עוגיות לילדים",
-      "orange_rice_mom": "אורז כתום של אמא",
-      "cold_sweet_potato_salad_1": "סלט בטטה קרה"
+      "orange_rice_mom": "אורז כתום של אמא"
     },
     "en": {
       "slow_cooked_beef": "Slow Cooked Beef",
@@ -1075,8 +982,7 @@
       "cold_sweet_potato_salad": "Cold Sweet Potato Salad",
       "quick_bolognese": "Quick Bolognese",
       "kids_cookies": "Kids Cookies",
-      "orange_rice_mom": "Mom's Orange Rice",
-      "cold_sweet_potato_salad_1": "Cold Sweet Potato Salad"
+      "orange_rice_mom": "Mom's Orange Rice"
     }
   },
   "recipeCategoryMap": {
@@ -1090,8 +996,7 @@
       "orange_rice_mom"
     ],
     "salads": [
-      "cold_sweet_potato_salad",
-      "cold_sweet_potato_salad_1"
+      "cold_sweet_potato_salad"
     ],
     "soups": [
       "split_pea_soup"
