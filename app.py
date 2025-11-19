@@ -66,6 +66,28 @@ def manage():
     """Serve manage.html for recipe management"""
     return render_template('manage.html')
 
+@app.route('/recipe/<recipe_key>')
+def share_recipe(recipe_key):
+    """Serve a shareable page for a specific recipe"""
+    recipes_data = load_recipes()
+    
+    # Check if recipe exists
+    if recipe_key not in recipes_data.get('recipes', {}):
+        return render_template('share.html', error=True, recipe_key=recipe_key), 404
+    
+    # Get recipe data
+    recipe = recipes_data['recipes'][recipe_key]
+    translations = {
+        'he': recipes_data.get('recipeTranslations', {}).get('he', {}).get(recipe_key, ''),
+        'en': recipes_data.get('recipeTranslations', {}).get('en', {}).get(recipe_key, '')
+    }
+    
+    return render_template('share.html', 
+                         recipe_key=recipe_key,
+                         recipe=recipe,
+                         translations=translations,
+                         error=False)
+
 @app.route('/recipes.json')
 def serve_recipes():
     """Serve recipes.json file"""
