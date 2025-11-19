@@ -115,6 +115,31 @@
     <h2 id="recipe-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">ניהול מתכונים</h2>
     <div id="recipe-selector"><!-- Recipe categories will be populated by JavaScript -->
     </div>
+   </div><!-- Free Text Recipe Parser -->
+   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">הוסף מתכון מטקסט חופשי</h2>
+    <p class="text-sm text-gray-600 mb-4 text-center">הדבק או הקלד מתכון בשפה חופשית, והמערכת תמיר אותו למבנה המתכון</p>
+    <div class="space-y-4">
+     <div>
+      <label class="block text-sm font-medium text-gray-700 mb-2">הדבק כאן את המתכון (עברית או אנגלית) <span class="text-xs text-gray-500 font-normal">(Ctrl+Enter לפרסור מהיר)</span></label>
+      <textarea id="free-text-recipe" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="8" placeholder="לדוגמה:&#10;מרק אפונה&#10;&#10;מצרכים:&#10;שתי כוסות אפונה יבשה&#10;שמונה כוסות מים&#10;1 בצל חתוך לרבעים&#10;...&#10;&#10;אופן ההכנה:&#10;לטגן היטב את הבצל בסיר עמוק&#10;להוסיף את האפונה ולקצת לטגן&#10;..."></textarea>
+     </div>
+     <button id="parse-recipe-btn" type="button" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 mb-4 shadow-md hover:shadow-lg">
+      <span id="parse-btn-text">🤖 פרסם מתכון עם AI</span>
+      <span id="parse-btn-loading" class="hidden">⏳ מעבד...</span>
+     </button>
+     <div id="parse-result" class="hidden">
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+       <h3 class="font-semibold text-blue-800 mb-2">המתכון שפורש:</h3>
+       <div id="parse-preview" class="text-sm text-gray-700"></div>
+      </div>
+      <div class="flex gap-4">
+       <button id="approve-parse-btn" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">אשר ומלא טופס</button>
+       <button id="reject-parse-btn" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">בטל</button>
+      </div>
+     </div>
+     <div id="parse-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 text-red-700"></div>
+    </div>
    </div><!-- Add Recipe Form -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
     <h2 id="add-recipe-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">הוסף מתכון חדש</h2>
@@ -754,7 +779,7 @@
                 
                 // Celebrate with food confetti only for new recipes
                 if (!isEdit) {
-                    celebrateWithFoodConfetti();
+                celebrateWithFoodConfetti();
                 }
                 
                 // Reload recipes and update UI
@@ -930,11 +955,158 @@
             document.getElementById('add-recipe-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+        // Parse free text recipe using LLM
+        let parsedRecipeData = null;
+        
+        async function parseFreeTextRecipe() {
+            const freeText = document.getElementById('free-text-recipe').value.trim();
+            const parseBtn = document.getElementById('parse-recipe-btn');
+            const parseBtnText = document.getElementById('parse-btn-text');
+            const parseBtnLoading = document.getElementById('parse-btn-loading');
+            const parseResult = document.getElementById('parse-result');
+            const parseError = document.getElementById('parse-error');
+            const parsePreview = document.getElementById('parse-preview');
+            
+            // Hide previous results
+            parseResult.classList.add('hidden');
+            parseError.classList.add('hidden');
+            
+            if (!freeText) {
+                parseError.textContent = 'אנא הכנס מתכון';
+                parseError.classList.remove('hidden');
+                return;
+            }
+            
+            // Show loading state
+            parseBtn.disabled = true;
+            parseBtnText.classList.add('hidden');
+            parseBtnLoading.classList.remove('hidden');
+            
+            try {
+                const response = await fetch('{{ url_for("parse_recipe") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ freeText: freeText })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'שגיאה בפרסור המתכון');
+                }
+                
+                // Store parsed data
+                parsedRecipeData = data.parsedRecipe;
+                
+                // Display preview
+                let previewHtml = `<div class="space-y-2">`;
+                previewHtml += `<p><strong>שם (עברית):</strong> ${data.parsedRecipe.nameHe || 'לא זוהה'}</p>`;
+                previewHtml += `<p><strong>שם (אנגלית):</strong> ${data.parsedRecipe.nameEn || 'לא זוהה'}</p>`;
+                previewHtml += `<p><strong>קטגוריה:</strong> ${data.parsedRecipe.category || 'לא זוהה'}</p>`;
+                previewHtml += `<p><strong>אימוג'י:</strong> ${data.parsedRecipe.emoji || 'לא זוהה'}</p>`;
+                previewHtml += `<p><strong>מספר מרכיבים:</strong> ${data.parsedRecipe.ingredientsHe?.length || 0} (עברית), ${data.parsedRecipe.ingredientsEn?.length || 0} (אנגלית)</p>`;
+                previewHtml += `<p><strong>מספר שלבים:</strong> ${data.parsedRecipe.instructionsHe?.length || 0} (עברית), ${data.parsedRecipe.instructionsEn?.length || 0} (אנגלית)</p>`;
+                previewHtml += `</div>`;
+                
+                parsePreview.innerHTML = previewHtml;
+                parseResult.classList.remove('hidden');
+                
+            } catch (error) {
+                parseError.textContent = `שגיאה: ${error.message}`;
+                parseError.classList.remove('hidden');
+            } finally {
+                // Reset loading state
+                parseBtn.disabled = false;
+                parseBtnText.classList.remove('hidden');
+                parseBtnLoading.classList.add('hidden');
+            }
+        }
+        
+        // Approve parsed recipe and fill form
+        function approveParsedRecipe() {
+            if (!parsedRecipeData) {
+                return;
+            }
+            
+            // Fill form fields
+            document.getElementById('recipe-name-he').value = parsedRecipeData.nameHe || '';
+            document.getElementById('recipe-name-en').value = parsedRecipeData.nameEn || '';
+            document.getElementById('recipe-emoji').value = parsedRecipeData.emoji || '🍳';
+            document.getElementById('recipe-category').value = parsedRecipeData.category || 'meat_fish';
+            
+            // Fill ingredients
+            if (parsedRecipeData.ingredientsHe && parsedRecipeData.ingredientsHe.length > 0) {
+                const ingredientsHeText = parsedRecipeData.ingredientsHe.map(ing => 
+                    `${ing.name}, ${ing.amount}, ${ing.unit}, ${ing.category}`
+                ).join('\n');
+                document.getElementById('ingredients-he').value = ingredientsHeText;
+            }
+            
+            if (parsedRecipeData.ingredientsEn && parsedRecipeData.ingredientsEn.length > 0) {
+                const ingredientsEnText = parsedRecipeData.ingredientsEn.map(ing => 
+                    `${ing.name}, ${ing.amount}, ${ing.unit}, ${ing.category}`
+                ).join('\n');
+                document.getElementById('ingredients-en').value = ingredientsEnText;
+            }
+            
+            // Fill instructions
+            if (parsedRecipeData.instructionsHe && parsedRecipeData.instructionsHe.length > 0) {
+                document.getElementById('instructions-he').value = parsedRecipeData.instructionsHe.join('\n');
+            }
+            
+            if (parsedRecipeData.instructionsEn && parsedRecipeData.instructionsEn.length > 0) {
+                document.getElementById('instructions-en').value = parsedRecipeData.instructionsEn.join('\n');
+            }
+            
+            // Show form and hide parse result
+            document.getElementById('add-recipe-form').classList.remove('hidden');
+            document.getElementById('parse-result').classList.add('hidden');
+            document.getElementById('free-text-recipe').value = '';
+            parsedRecipeData = null;
+            
+            // Scroll to form
+            document.getElementById('add-recipe-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Reject parsed recipe
+        function rejectParsedRecipe() {
+            document.getElementById('parse-result').classList.add('hidden');
+            parsedRecipeData = null;
+        }
+        
         // Initialize form event listeners
         function initializeFormListeners() {
             const toggleBtn = document.getElementById('toggle-form-btn');
             const cancelBtn = document.getElementById('cancel-form-btn');
             const recipeForm = document.getElementById('recipe-form');
+            const parseBtn = document.getElementById('parse-recipe-btn');
+            const approveBtn = document.getElementById('approve-parse-btn');
+            const rejectBtn = document.getElementById('reject-parse-btn');
+            const freeTextArea = document.getElementById('free-text-recipe');
+            
+            if (parseBtn) {
+                parseBtn.addEventListener('click', parseFreeTextRecipe);
+            }
+            
+            // Allow Enter+Shift to submit, or just Enter if text is long enough
+            if (freeTextArea) {
+                freeTextArea.addEventListener('keydown', (e) => {
+                    // Ctrl+Enter or Cmd+Enter to parse
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                        e.preventDefault();
+                        parseFreeTextRecipe();
+                    }
+                });
+            }
+            
+            if (approveBtn) {
+                approveBtn.addEventListener('click', approveParsedRecipe);
+            }
+            if (rejectBtn) {
+                rejectBtn.addEventListener('click', rejectParsedRecipe);
+            }
 
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', toggleForm);
@@ -963,14 +1135,15 @@
         });
 
         // Initialize the app
-        // Load recipes when page loads
-        loadRecipes();
-        
-        // Initialize form listeners after DOM is ready
+        // Initialize form listeners first (they need to be available)
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initializeFormListeners);
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeFormListeners();
+                loadRecipes();
+            });
         } else {
             initializeFormListeners();
+            loadRecipes();
         }
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99fedee7c4b574f2',t:'MTc2MzM3ODc2MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>

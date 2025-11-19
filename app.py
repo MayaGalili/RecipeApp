@@ -8,9 +8,22 @@ from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
 import json
 import os
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)  # Enable CORS for all routes
+
+# OpenAI API configuration
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+if OPENAI_API_KEY:
+    openai_client = OpenAI(api_key=OPENAI_API_KEY)
+else:
+    openai_client = None
+    print("Warning: OPENAI_API_KEY not set. Recipe parsing will not work.")
 
 # Create data directory if it doesn't exist
 DATA_DIR = 'data'
@@ -239,6 +252,101 @@ def delete_recipe():
         return jsonify({"error": "Invalid JSON"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/parse-recipe', methods=['POST'])
+def parse_recipe():
+    """Parse free text recipe using OpenAI API"""
+    try:
+        if not openai_client:
+            return jsonify({"error": "OpenAI API key not configured"}), 500
+        
+        data = request.json
+        if not data or 'freeText' not in data:
+            return jsonify({"error": "No recipe text provided"}), 400
+        
+        free_text = data['freeText']
+        if not free_text.strip():
+            return jsonify({"error": "Recipe text is empty"}), 400
+        
+        # Load existing recipes to understand the structure
+        recipes_data = load_recipes()
+        
+        # Create a prompt for OpenAI
+        prompt = f"""אתה מומחה בפרסור מתכונים. המטרה שלך היא לקחת מתכון שכתוב בשפה חופשית ולהמיר אותו למבנה JSON מובנה.
+
+המתכון שצריך לפרסר:
+{free_text}
+
+המבנה הנדרש:
+{{
+  "nameHe": "שם המתכון בעברית",
+  "nameEn": "Recipe name in English",
+  "emoji": "אימוג'י מתאים (רק אחד)",
+  "category": "קטגוריה מהרשימה: meat_fish, pasta_sauces, sides, salads, soups, desserts, holidays",
+  "ingredientsHe": [
+    {{"name": "שם המרכיב", "amount": מספר, "unit": "יחידה", "category": "קטגוריית מרכיב"}}
+  ],
+  "ingredientsEn": [
+    {{"name": "Ingredient name", "amount": number, "unit": "unit", "category": "Ingredient category"}}
+  ],
+  "instructionsHe": ["שלב 1", "שלב 2", ...],
+  "instructionsEn": ["Step 1", "Step 2", ...]
+}}
+
+קטגוריות המרכיבים בעברית: בשר ודגים, ירקות, פירות, דגנים ופחמימות, מוצרי חלב, רטבים ותבלינים, אגוזים וזרעים, משקאות
+קטגוריות המרכיבים באנגלית: Meat & Fish, Vegetables, Fruits, Grains & Carbs, Dairy Products, Sauces & Seasonings, Nuts & Seeds, Beverages
+
+חשוב:
+1. אם המתכון כתוב רק בעברית, תתרגם גם לאנגלית
+2. אם המתכון כתוב רק באנגלית, תתרגם גם לעברית
+3. בחר אימוג'י מתאים לפי סוג המנה
+4. בחר קטגוריה מתאימה מהרשימה
+5. פרסר את כל המרכיבים עם כמות, יחידה וקטגוריה
+6. פרסר את ההוראות לשלבים נפרדים
+7. אם יש כמות לא ברורה, נסה להעריך או לכתוב "לפי הטעם"
+
+החזר רק JSON, ללא טקסט נוסף."""
+
+        # Call OpenAI API
+        response = openai_client.chat.completions.create(
+            model="gpt-4o-mini",  # Using cheaper model
+            messages=[
+                {"role": "system", "content": "אתה מומחה בפרסור מתכונים. אתה מחזיר רק JSON תקני ללא טקסט נוסף."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            response_format={"type": "json_object"}
+        )
+        
+        # Parse the response
+        parsed_json = json.loads(response.choices[0].message.content)
+        
+        # Validate and structure the response
+        parsed_recipe = {
+            "nameHe": parsed_json.get("nameHe", ""),
+            "nameEn": parsed_json.get("nameEn", ""),
+            "emoji": parsed_json.get("emoji", "🍳"),
+            "category": parsed_json.get("category", "meat_fish"),
+            "ingredientsHe": parsed_json.get("ingredientsHe", []),
+            "ingredientsEn": parsed_json.get("ingredientsEn", []),
+            "instructionsHe": parsed_json.get("instructionsHe", []),
+            "instructionsEn": parsed_json.get("instructionsEn", [])
+        }
+        
+        # Validate category
+        valid_categories = ['meat_fish', 'pasta_sauces', 'sides', 'salads', 'soups', 'desserts', 'holidays']
+        if parsed_recipe['category'] not in valid_categories:
+            parsed_recipe['category'] = 'meat_fish'  # Default
+        
+        return jsonify({
+            "success": True,
+            "parsedRecipe": parsed_recipe
+        }), 200
+        
+    except json.JSONDecodeError as e:
+        return jsonify({"error": f"Failed to parse AI response: {str(e)}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Error parsing recipe: {str(e)}"}), 500
 
 if __name__ == '__main__':
     # Only use Flask's development server for local development
