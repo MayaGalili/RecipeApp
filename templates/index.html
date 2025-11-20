@@ -140,7 +140,16 @@
     <h2 id="shopping-list-title" class="text-2xl font-semibold text-gray-800 mb-6">רשימת קניות</h2>
     <div id="shopping-list" class="space-y-2"><!-- Shopping list will be populated by JavaScript -->
     </div>
-    <div class="mt-6 flex gap-3"><button id="print-btn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors"> <span id="print-text">🖨️ הדפס רשימת קניות</span> </button> <button id="reset-btn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors"> <span id="reset-text">🔄 איפוס סימונים</span> </button>
+    <div class="mt-6 flex gap-3 flex-wrap">
+      <button id="print-btn" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors min-w-[150px]">
+        <span id="print-text">🖨️ הדפס רשימת קניות</span>
+      </button>
+      <button id="copy-clipboard-btn" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors min-w-[150px]">
+        <span id="copy-clipboard-text">📋 העתק ללוח</span>
+      </button>
+      <button id="reset-btn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors min-w-[150px]">
+        <span id="reset-text">🔄 איפוס סימונים</span>
+      </button>
     </div>
    </div>
   </div>
@@ -157,6 +166,7 @@
                 instructions_title: "הוראות הכנה",
                 shopping_list_title: "רשימת קניות",
                 print_text: "🖨️ הדפס רשימת קניות",
+                copy_clipboard_text: "📋 העתק ללוח",
                 reset_text: "🔄 איפוס סימונים",
                 servings_text: "מנות"
             },
@@ -170,6 +180,7 @@
                 instructions_title: "Instructions",
                 shopping_list_title: "Shopping List",
                 print_text: "🖨️ Print Shopping List",
+                copy_clipboard_text: "📋 Copy to Clipboard",
                 reset_text: "🔄 Reset Selections",
                 servings_text: "servings"
             }
@@ -309,6 +320,7 @@
             document.getElementById('instructions-title').textContent = t.instructions_title;
             document.getElementById('shopping-list-title').textContent = t.shopping_list_title;
             document.getElementById('print-text').textContent = t.print_text;
+            document.getElementById('copy-clipboard-text').textContent = t.copy_clipboard_text;
             document.getElementById('reset-text').textContent = t.reset_text;
            
             // Update preset buttons
@@ -391,6 +403,7 @@
             document.getElementById('instructions-title').textContent = t.instructions_title;
             document.getElementById('shopping-list-title').textContent = t.shopping_list_title;
             document.getElementById('print-text').textContent = t.print_text;
+            document.getElementById('copy-clipboard-text').textContent = t.copy_clipboard_text;
             document.getElementById('reset-text').textContent = t.reset_text;
            
             // Update preset buttons
@@ -690,6 +703,95 @@
             printWindow.document.close();
             printWindow.print();
         });
+
+        // Copy shopping list to clipboard
+        document.getElementById('copy-clipboard-btn').addEventListener('click', async () => {
+            const recipeName = recipeTranslations[currentLanguage][currentRecipe] || currentRecipe;
+            const servingCount = document.getElementById('serving-count').textContent;
+            const t = translations[currentLanguage];
+            
+            // Build the shopping list text with checkboxes
+            let clipboardText = `${recipeName} - ${servingCount} ${t.serving_label}\n${t.shopping_list_title}\n\n`;
+            
+            // Get all shopping list items
+            const shoppingList = document.getElementById('shopping-list');
+            const categories = shoppingList.querySelectorAll('.mb-4');
+            
+            categories.forEach(categoryDiv => {
+                const categoryTitle = categoryDiv.querySelector('h3').textContent;
+                clipboardText += `${categoryTitle}:\n`;
+                
+                const items = categoryDiv.querySelectorAll('.shopping-item');
+                items.forEach(itemDiv => {
+                    const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+                    const label = itemDiv.querySelector('label');
+                    const itemName = label.querySelector('span:first-child').textContent;
+                    const itemAmount = label.querySelector('span:last-child').textContent;
+                    
+                    // Use ☐ for unchecked, ☑ for checked
+                    const checkboxSymbol = checkbox.checked ? '☑' : '☐';
+                    clipboardText += `${checkboxSymbol} ${itemName} - ${itemAmount}\n`;
+                });
+                
+                clipboardText += '\n';
+            });
+            
+            // Copy to clipboard
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(clipboardText);
+                    showCopyNotification('הרשימה הועתקה ללוח!');
+                } catch (err) {
+                    fallbackCopyToClipboard(clipboardText);
+                }
+            } else {
+                fallbackCopyToClipboard(clipboardText);
+            }
+        });
+
+        // Fallback copy function
+        function fallbackCopyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopyNotification('הרשימה הועתקה ללוח!');
+                } else {
+                    showCopyNotification('לא ניתן להעתיק. נסי להעתיק ידנית.', true);
+                }
+            } catch (err) {
+                showCopyNotification('לא ניתן להעתיק. נסי להעתיק ידנית.', true);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Show copy notification
+        function showCopyNotification(message, isError = false) {
+            const existing = document.getElementById('copy-notification');
+            if (existing) {
+                existing.remove();
+            }
+
+            const notification = document.createElement('div');
+            notification.id = 'copy-notification';
+            notification.className = `fixed top-4 left-1/2 transform -translate-x-1/2 bg-${isError ? 'red' : 'green'}-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 fade-in text-center`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
 
         // Reset checkboxes functionality
         document.getElementById('reset-btn').addEventListener('click', () => {
