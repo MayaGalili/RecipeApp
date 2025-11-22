@@ -503,6 +503,8 @@
                     const button = document.createElement('button');
                     const isActive = recipeKey === currentRecipe;
                     button.className = `recipe-button w-full p-4 bg-white border-2 rounded-lg text-center shadow-md transition-all duration-200 ${isActive ? 'active border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300 hover:shadow-lg'}`;
+                    button.style.position = 'relative';
+                    button.style.overflow = 'visible';
                     button.innerHTML = `
                         <div class="text-3xl mb-2">${recipe.emoji}</div>
                         <div class="text-sm font-medium ${isActive ? 'text-white' : 'text-gray-700'}">${recipeTranslations[currentLanguage][recipeKey]}</div>
@@ -513,9 +515,14 @@
                         updateAll();
                     });
                     
-                    // Create share button (top-left corner)
+                    // Create share button (top-right corner inside the button)
                     const shareBtn = document.createElement('button');
-                    shareBtn.className = 'absolute top-2 left-2 w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110 z-20';
+                    shareBtn.className = 'w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110';
+                    shareBtn.style.position = 'absolute';
+                    shareBtn.style.top = '0.5rem';
+                    shareBtn.style.right = '0.5rem';
+                    shareBtn.style.left = 'auto';
+                    shareBtn.style.zIndex = '20';
                     shareBtn.innerHTML = '🔗';
                     shareBtn.title = 'שתף מתכון';
                     shareBtn.style.fontSize = '0.875rem';
@@ -525,8 +532,8 @@
                         copyShareLink(recipeKey);
                     });
                     
+                    button.appendChild(shareBtn);
                     recipeContainer.appendChild(button);
-                    recipeContainer.appendChild(shareBtn);
                     
                     recipesGrid.appendChild(recipeContainer);
                 });
