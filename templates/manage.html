@@ -121,7 +121,7 @@
     <p id="free-text-desc" class="text-sm text-gray-600 mb-4 text-center">הדבק או הקלד מתכון בשפה חופשית, והמערכת תמיר אותו למבנה המתכון</p>
     <div class="space-y-4">
      <div>
-      <label id="free-text-label" class="block text-sm font-medium text-gray-700 mb-2">הדבק כאן את המתכון (עברית או אנגלית) <span class="text-xs text-gray-500 font-normal">(Ctrl+Enter לפרסור מהיר)</span></label>
+      <label id="free-text-label" class="block text-sm font-medium text-gray-700 mb-2">הדבק כאן את המתכון (עברית או אנגלית)</label>
       <textarea id="free-text-recipe" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="8" placeholder="לדוגמה:&#10;מרק אפונה&#10;&#10;מצרכים:&#10;שתי כוסות אפונה יבשה&#10;שמונה כוסות מים&#10;1 בצל חתוך לרבעים&#10;...&#10;&#10;אופן ההכנה:&#10;לטגן היטב את הבצל בסיר עמוק&#10;להוסיף את האפונה ולקצת לטגן&#10;..."></textarea>
      </div>
      <button id="parse-recipe-btn" type="button" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 mb-4 shadow-md hover:shadow-lg">
@@ -142,8 +142,8 @@
     </div>
    </div><!-- Add Recipe Form -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-    <h2 id="add-recipe-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">הוסף מתכון חדש</h2>
-    <button id="toggle-form-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 mb-4">+ הוסף מתכון חדש</button>
+    <h2 id="add-recipe-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">הוסף מתכון באפשרות מפורטת יותר</h2>
+    <button id="toggle-form-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 mb-4">+ הוסף מתכון באפשרות מפורטת יותר</button>
     <div id="add-recipe-form" class="hidden">
      <form id="recipe-form" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -299,9 +299,9 @@
                 parse_steps_count: "מספר שלבים:",
                 parse_approve: "אשר ומלא טופס",
                 parse_reject: "בטל",
-                add_recipe_title: "הוסף מתכון חדש",
+                add_recipe_title: "הוסף מתכון באפשרות מפורטת יותר",
                 edit_recipe_title: "ערוך מתכון",
-                toggle_form_btn: "+ הוסף מתכון חדש",
+                toggle_form_btn: "+ הוסף מתכון באפשרות מפורטת יותר",
                 recipe_name_he: "שם המתכון (עברית)",
                 recipe_name_en: "Recipe Name (English)",
                 emoji_label: "אימוג'י",
@@ -352,9 +352,9 @@
                 parse_steps_count: "Number of steps:",
                 parse_approve: "Approve and Fill Form",
                 parse_reject: "Cancel",
-                add_recipe_title: "Add New Recipe",
+                add_recipe_title: "Add Recipe (Detailed Option)",
                 edit_recipe_title: "Edit Recipe",
-                toggle_form_btn: "+ Add New Recipe",
+                toggle_form_btn: "+ Add Recipe (Detailed Option)",
                 recipe_name_he: "Recipe Name (Hebrew)",
                 recipe_name_en: "Recipe Name (English)",
                 emoji_label: "Emoji",
@@ -555,7 +555,7 @@
             document.getElementById('back-to-home').textContent = t.back_to_home;
             document.getElementById('free-text-title').textContent = t.free_text_title;
             document.getElementById('free-text-desc').textContent = t.free_text_desc;
-            document.getElementById('free-text-label').innerHTML = t.free_text_label + ' <span class="text-xs text-gray-500 font-normal">(Ctrl+Enter לפרסור מהיר)</span>';
+            document.getElementById('free-text-label').textContent = t.free_text_label;
             document.getElementById('free-text-recipe').placeholder = t.free_text_placeholder;
             document.getElementById('parse-btn-text').textContent = t.parse_btn;
             document.getElementById('parse-btn-loading').textContent = t.parse_loading;

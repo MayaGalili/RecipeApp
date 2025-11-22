@@ -121,7 +121,7 @@
     </div>
    </div><!-- Navigation to Manage Page -->
    <div class="text-center mb-8">
-    <a href="{{ url_for('manage') }}" id="manage-recipes-btn" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md">✍🏻 ניהול מתכונים</a>
+    <a href="{{ url_for('manage') }}" id="manage-recipes-btn" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md text-2xl" title="ניהול מתכונים">✍🏻</a>
    </div><!-- Serving Size Selector -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
     <h2 id="serving-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מספר מנות</h2>
@@ -176,7 +176,7 @@
                 copy_clipboard_text: "📋 העתק ללוח",
                 reset_text: "🔄 איפוס סימונים",
                 servings_text: "מנות",
-                manage_recipes: "✍🏻 ניהול מתכונים"
+                manage_recipes: "✍🏻"
             },
             en: {
                 recipe_title: "Recipes & Enjoy",
@@ -191,7 +191,7 @@
                 copy_clipboard_text: "📋 Copy to Clipboard",
                 reset_text: "🔄 Reset Selections",
                 servings_text: "servings",
-                manage_recipes: "✍🏻 Manage Recipes"
+                manage_recipes: "✍🏻"
             }
         };
 
@@ -332,7 +332,10 @@
             document.getElementById('copy-clipboard-text').textContent = t.copy_clipboard_text;
             document.getElementById('reset-text').textContent = t.reset_text;
             const manageBtn = document.getElementById('manage-recipes-btn');
-            if (manageBtn) manageBtn.textContent = t.manage_recipes;
+            if (manageBtn) {
+                manageBtn.textContent = t.manage_recipes;
+                manageBtn.title = currentLanguage === 'he' ? 'ניהול מתכונים' : 'Manage Recipes';
+            }
            
             // Update preset buttons
             updatePresetButtons();
@@ -417,7 +420,10 @@
             document.getElementById('copy-clipboard-text').textContent = t.copy_clipboard_text;
             document.getElementById('reset-text').textContent = t.reset_text;
             const manageBtn = document.getElementById('manage-recipes-btn');
-            if (manageBtn) manageBtn.textContent = t.manage_recipes;
+            if (manageBtn) {
+                manageBtn.textContent = t.manage_recipes;
+                manageBtn.title = currentLanguage === 'he' ? 'ניהול מתכונים' : 'Manage Recipes';
+            }
            
             // Update preset buttons
             updatePresetButtons();
