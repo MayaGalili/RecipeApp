@@ -6,6 +6,7 @@ Handles serving static files and API endpoints for adding recipes
 
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 import json
 import os
 from openai import OpenAI
@@ -17,6 +18,69 @@ load_dotenv()
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)  # Enable CORS for all routes
 
+# Database configuration
+# Use PostgreSQL from Render if available, otherwise fall back to SQLite for local development
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    # Render PostgreSQL URL format: postgresql://user:pass@host:port/dbname
+    # SQLAlchemy needs postgresql:// (not postgres://)
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Fallback to SQLite for local development
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///recipes.db'
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Database Models
+class Recipe(db.Model):
+    __tablename__ = 'recipes'
+    recipe_key = db.Column(db.String(255), primary_key=True)
+    emoji = db.Column(db.String(10), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    ingredients_he = db.Column(db.Text, nullable=False)  # JSON string
+    ingredients_en = db.Column(db.Text, nullable=False)  # JSON string
+    instructions_he = db.Column(db.Text, nullable=False)  # JSON string
+    instructions_en = db.Column(db.Text, nullable=False)  # JSON string
+    category = db.Column(db.String(50), nullable=False)
+    
+    def to_dict(self):
+        return {
+            'emoji': self.emoji,
+            'name': self.name,
+            'ingredients': {
+                'he': json.loads(self.ingredients_he),
+                'en': json.loads(self.ingredients_en)
+            },
+            'instructions': {
+                'he': json.loads(self.instructions_he),
+                'en': json.loads(self.instructions_en)
+            }
+        }
+
+class RecipeTranslation(db.Model):
+    __tablename__ = 'recipe_translations'
+    id = db.Column(db.Integer, primary_key=True)
+    recipe_key = db.Column(db.String(255), db.ForeignKey('recipes.recipe_key', ondelete='CASCADE'), nullable=False)
+    language = db.Column(db.String(2), nullable=False)  # 'he' or 'en'
+    translation = db.Column(db.String(255), nullable=False)
+    
+    __table_args__ = (db.UniqueConstraint('recipe_key', 'language', name='unique_recipe_lang'),)
+
+class RecipeCategory(db.Model):
+    __tablename__ = 'recipe_categories'
+    id = db.Column(db.Integer, primary_key=True)
+    recipe_key = db.Column(db.String(255), db.ForeignKey('recipes.recipe_key', ondelete='CASCADE'), nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    
+    __table_args__ = (db.UniqueConstraint('recipe_key', 'category', name='unique_recipe_category'),)
+
+# Initialize database tables
+with app.app_context():
+    db.create_all()
+
 # OpenAI API configuration
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 if OPENAI_API_KEY:
@@ -25,22 +89,12 @@ else:
     openai_client = None
     print("Warning: OPENAI_API_KEY not set. Recipe parsing will not work.")
 
-# Create data directory if it doesn't exist
-DATA_DIR = 'data'
-os.makedirs(DATA_DIR, exist_ok=True)
-
-# Path to recipes.json in data directory
-RECIPES_FILE = os.path.join(DATA_DIR, 'recipes.json')
-
 def load_recipes():
-    """Load recipes from JSON file"""
-    if os.path.exists(RECIPES_FILE):
-        with open(RECIPES_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {
-        "recipes": {},
-        "recipeTranslations": {"he": {}, "en": {}},
-        "recipeCategoryMap": {
+    """Load recipes from database"""
+    try:
+        recipes = {}
+        recipe_translations = {"he": {}, "en": {}}
+        recipe_category_map = {
             "meat_fish": [],
             "pasta_sauces": [],
             "sides": [],
@@ -49,12 +103,46 @@ def load_recipes():
             "desserts": [],
             "holidays": []
         }
-    }
-
-def save_recipes(data):
-    """Save recipes to JSON file"""
-    with open(RECIPES_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        # Load all recipes
+        all_recipes = Recipe.query.all()
+        for recipe in all_recipes:
+            recipes[recipe.recipe_key] = recipe.to_dict()
+        
+        # Load translations
+        all_translations = RecipeTranslation.query.all()
+        for trans in all_translations:
+            if trans.language in recipe_translations:
+                recipe_translations[trans.language][trans.recipe_key] = trans.translation
+        
+        # Load categories
+        all_categories = RecipeCategory.query.all()
+        for cat in all_categories:
+            if cat.category in recipe_category_map:
+                if cat.recipe_key not in recipe_category_map[cat.category]:
+                    recipe_category_map[cat.category].append(cat.recipe_key)
+        
+        return {
+            "recipes": recipes,
+            "recipeTranslations": recipe_translations,
+            "recipeCategoryMap": recipe_category_map
+        }
+    except Exception as e:
+        print(f"Error loading recipes from database: {e}")
+        # Return empty structure if database error
+        return {
+            "recipes": {},
+            "recipeTranslations": {"he": {}, "en": {}},
+            "recipeCategoryMap": {
+                "meat_fish": [],
+                "pasta_sauces": [],
+                "sides": [],
+                "salads": [],
+                "soups": [],
+                "desserts": [],
+                "holidays": []
+            }
+        }
 
 @app.route('/')
 def index():
@@ -90,12 +178,13 @@ def share_recipe(recipe_key):
 
 @app.route('/recipes.json')
 def serve_recipes():
-    """Serve recipes.json file"""
-    return send_from_directory(DATA_DIR, 'recipes.json')
+    """Serve recipes as JSON from database"""
+    recipes_data = load_recipes()
+    return jsonify(recipes_data)
 
 @app.route('/api/add-recipe', methods=['POST'])
 def add_recipe():
-    """Add a new recipe to the recipes.json file"""
+    """Add a new recipe to the database"""
     try:
         data = request.json
         
@@ -110,11 +199,8 @@ def add_recipe():
         if not recipe_key or not recipe or not category:
             return jsonify({"error": "Missing required fields"}), 400
         
-        # Load existing recipes
-        recipes_data = load_recipes()
-        
         # Check if recipe key already exists
-        if recipe_key in recipes_data['recipes']:
+        if Recipe.query.get(recipe_key):
             return jsonify({"error": f"Recipe with key '{recipe_key}' already exists"}), 400
         
         # Validate category
@@ -122,22 +208,32 @@ def add_recipe():
         if category not in valid_categories:
             return jsonify({"error": "Invalid category"}), 400
         
-        # Add recipe
-        recipes_data['recipes'][recipe_key] = recipe
+        # Create recipe record
+        new_recipe = Recipe(
+            recipe_key=recipe_key,
+            emoji=recipe.get('emoji', '🍳'),
+            name=recipe.get('name', ''),
+            ingredients_he=json.dumps(recipe.get('ingredients', {}).get('he', []), ensure_ascii=False),
+            ingredients_en=json.dumps(recipe.get('ingredients', {}).get('en', []), ensure_ascii=False),
+            instructions_he=json.dumps(recipe.get('instructions', {}).get('he', []), ensure_ascii=False),
+            instructions_en=json.dumps(recipe.get('instructions', {}).get('en', []), ensure_ascii=False),
+            category=category
+        )
+        db.session.add(new_recipe)
         
         # Add translations
         if 'he' in translations:
-            recipes_data['recipeTranslations']['he'][recipe_key] = translations['he']
+            trans_he = RecipeTranslation(recipe_key=recipe_key, language='he', translation=translations['he'])
+            db.session.add(trans_he)
         if 'en' in translations:
-            recipes_data['recipeTranslations']['en'][recipe_key] = translations['en']
+            trans_en = RecipeTranslation(recipe_key=recipe_key, language='en', translation=translations['en'])
+            db.session.add(trans_en)
         
         # Add to category
-        if category not in recipes_data['recipeCategoryMap']:
-            recipes_data['recipeCategoryMap'][category] = []
-        recipes_data['recipeCategoryMap'][category].append(recipe_key)
+        recipe_category = RecipeCategory(recipe_key=recipe_key, category=category)
+        db.session.add(recipe_category)
         
-        # Save to file
-        save_recipes(recipes_data)
+        db.session.commit()
         
         return jsonify({
             "success": True,
@@ -148,11 +244,12 @@ def add_recipe():
     except json.JSONDecodeError:
         return jsonify({"error": "Invalid JSON"}), 400
     except Exception as e:
+        db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/update-recipe', methods=['PUT'])
 def update_recipe():
-    """Update an existing recipe in the recipes.json file"""
+    """Update an existing recipe in the database"""
     try:
         data = request.json
         
@@ -167,11 +264,9 @@ def update_recipe():
         if not recipe_key or not recipe or not category:
             return jsonify({"error": "Missing required fields"}), 400
         
-        # Load existing recipes
-        recipes_data = load_recipes()
-        
         # Check if recipe exists
-        if recipe_key not in recipes_data['recipes']:
+        existing_recipe = Recipe.query.get(recipe_key)
+        if not existing_recipe:
             return jsonify({"error": f"Recipe with key '{recipe_key}' not found"}), 404
         
         # Validate category
@@ -179,41 +274,42 @@ def update_recipe():
         if category not in valid_categories:
             return jsonify({"error": "Invalid category"}), 400
         
-        # Get old category to remove from
-        old_category = None
-        for cat in recipes_data['recipeCategoryMap']:
-            if recipe_key in recipes_data['recipeCategoryMap'][cat]:
-                old_category = cat
-                break
-        
         # Update recipe
-        recipes_data['recipes'][recipe_key] = recipe
+        existing_recipe.emoji = recipe.get('emoji', '🍳')
+        existing_recipe.name = recipe.get('name', '')
+        existing_recipe.ingredients_he = json.dumps(recipe.get('ingredients', {}).get('he', []), ensure_ascii=False)
+        existing_recipe.ingredients_en = json.dumps(recipe.get('ingredients', {}).get('en', []), ensure_ascii=False)
+        existing_recipe.instructions_he = json.dumps(recipe.get('instructions', {}).get('he', []), ensure_ascii=False)
+        existing_recipe.instructions_en = json.dumps(recipe.get('instructions', {}).get('en', []), ensure_ascii=False)
+        existing_recipe.category = category
         
         # Update translations
         if 'he' in translations:
-            recipes_data['recipeTranslations']['he'][recipe_key] = translations['he']
+            trans_he = RecipeTranslation.query.filter_by(recipe_key=recipe_key, language='he').first()
+            if trans_he:
+                trans_he.translation = translations['he']
+            else:
+                trans_he = RecipeTranslation(recipe_key=recipe_key, language='he', translation=translations['he'])
+                db.session.add(trans_he)
+        
         if 'en' in translations:
-            recipes_data['recipeTranslations']['en'][recipe_key] = translations['en']
+            trans_en = RecipeTranslation.query.filter_by(recipe_key=recipe_key, language='en').first()
+            if trans_en:
+                trans_en.translation = translations['en']
+            else:
+                trans_en = RecipeTranslation(recipe_key=recipe_key, language='en', translation=translations['en'])
+                db.session.add(trans_en)
         
-        # Update category if changed
-        if old_category and old_category != category:
-            # Remove from old category
-            if recipe_key in recipes_data['recipeCategoryMap'][old_category]:
-                recipes_data['recipeCategoryMap'][old_category].remove(recipe_key)
-            # Add to new category
-            if category not in recipes_data['recipeCategoryMap']:
-                recipes_data['recipeCategoryMap'][category] = []
-            if recipe_key not in recipes_data['recipeCategoryMap'][category]:
-                recipes_data['recipeCategoryMap'][category].append(recipe_key)
-        elif not old_category:
-            # Recipe wasn't in any category, add it
-            if category not in recipes_data['recipeCategoryMap']:
-                recipes_data['recipeCategoryMap'][category] = []
-            if recipe_key not in recipes_data['recipeCategoryMap'][category]:
-                recipes_data['recipeCategoryMap'][category].append(recipe_key)
+        # Update category
+        old_category = RecipeCategory.query.filter_by(recipe_key=recipe_key).first()
+        if old_category:
+            if old_category.category != category:
+                old_category.category = category
+        else:
+            recipe_category = RecipeCategory(recipe_key=recipe_key, category=category)
+            db.session.add(recipe_category)
         
-        # Save to file
-        save_recipes(recipes_data)
+        db.session.commit()
         
         return jsonify({
             "success": True,
@@ -224,11 +320,12 @@ def update_recipe():
     except json.JSONDecodeError:
         return jsonify({"error": "Invalid JSON"}), 400
     except Exception as e:
+        db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/delete-recipe', methods=['DELETE'])
 def delete_recipe():
-    """Delete a recipe from the recipes.json file"""
+    """Delete a recipe from the database"""
     try:
         data = request.json
         
@@ -240,30 +337,14 @@ def delete_recipe():
         if not recipe_key:
             return jsonify({"error": "Missing recipe key"}), 400
         
-        # Load existing recipes
-        recipes_data = load_recipes()
-        
         # Check if recipe exists
-        if recipe_key not in recipes_data['recipes']:
+        recipe = Recipe.query.get(recipe_key)
+        if not recipe:
             return jsonify({"error": f"Recipe with key '{recipe_key}' not found"}), 404
         
-        # Remove recipe from recipes
-        del recipes_data['recipes'][recipe_key]
-        
-        # Remove translations
-        if recipe_key in recipes_data['recipeTranslations']['he']:
-            del recipes_data['recipeTranslations']['he'][recipe_key]
-        if recipe_key in recipes_data['recipeTranslations']['en']:
-            del recipes_data['recipeTranslations']['en'][recipe_key]
-        
-        # Remove from category map
-        for category in recipes_data['recipeCategoryMap']:
-            if recipe_key in recipes_data['recipeCategoryMap'][category]:
-                recipes_data['recipeCategoryMap'][category].remove(recipe_key)
-                break
-        
-        # Save to file
-        save_recipes(recipes_data)
+        # Delete recipe (cascades will delete translations and categories)
+        db.session.delete(recipe)
+        db.session.commit()
         
         return jsonify({
             "success": True,
@@ -273,6 +354,7 @@ def delete_recipe():
     except json.JSONDecodeError:
         return jsonify({"error": "Invalid JSON"}), 400
     except Exception as e:
+        db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/parse-recipe', methods=['POST'])
