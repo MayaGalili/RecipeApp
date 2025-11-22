@@ -653,6 +653,8 @@
                     
                     const button = document.createElement('button');
                     button.className = `recipe-button w-full p-4 bg-white border-2 border-gray-200 rounded-lg text-center hover:border-orange-300 shadow-md hover:shadow-lg transition-all duration-200 ${recipeKey === currentRecipe ? 'border-orange-500 bg-orange-50' : ''}`;
+                    button.style.position = 'relative';
+                    button.style.overflow = 'visible';
                     button.innerHTML = `
                         <div class="text-3xl mb-2">${recipe.emoji}</div>
                         <div class="text-sm font-medium text-gray-700">${recipeTranslations[currentLanguage][recipeKey]}</div>
@@ -662,11 +664,14 @@
                         editRecipe(recipeKey);
                     });
                     
-                    // Create delete button (top-right corner)
+                    // Create delete button (top-right corner inside the button)
                     const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl opacity-70 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110';
-                    deleteBtn.style.zIndex = '20';
+                    deleteBtn.className = 'w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl opacity-70 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110';
                     deleteBtn.style.position = 'absolute';
+                    deleteBtn.style.top = '0.5rem';
+                    deleteBtn.style.right = '0.5rem';
+                    deleteBtn.style.left = 'auto';
+                    deleteBtn.style.zIndex = '20';
                     deleteBtn.innerHTML = '🗑️';
                     deleteBtn.title = translations[currentLanguage].delete_recipe_title;
                     deleteBtn.style.fontSize = '0.875rem';
@@ -676,8 +681,8 @@
                         deleteRecipe(recipeKey);
                     });
                     
+                    button.appendChild(deleteBtn);
                     container.appendChild(button);
-                    container.appendChild(deleteBtn);
                     recipesGrid.appendChild(container);
                 });
                
