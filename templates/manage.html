@@ -109,7 +109,7 @@
     <p id="subtitle" class="text-gray-600 text-lg">בחר מתכון ומספר מנות וקבל רשימת קניות מותאמת</p>
    </div><!-- Navigation to Home Page -->
    <div class="text-center mb-6">
-    <a href="{{ url_for('index') }}" class="inline-block bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md">← חזרה לדף הראשי</a>
+    <a href="{{ url_for('index') }}" id="back-to-home" class="inline-block bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md">← חזרה לדף הראשי</a>
    </div><!-- Recipe Selector -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
     <h2 id="recipe-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">ניהול מתכונים</h2>
@@ -117,11 +117,11 @@
     </div>
    </div><!-- Free Text Recipe Parser -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">הוסף מתכון מטקסט חופשי</h2>
-    <p class="text-sm text-gray-600 mb-4 text-center">הדבק או הקלד מתכון בשפה חופשית, והמערכת תמיר אותו למבנה המתכון</p>
+    <h2 id="free-text-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">הוסף מתכון מטקסט חופשי</h2>
+    <p id="free-text-desc" class="text-sm text-gray-600 mb-4 text-center">הדבק או הקלד מתכון בשפה חופשית, והמערכת תמיר אותו למבנה המתכון</p>
     <div class="space-y-4">
      <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">הדבק כאן את המתכון (עברית או אנגלית) <span class="text-xs text-gray-500 font-normal">(Ctrl+Enter לפרסור מהיר)</span></label>
+      <label id="free-text-label" class="block text-sm font-medium text-gray-700 mb-2">הדבק כאן את המתכון (עברית או אנגלית) <span class="text-xs text-gray-500 font-normal">(Ctrl+Enter לפרסור מהיר)</span></label>
       <textarea id="free-text-recipe" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="8" placeholder="לדוגמה:&#10;מרק אפונה&#10;&#10;מצרכים:&#10;שתי כוסות אפונה יבשה&#10;שמונה כוסות מים&#10;1 בצל חתוך לרבעים&#10;...&#10;&#10;אופן ההכנה:&#10;לטגן היטב את הבצל בסיר עמוק&#10;להוסיף את האפונה ולקצת לטגן&#10;..."></textarea>
      </div>
      <button id="parse-recipe-btn" type="button" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 mb-4 shadow-md hover:shadow-lg">
@@ -130,7 +130,7 @@
      </button>
      <div id="parse-result" class="hidden">
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-       <h3 class="font-semibold text-blue-800 mb-2">המתכון שפורש:</h3>
+       <h3 id="parse-result-title" class="font-semibold text-blue-800 mb-2">המתכון שפורש:</h3>
        <div id="parse-preview" class="text-sm text-gray-700"></div>
       </div>
       <div class="flex gap-4">
@@ -148,19 +148,19 @@
      <form id="recipe-form" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
        <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">שם המתכון (עברית)</label>
+        <label id="recipe-name-he-label" class="block text-sm font-medium text-gray-700 mb-2">שם המתכון (עברית)</label>
         <input type="text" id="recipe-name-he" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" required>
        </div>
        <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Recipe Name (English)</label>
+        <label id="recipe-name-en-label" class="block text-sm font-medium text-gray-700 mb-2">Recipe Name (English)</label>
         <input type="text" id="recipe-name-en" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" required>
        </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
        <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">אימוג'י</label>
+        <label id="emoji-label" class="block text-sm font-medium text-gray-700 mb-2">אימוג'י</label>
         <select id="recipe-emoji" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-2xl text-center" required>
-         <option value="">בחר אימוג'י</option>
+         <option value="" id="emoji-select-option">בחר אימוג'י</option>
          <option value="🍳">🍳</option>
          <option value="🥞">🥞</option>
          <option value="🧇">🧇</option>
@@ -239,7 +239,7 @@
         </select>
        </div>
        <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">קטגוריה</label>
+        <label id="category-label" class="block text-sm font-medium text-gray-700 mb-2">קטגוריה</label>
         <select id="recipe-category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" required>
          <option value="meat_fish">בשר/דגים</option>
          <option value="pasta_sauces">פסטה ורטבים</option>
@@ -252,23 +252,23 @@
        </div>
       </div>
       <div>
-       <label class="block text-sm font-medium text-gray-700 mb-2">  מרכיבים עבור יחידה אחת (עברית) - כל שורה: שם, כמות, יחידה, קטגוריה (מופרדים בפסיק)</label>
+       <label id="ingredients-he-label" class="block text-sm font-medium text-gray-700 mb-2">  מרכיבים עבור יחידה אחת (עברית) - כל שורה: שם, כמות, יחידה, קטגוריה (מופרדים בפסיק)</label>
        <textarea id="ingredients-he" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="6" placeholder="קמח, 200, גרם, דגנים ופחמימות&#10;ביצים, 2, יחידות, מוצרי חלב"></textarea>
       </div>
       <div>
-       <label class="block text-sm font-medium text-gray-700 mb-2">Ingredients for single dish (English) - Each line: name, amount, unit, category (comma-separated)</label>
+       <label id="ingredients-en-label" class="block text-sm font-medium text-gray-700 mb-2">Ingredients for single dish (English) - Each line: name, amount, unit, category (comma-separated)</label>
        <textarea id="ingredients-en" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="6" placeholder="Flour, 200, g, Grains &amp; Carbs&#10;Eggs, 2, pieces, Dairy Products"></textarea>
       </div>
       <div>
-       <label class="block text-sm font-medium text-gray-700 mb-2">הוראות הכנה (עברית) - כל שורה = שלב אחד</label>
+       <label id="instructions-he-label" class="block text-sm font-medium text-gray-700 mb-2">הוראות הכנה (עברית) - כל שורה = שלב אחד</label>
        <textarea id="instructions-he" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="4" placeholder="מערבבים את כל המרכיבים&#10;מבשלים על אש בינונית"></textarea>
       </div>
       <div>
-       <label class="block text-sm font-medium text-gray-700 mb-2">Instructions (English) - Each line = one step</label>
+       <label id="instructions-en-label" class="block text-sm font-medium text-gray-700 mb-2">Instructions (English) - Each line = one step</label>
        <textarea id="instructions-en" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" rows="4" placeholder="Mix all ingredients&#10;Cook on medium heat"></textarea>
       </div>
       <div class="flex gap-4">
-       <button type="submit" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">שמור מתכון</button>
+       <button type="submit" id="save-recipe-btn" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">שמור מתכון</button>
        <button type="button" id="cancel-form-btn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">ביטול</button>
       </div>
       <div id="form-message" class="hidden mt-4 p-4 rounded-lg"></div>
@@ -281,29 +281,109 @@
         const translations = {
             he: {
                 recipe_title: "מתכונים ונהנים",
-                subtitle: "בחר מתכון ומספר מנות וקבל רשימת קניות מותאמת",
-                recipe_selector_title: "בחר מתכון",
-                serving_selector_title: "בחר מספר מנות",
-                serving_label: "מנות",
-                ingredients_title: "מרכיבי המתכון",
-                instructions_title: "הוראות הכנה",
-                shopping_list_title: "רשימת קניות",
-                print_text: "🖨️ הדפס רשימת קניות",
-                reset_text: "🔄 איפוס סימונים",
-                servings_text: "מנות"
+                subtitle: "ניהול והוספת מתכונים",
+                recipe_selector_title: "ניהול מתכונים",
+                back_to_home: "← חזרה לדף הראשי",
+                free_text_title: "הוסף מתכון מטקסט חופשי",
+                free_text_desc: "הדבק או הקלד מתכון בשפה חופשית, והמערכת תמיר אותו למבנה המתכון",
+                free_text_label: "הדבק כאן את המתכון (עברית או אנגלית)",
+                free_text_placeholder: "לדוגמה:\nמרק אפונה\n\nמצרכים:\nשתי כוסות אפונה יבשה\nשמונה כוסות מים\n1 בצל חתוך לרבעים\n...\n\nאופן ההכנה:\nלטגן היטב את הבצל בסיר עמוק\nלהוסיף את האפונה ולקצת לטגן\n...",
+                parse_btn: "🤖 פרסם מתכון עם AI",
+                parse_loading: "⏳ מעבד...",
+                parse_result_title: "המתכון שפורש:",
+                parse_name_he: "שם (עברית):",
+                parse_name_en: "שם (אנגלית):",
+                parse_category: "קטגוריה:",
+                parse_emoji: "אימוג'י:",
+                parse_ingredients_count: "מספר מרכיבים:",
+                parse_steps_count: "מספר שלבים:",
+                parse_approve: "אשר ומלא טופס",
+                parse_reject: "בטל",
+                add_recipe_title: "הוסף מתכון חדש",
+                edit_recipe_title: "ערוך מתכון",
+                toggle_form_btn: "+ הוסף מתכון חדש",
+                recipe_name_he: "שם המתכון (עברית)",
+                recipe_name_en: "Recipe Name (English)",
+                emoji_label: "אימוג'י",
+                emoji_select: "בחר אימוג'י",
+                category_label: "קטגוריה",
+                ingredients_he_label: "מרכיבים עבור יחידה אחת (עברית) - כל שורה: שם, כמות, יחידה, קטגוריה (מופרדים בפסיק)",
+                ingredients_he_placeholder: "קמח, 200, גרם, דגנים ופחמימות\nביצים, 2, יחידות, מוצרי חלב",
+                ingredients_en_label: "Ingredients for single dish (English) - Each line: name, amount, unit, category (comma-separated)",
+                ingredients_en_placeholder: "Flour, 200, g, Grains & Carbs\nEggs, 2, pieces, Dairy Products",
+                instructions_he_label: "הוראות הכנה (עברית) - כל שורה = שלב אחד",
+                instructions_he_placeholder: "מערבבים את כל המרכיבים\nמבשלים על אש בינונית",
+                instructions_en_label: "Instructions (English) - Each line = one step",
+                instructions_en_placeholder: "Mix all ingredients\nCook on medium heat",
+                save_recipe: "שמור מתכון",
+                cancel: "ביטול",
+                delete_recipe_title: "מחק מתכון",
+                delete_confirm: "האם אתה בטוח שברצונך למחוק את המתכון \"{name}\"?",
+                delete_success: "המתכון \"{name}\" נמחק בהצלחה",
+                delete_error: "שגיאה במחיקת המתכון: {error}",
+                save_success_new: "המתכון \"{name}\" נוסף בהצלחה! 🎉",
+                save_success_edit: "המתכון \"{name}\" עודכן בהצלחה! 🎉",
+                save_error: "שגיאה בשמירת המתכון: {error}",
+                validation_required: "אנא מלא את כל השדות הנדרשים",
+                validation_ingredients: "אנא הוסף לפחות מרכיב אחד בכל שפה",
+                parse_error_empty: "אנא הכנס מתכון",
+                parse_error: "שגיאה: {error}",
+                link_copied: "הקישור הועתק ללוח!",
+                link_copy_error: "לא ניתן להעתיק. הקישור: {link}",
+                not_recognized: "לא זוהה"
             },
             en: {
                 recipe_title: "Recipes & Enjoy",
-                subtitle: "Choose a recipe and serving size to get a customized shopping list",
-                recipe_selector_title: "Choose Recipe",
-                serving_selector_title: "Choose Serving Size",
-                serving_label: "servings",
-                ingredients_title: "Recipe Ingredients",
-                instructions_title: "Instructions",
-                shopping_list_title: "Shopping List",
-                print_text: "🖨️ Print Shopping List",
-                reset_text: "🔄 Reset Selections",
-                servings_text: "servings"
+                subtitle: "Manage and add recipes",
+                recipe_selector_title: "Manage Recipes",
+                back_to_home: "← Back to Home",
+                free_text_title: "Add Recipe from Free Text",
+                free_text_desc: "Paste or type a recipe in free text, and the system will convert it to the recipe structure",
+                free_text_label: "Paste recipe here (Hebrew or English)",
+                free_text_placeholder: "For example:\nPea Soup\n\nIngredients:\nTwo cups of dried peas\nEight cups of water\n1 onion cut into quarters\n...\n\nInstructions:\nFry the onion well in a deep pot\nAdd the peas and fry a bit\n...",
+                parse_btn: "🤖 Parse Recipe with AI",
+                parse_loading: "⏳ Processing...",
+                parse_result_title: "Parsed Recipe:",
+                parse_name_he: "Name (Hebrew):",
+                parse_name_en: "Name (English):",
+                parse_category: "Category:",
+                parse_emoji: "Emoji:",
+                parse_ingredients_count: "Number of ingredients:",
+                parse_steps_count: "Number of steps:",
+                parse_approve: "Approve and Fill Form",
+                parse_reject: "Cancel",
+                add_recipe_title: "Add New Recipe",
+                edit_recipe_title: "Edit Recipe",
+                toggle_form_btn: "+ Add New Recipe",
+                recipe_name_he: "Recipe Name (Hebrew)",
+                recipe_name_en: "Recipe Name (English)",
+                emoji_label: "Emoji",
+                emoji_select: "Select Emoji",
+                category_label: "Category",
+                ingredients_he_label: "Ingredients for single dish (Hebrew) - Each line: name, amount, unit, category (comma-separated)",
+                ingredients_he_placeholder: "Flour, 200, g, Grains & Carbs\nEggs, 2, pieces, Dairy Products",
+                ingredients_en_label: "Ingredients for single dish (English) - Each line: name, amount, unit, category (comma-separated)",
+                ingredients_en_placeholder: "Flour, 200, g, Grains & Carbs\nEggs, 2, pieces, Dairy Products",
+                instructions_he_label: "Instructions (Hebrew) - Each line = one step",
+                instructions_he_placeholder: "Mix all ingredients\nCook on medium heat",
+                instructions_en_label: "Instructions (English) - Each line = one step",
+                instructions_en_placeholder: "Mix all ingredients\nCook on medium heat",
+                save_recipe: "Save Recipe",
+                cancel: "Cancel",
+                delete_recipe_title: "Delete Recipe",
+                delete_confirm: "Are you sure you want to delete the recipe \"{name}\"?",
+                delete_success: "Recipe \"{name}\" deleted successfully",
+                delete_error: "Error deleting recipe: {error}",
+                save_success_new: "Recipe \"{name}\" added successfully! 🎉",
+                save_success_edit: "Recipe \"{name}\" updated successfully! 🎉",
+                save_error: "Error saving recipe: {error}",
+                validation_required: "Please fill in all required fields",
+                validation_ingredients: "Please add at least one ingredient in each language",
+                parse_error_empty: "Please enter a recipe",
+                parse_error: "Error: {error}",
+                link_copied: "Link copied to clipboard!",
+                link_copy_error: "Cannot copy. Link: {link}",
+                not_recognized: "Not recognized"
             }
         };
 
@@ -472,6 +552,43 @@
             document.getElementById('recipe-title').textContent = t.recipe_title;
             document.getElementById('subtitle').textContent = t.subtitle;
             document.getElementById('recipe-selector-title').textContent = t.recipe_selector_title;
+            document.getElementById('back-to-home').textContent = t.back_to_home;
+            document.getElementById('free-text-title').textContent = t.free_text_title;
+            document.getElementById('free-text-desc').textContent = t.free_text_desc;
+            document.getElementById('free-text-label').innerHTML = t.free_text_label + ' <span class="text-xs text-gray-500 font-normal">(Ctrl+Enter לפרסור מהיר)</span>';
+            document.getElementById('free-text-recipe').placeholder = t.free_text_placeholder;
+            document.getElementById('parse-btn-text').textContent = t.parse_btn;
+            document.getElementById('parse-btn-loading').textContent = t.parse_loading;
+            document.getElementById('parse-result-title').textContent = t.parse_result_title;
+            document.getElementById('approve-parse-btn').textContent = t.parse_approve;
+            document.getElementById('reject-parse-btn').textContent = t.parse_reject;
+            document.getElementById('add-recipe-title').textContent = editingRecipeKey ? t.edit_recipe_title : t.add_recipe_title;
+            document.getElementById('toggle-form-btn').textContent = t.toggle_form_btn;
+            document.getElementById('recipe-name-he-label').textContent = t.recipe_name_he;
+            document.getElementById('recipe-name-en-label').textContent = t.recipe_name_en;
+            document.getElementById('emoji-label').textContent = t.emoji_label;
+            document.getElementById('emoji-select-option').textContent = t.emoji_select;
+            document.getElementById('category-label').textContent = t.category_label;
+            document.getElementById('ingredients-he-label').textContent = t.ingredients_he_label;
+            document.getElementById('ingredients-he').placeholder = t.ingredients_he_placeholder;
+            document.getElementById('ingredients-en-label').textContent = t.ingredients_en_label;
+            document.getElementById('ingredients-en').placeholder = t.ingredients_en_placeholder;
+            document.getElementById('instructions-he-label').textContent = t.instructions_he_label;
+            document.getElementById('instructions-he').placeholder = t.instructions_he_placeholder;
+            document.getElementById('instructions-en-label').textContent = t.instructions_en_label;
+            document.getElementById('instructions-en').placeholder = t.instructions_en_placeholder;
+            document.getElementById('save-recipe-btn').textContent = t.save_recipe;
+            document.getElementById('cancel-form-btn').textContent = t.cancel;
+           
+            // Update category options
+            const categorySelect = document.getElementById('recipe-category');
+            if (categorySelect) {
+                Array.from(categorySelect.options).forEach(option => {
+                    if (option.value && recipeCategories[currentLanguage][option.value]) {
+                        option.textContent = recipeCategories[currentLanguage][option.value];
+                    }
+                });
+            }
            
             // Update recipe selector
             updateRecipeSelector();
@@ -551,7 +668,7 @@
                     deleteBtn.style.zIndex = '20';
                     deleteBtn.style.position = 'absolute';
                     deleteBtn.innerHTML = '🗑️';
-                    deleteBtn.title = 'מחק מתכון';
+                    deleteBtn.title = translations[currentLanguage].delete_recipe_title;
                     deleteBtn.style.fontSize = '0.875rem';
                     deleteBtn.style.lineHeight = '1';
                     deleteBtn.addEventListener('click', (e) => {
@@ -581,9 +698,8 @@
             const recipeName = recipeTranslations[currentLanguage][recipeKey] || recipeKey;
             
             // Confirm deletion
-            const confirmMessage = currentLanguage === 'he' 
-                ? `האם אתה בטוח שברצונך למחוק את המתכון "${recipeName}"?`
-                : `Are you sure you want to delete the recipe "${recipeName}"?`;
+            const t = translations[currentLanguage];
+            const confirmMessage = t.delete_confirm.replace('{name}', recipeName);
             
             if (!confirm(confirmMessage)) {
                 return;
@@ -624,16 +740,14 @@
                 createRecipeSelector();
                 
                 // Show success message
-                const successMessage = currentLanguage === 'he'
-                    ? `המתכון "${recipeName}" נמחק בהצלחה`
-                    : `Recipe "${recipeName}" deleted successfully`;
+                const t = translations[currentLanguage];
+                const successMessage = t.delete_success.replace('{name}', recipeName);
                 alert(successMessage);
                 
             } catch (error) {
                 console.error('Error deleting recipe:', error);
-                const errorMessage = currentLanguage === 'he'
-                    ? `שגיאה במחיקת המתכון: ${error.message}`
-                    : `Error deleting recipe: ${error.message}`;
+                const t = translations[currentLanguage];
+                const errorMessage = t.delete_error.replace('{error}', error.message);
                 alert(errorMessage);
             }
         }
@@ -712,7 +826,7 @@
 
             // Validate
             if (!recipeNameHe || !recipeNameEn || !emoji || !category) {
-                showFormMessage('אנא מלא את כל השדות הנדרשים', 'error');
+                showFormMessage(translations[currentLanguage].validation_required, 'error');
                 return;
             }
 
@@ -725,7 +839,7 @@
             }
 
             if (ingredientsHe.length === 0 || ingredientsEn.length === 0) {
-                showFormMessage('אנא הוסף לפחות מרכיב אחד בכל שפה', 'error');
+                showFormMessage(translations[currentLanguage].validation_ingredients, 'error');
                 return;
             }
 
@@ -775,9 +889,10 @@
                 // Show success message
                 const recipeName = recipeNameHe;
                 const isEdit = editingRecipeKey !== null;
+                const t = translations[currentLanguage];
                 const successMessage = isEdit 
-                    ? `המתכון "${recipeName}" עודכן בהצלחה! 🎉`
-                    : `המתכון "${recipeName}" נוסף בהצלחה! 🎉`;
+                    ? t.save_success_edit.replace('{name}', recipeName)
+                    : t.save_success_new.replace('{name}', recipeName);
                 
                 showFormMessage(successMessage, 'success');
                 alert(successMessage);
@@ -796,7 +911,7 @@
                 
                 // Update form title back to "Add Recipe"
                 const formTitle = document.getElementById('add-recipe-title');
-                formTitle.textContent = currentLanguage === 'he' ? 'הוסף מתכון חדש' : 'Add New Recipe';
+                formTitle.textContent = translations[currentLanguage].add_recipe_title;
                 
                 // Wait a bit before closing form so user can see the message
                 setTimeout(() => {
@@ -808,7 +923,8 @@
                 
             } catch (error) {
                 console.error('Error saving recipe:', error);
-                showFormMessage(`שגיאה בשמירת המתכון: ${error.message}`, 'error');
+                const t = translations[currentLanguage];
+                showFormMessage(t.save_error.replace('{error}', error.message), 'error');
             }
         }
 
@@ -954,7 +1070,7 @@
             
             // Update form title
             const formTitle = document.getElementById('add-recipe-title');
-            formTitle.textContent = currentLanguage === 'he' ? 'ערוך מתכון' : 'Edit Recipe';
+            formTitle.textContent = translations[currentLanguage].edit_recipe_title;
             
             // Scroll to form
             document.getElementById('add-recipe-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -976,8 +1092,10 @@
             parseResult.classList.add('hidden');
             parseError.classList.add('hidden');
             
+            const t = translations[currentLanguage];
+            
             if (!freeText) {
-                parseError.textContent = 'אנא הכנס מתכון';
+                parseError.textContent = t.parse_error_empty;
                 parseError.classList.remove('hidden');
                 return;
             }
@@ -1006,20 +1124,23 @@
                 parsedRecipeData = data.parsedRecipe;
                 
                 // Display preview
+                const t = translations[currentLanguage];
+                const notRecognized = t.not_recognized;
                 let previewHtml = `<div class="space-y-2">`;
-                previewHtml += `<p><strong>שם (עברית):</strong> ${data.parsedRecipe.nameHe || 'לא זוהה'}</p>`;
-                previewHtml += `<p><strong>שם (אנגלית):</strong> ${data.parsedRecipe.nameEn || 'לא זוהה'}</p>`;
-                previewHtml += `<p><strong>קטגוריה:</strong> ${data.parsedRecipe.category || 'לא זוהה'}</p>`;
-                previewHtml += `<p><strong>אימוג'י:</strong> ${data.parsedRecipe.emoji || 'לא זוהה'}</p>`;
-                previewHtml += `<p><strong>מספר מרכיבים:</strong> ${data.parsedRecipe.ingredientsHe?.length || 0} (עברית), ${data.parsedRecipe.ingredientsEn?.length || 0} (אנגלית)</p>`;
-                previewHtml += `<p><strong>מספר שלבים:</strong> ${data.parsedRecipe.instructionsHe?.length || 0} (עברית), ${data.parsedRecipe.instructionsEn?.length || 0} (אנגלית)</p>`;
+                previewHtml += `<p><strong>${t.parse_name_he}</strong> ${data.parsedRecipe.nameHe || notRecognized}</p>`;
+                previewHtml += `<p><strong>${t.parse_name_en}</strong> ${data.parsedRecipe.nameEn || notRecognized}</p>`;
+                previewHtml += `<p><strong>${t.parse_category}</strong> ${data.parsedRecipe.category || notRecognized}</p>`;
+                previewHtml += `<p><strong>${t.parse_emoji}</strong> ${data.parsedRecipe.emoji || notRecognized}</p>`;
+                previewHtml += `<p><strong>${t.parse_ingredients_count}</strong> ${data.parsedRecipe.ingredientsHe?.length || 0} (עברית), ${data.parsedRecipe.ingredientsEn?.length || 0} (אנגלית)</p>`;
+                previewHtml += `<p><strong>${t.parse_steps_count}</strong> ${data.parsedRecipe.instructionsHe?.length || 0} (עברית), ${data.parsedRecipe.instructionsEn?.length || 0} (אנגלית)</p>`;
                 previewHtml += `</div>`;
                 
                 parsePreview.innerHTML = previewHtml;
                 parseResult.classList.remove('hidden');
                 
             } catch (error) {
-                parseError.textContent = `שגיאה: ${error.message}`;
+                const t = translations[currentLanguage];
+                parseError.textContent = t.parse_error.replace('{error}', error.message);
                 parseError.classList.remove('hidden');
             } finally {
                 // Reset loading state
@@ -1124,7 +1245,7 @@
                     editingRecipeKey = null;
                     // Update form title back to "Add Recipe"
                     const formTitle = document.getElementById('add-recipe-title');
-                    formTitle.textContent = currentLanguage === 'he' ? 'הוסף מתכון חדש' : 'Add New Recipe';
+                    formTitle.textContent = translations[currentLanguage].add_recipe_title;
                 });
             }
             if (recipeForm) {
@@ -1144,9 +1265,10 @@
             const shareUrl = `${window.location.origin}/recipe/${recipeKey}`;
             
             // Try to use modern clipboard API
+            const t = translations[currentLanguage];
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(shareUrl).then(() => {
-                    showShareNotification('הקישור הועתק ללוח!');
+                    showShareNotification(t.link_copied);
                 }).catch(() => {
                     fallbackCopyTextToClipboard(shareUrl);
                 });
@@ -1165,15 +1287,16 @@
             textArea.focus();
             textArea.select();
             
+            const t = translations[currentLanguage];
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
-                    showShareNotification('הקישור הועתק ללוח!');
+                    showShareNotification(t.link_copied);
                 } else {
-                    showShareNotification('לא ניתן להעתיק. הקישור: ' + text, true);
+                    showShareNotification(t.link_copy_error.replace('{link}', text), true);
                 }
             } catch (err) {
-                showShareNotification('לא ניתן להעתיק. הקישור: ' + text, true);
+                showShareNotification(t.link_copy_error.replace('{link}', text), true);
             }
             
             document.body.removeChild(textArea);

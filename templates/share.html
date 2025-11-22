@@ -49,11 +49,18 @@
 <body class="min-h-full bg-gradient-to-br from-orange-50 to-red-50">
   <div class="container mx-auto px-4 py-8 max-w-4xl">
     {% if error %}
+    <!-- Language Selector -->
+    <div class="text-center mb-6">
+      <div class="inline-flex bg-white rounded-lg shadow-md p-1">
+        <button id="lang-he" class="language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 bg-orange-500 text-white" data-lang="he">עברית</button>
+        <button id="lang-en" class="language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 text-gray-600 hover:bg-gray-100" data-lang="en">English</button>
+      </div>
+    </div>
     <!-- Error State -->
     <div class="bg-white rounded-xl shadow-lg p-8 text-center">
-      <h1 class="text-3xl font-bold text-red-600 mb-4">מתכון לא נמצא</h1>
-      <p class="text-gray-600 mb-6">המתכון שביקשת לא קיים או נמחק.</p>
-      <a href="{{ url_for('index') }}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md">חזור לדף הראשי</a>
+      <h1 id="error-title" class="text-3xl font-bold text-red-600 mb-4">מתכון לא נמצא</h1>
+      <p id="error-message" class="text-gray-600 mb-6">המתכון שביקשת לא קיים או נמחק.</p>
+      <a href="{{ url_for('index') }}" id="error-back-link" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md">חזור לדף הראשי</a>
     </div>
     {% else %}
     <!-- Language Selector -->
@@ -67,8 +74,8 @@
     <!-- Header -->
     <div class="text-center mb-8">
       <h1 id="recipe-title" class="text-4xl font-bold text-gray-800 mb-2">{{ recipe.emoji }} {{ translations.he or translations.en or 'Recipe' }}</h1>
-      <p class="text-gray-600 text-lg">מתכון משותף</p>
-      <a href="{{ url_for('index') }}" class="text-blue-500 hover:text-blue-600 text-sm mt-2 inline-block">← חזור לכל המתכונים</a>
+      <p id="subtitle" class="text-gray-600 text-lg">מתכון משותף</p>
+      <a href="{{ url_for('index') }}" id="back-link" class="text-blue-500 hover:text-blue-600 text-sm mt-2 inline-block">← חזור לכל המתכונים</a>
     </div>
 
     <!-- Serving Size Selector -->
@@ -83,11 +90,11 @@
         <button id="increase-btn" class="serving-button bg-green-500 hover:bg-green-600 text-white w-12 h-12 rounded-full text-xl font-bold shadow-md">+</button>
       </div>
       <div class="flex justify-center gap-2 flex-wrap" id="preset-buttons">
-        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="2">2 מנות</button>
-        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="4">4 מנות</button>
-        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="6">6 מנות</button>
-        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="8">8 מנות</button>
-        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="12">12 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="2" id="preset-2">2 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="4" id="preset-4">4 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="6" id="preset-6">6 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="8" id="preset-8">8 מנות</button>
+        <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="12" id="preset-12">12 מנות</button>
       </div>
     </div>
 
@@ -135,6 +142,8 @@
     // Language translations
     const langTranslations = {
       he: {
+        subtitle: "מתכון משותף",
+        back_link: "← חזור לכל המתכונים",
         serving_selector_title: "בחר מספר מנות",
         serving_label: "מנות",
         ingredients_title: "מרכיבי המתכון",
@@ -142,9 +151,18 @@
         shopping_list_title: "רשימת קניות",
         print_text: "🖨️ הדפס רשימת קניות",
         reset_text: "🔄 איפוס סימונים",
-        servings_text: "מנות"
+        servings_text: "מנות",
+        no_ingredients: "אין מרכיבים זמינים",
+        no_instructions: "אין הוראות זמינות",
+        no_shopping_items: "אין מרכיבים לרשימת קניות",
+        mark_ingredients: "סמן מרכיבים כדי לראות אותם ברשימת הקניות",
+        error_title: "מתכון לא נמצא",
+        error_message: "המתכון שביקשת לא קיים או נמחק.",
+        error_back: "חזור לדף הראשי"
       },
       en: {
+        subtitle: "Shared Recipe",
+        back_link: "← Back to All Recipes",
         serving_selector_title: "Choose Serving Size",
         serving_label: "servings",
         ingredients_title: "Recipe Ingredients",
@@ -152,13 +170,37 @@
         shopping_list_title: "Shopping List",
         print_text: "🖨️ Print Shopping List",
         reset_text: "🔄 Reset Selections",
-        servings_text: "servings"
+        servings_text: "servings",
+        no_ingredients: "No ingredients available",
+        no_instructions: "No instructions available",
+        no_shopping_items: "No items for shopping list",
+        mark_ingredients: "Mark ingredients to see them in the shopping list",
+        error_title: "Recipe Not Found",
+        error_message: "The recipe you requested does not exist or has been deleted.",
+        error_back: "Back to Home"
       }
     };
 
     // Update language texts
     function updateLanguageTexts() {
       const lang = langTranslations[currentLanguage];
+      const html = document.documentElement;
+      
+      // Update page direction
+      if (currentLanguage === 'he') {
+        html.setAttribute('dir', 'rtl');
+        html.setAttribute('lang', 'he');
+      } else {
+        html.setAttribute('dir', 'ltr');
+        html.setAttribute('lang', 'en');
+      }
+      
+      // Update texts
+      const subtitleEl = document.getElementById('subtitle');
+      const backLinkEl = document.getElementById('back-link');
+      if (subtitleEl) subtitleEl.textContent = lang.subtitle;
+      if (backLinkEl) backLinkEl.textContent = lang.back_link;
+      
       document.getElementById('serving-selector-title').textContent = lang.serving_selector_title;
       document.getElementById('serving-label').textContent = lang.serving_label;
       document.getElementById('ingredients-title').textContent = lang.ingredients_title;
@@ -166,6 +208,12 @@
       document.getElementById('shopping-list-title').textContent = lang.shopping_list_title;
       document.getElementById('print-text').textContent = lang.print_text;
       document.getElementById('reset-text').textContent = lang.reset_text;
+      
+      // Update preset buttons
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        const servings = btn.dataset.servings;
+        btn.textContent = `${servings} ${lang.servings_text}`;
+      });
       
       // Update recipe title
       document.getElementById('recipe-title').innerHTML = `${recipeData.emoji} ${translations[currentLanguage] || translations.he || translations.en}`;
@@ -180,11 +228,14 @@
       btn.addEventListener('click', () => {
         currentLanguage = btn.dataset.lang;
         document.querySelectorAll('.language-btn').forEach(b => {
-          b.classList.remove('bg-orange-500', 'text-white');
-          b.classList.add('text-gray-600', 'hover:bg-gray-100');
+          if (b.dataset.lang === currentLanguage) {
+            b.classList.add('bg-orange-500', 'text-white');
+            b.classList.remove('text-gray-600', 'hover:bg-gray-100');
+          } else {
+            b.classList.remove('bg-orange-500', 'text-white');
+            b.classList.add('text-gray-600', 'hover:bg-gray-100');
+          }
         });
-        btn.classList.add('bg-orange-500', 'text-white');
-        btn.classList.remove('text-gray-600', 'hover:bg-gray-100');
         updateLanguageTexts();
       });
     });
@@ -196,7 +247,8 @@
       container.innerHTML = '';
       
       if (!ingredients || ingredients.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center">אין מרכיבים זמינים</p>';
+        const lang = langTranslations[currentLanguage];
+        container.innerHTML = `<p class="text-gray-500 text-center">${lang.no_ingredients}</p>`;
         return;
       }
 
@@ -223,7 +275,8 @@
       container.innerHTML = '';
       
       if (!instructions || instructions.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center">אין הוראות זמינות</p>';
+        const lang = langTranslations[currentLanguage];
+        container.innerHTML = `<p class="text-gray-500 text-center">${lang.no_instructions}</p>`;
         return;
       }
 
@@ -246,8 +299,10 @@
       const container = document.getElementById('shopping-list');
       container.innerHTML = '';
       
+      const lang = langTranslations[currentLanguage];
+      
       if (!ingredients || ingredients.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center">אין מרכיבים לרשימת קניות</p>';
+        container.innerHTML = `<p class="text-gray-500 text-center">${lang.no_shopping_items}</p>`;
         return;
       }
 
@@ -255,7 +310,7 @@
         .map(cb => parseInt(cb.dataset.ingredient));
 
       if (checkedItems.length === 0) {
-        container.innerHTML = '<p class="text-gray-500 text-center">סמן מרכיבים כדי לראות אותם ברשימת הקניות</p>';
+        container.innerHTML = `<p class="text-gray-500 text-center">${lang.mark_ingredients}</p>`;
         return;
       }
 
@@ -320,6 +375,56 @@
 
     // Initialize
     updateLanguageTexts();
+    {% else %}
+    // Error page translations
+    const langTranslations = {
+      he: {
+        error_title: "מתכון לא נמצא",
+        error_message: "המתכון שביקשת לא קיים או נמחק.",
+        error_back: "חזור לדף הראשי"
+      },
+      en: {
+        error_title: "Recipe Not Found",
+        error_message: "The recipe you requested does not exist or has been deleted.",
+        error_back: "Back to Home"
+      }
+    };
+    
+    let currentLanguage = 'he';
+    
+    // Language button handlers for error page
+    const errorLangButtons = document.querySelectorAll('.language-btn');
+    if (errorLangButtons.length > 0) {
+      errorLangButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentLanguage = btn.dataset.lang;
+          const html = document.documentElement;
+          if (currentLanguage === 'he') {
+            html.setAttribute('dir', 'rtl');
+            html.setAttribute('lang', 'he');
+          } else {
+            html.setAttribute('dir', 'ltr');
+            html.setAttribute('lang', 'en');
+          }
+          
+          const lang = langTranslations[currentLanguage];
+          document.getElementById('error-title').textContent = lang.error_title;
+          document.getElementById('error-message').textContent = lang.error_message;
+          document.getElementById('error-back-link').textContent = lang.error_back;
+          
+          // Update button states
+          document.querySelectorAll('.language-btn').forEach(b => {
+            if (b.dataset.lang === currentLanguage) {
+              b.classList.add('bg-orange-500', 'text-white');
+              b.classList.remove('text-gray-600', 'hover:bg-gray-100');
+            } else {
+              b.classList.remove('bg-orange-500', 'text-white');
+              b.classList.add('text-gray-600', 'hover:bg-gray-100');
+            }
+          });
+        });
+      });
+    }
     {% endif %}
   </script>
 </body>
