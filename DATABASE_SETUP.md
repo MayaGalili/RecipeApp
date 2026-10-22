@@ -1,79 +1,97 @@
-# הוראות הגדרת PostgreSQL ב-Render
+# Setting Up PostgreSQL on Render
 
-## שלב 1: יצירת PostgreSQL Database ב-Render
+The app stores recipes in a SQL database through Flask-SQLAlchemy. In production it uses PostgreSQL, selected by the `DATABASE_URL` environment variable. If `DATABASE_URL` is not set, it falls back to a local SQLite file (`instance/recipes.db`), which is intended for development only.
 
-1. היכנסי ל-Render Dashboard: https://dashboard.render.com
-2. לחצי על **"New +"** → **"PostgreSQL"**
-3. מלאי את הפרטים:
-   - **Name**: `recipeapp-db` (או כל שם אחר)
-   - **Database**: `recipeapp` (או כל שם אחר)
-   - **User**: `recipeapp_user` (או כל שם אחר)
-   - **Region**: בחרי את האזור הקרוב אלייך
-   - **PostgreSQL Version**: השאירי את הגרסה האחרונה
-   - **Plan**: בחרי את התוכנית המתאימה (Free tier זמין)
-4. לחצי על **"Create Database"**
+## Step 1: Create a PostgreSQL database on Render
 
-## שלב 2: הוספת ה-Database URL ל-Web Service
+1. Go to the Render Dashboard: https://dashboard.render.com
+2. Click **"New +"** → **"PostgreSQL"**
+3. Fill in the details:
+   - **Name**: `recipeapp-db` (or any other name)
+   - **Database**: `recipeapp` (or any other name)
+   - **User**: `recipeapp_user` (or any other name)
+   - **Region**: choose the region closest to you (ideally the same region as your web service)
+   - **PostgreSQL Version**: keep the latest version
+   - **Plan**: choose a suitable plan. A free tier is available, but free databases expire after a limited period, so check Render's current terms before storing data you care about.
+4. Click **"Create Database"**
 
-1. לכי ל-Web Service שלך ב-Render
-2. לכי לטאב **"Environment"**
-3. לחצי על **"Add Environment Variable"**
-4. הוסיפי:
+## Step 2: Add the database URL and API key to the Web Service
+
+1. Go to your Web Service in Render
+2. Open the **"Environment"** tab
+3. Click **"Add Environment Variable"**
+4. Add:
    - **Key**: `DATABASE_URL`
-   - **Value**: העתיקי את ה-Connection String מה-PostgreSQL service
-     - לכי ל-PostgreSQL service שיצרת
-     - תחת **"Connections"** תראי את ה-Connection String
-     - העתיקי אותו (נראה כמו: `postgres://user:pass@host:port/dbname`)
-5. לחצי **"Save Changes"**
+   - **Value**: the connection string from your PostgreSQL service
+     - Open the PostgreSQL service you created
+     - Under **"Connections"**, copy the **Internal Database URL** (it looks like `postgres://user:pass@host:port/dbname`). Use the internal URL for the web service, since both run inside Render.
+5. Add a second variable, `OPENAI_API_KEY`, with your OpenAI API key. It is used for AI recipe parsing and is unrelated to the database, but the app needs it for that feature.
+6. Click **"Save Changes"**
 
-## שלב 3: העברת נתונים קיימים (אופציונלי)
+The app automatically rewrites a `postgres://` prefix to `postgresql://`, so you can paste the URL as-is.
 
-אם יש לך מתכונים קיימים ב-`data/recipes.json`:
+## Step 3: Import existing recipes (one-time, manual)
 
-1. **מקומי (Local)**:
+If you have existing recipes in `data/recipes.json`, you must import them yourself. **This does not happen automatically when the server starts.** If you skip this step, the app will start with an empty recipe list.
+
+The script `migrate_to_db.py` reads `data/recipes.json` and inserts the recipes, translations, and categories into the database. It is safe to run more than once, because it skips recipes whose key already exists.
+
+**From your own machine** (recommended):
+
+1. In the Render PostgreSQL service, copy the **External Database URL** (the internal URL only works from inside Render).
+2. Run:
    ```bash
-   # הגדירי את DATABASE_URL ב-.env או כ-environment variable
+   pip install -r requirements.txt
+
+   # Set DATABASE_URL in .env or as an environment variable
    export DATABASE_URL="postgresql://user:pass@host:port/dbname"
-   
-   # הרצי את סקריפט ההעברה
+
+   # Run the migration script
    python3 migrate_to_db.py
    ```
 
-2. **ב-Render** (אחרי deployment):
-   - הנתונים יועברו אוטומטית כשהשרת יעלה (אם יש קובץ recipes.json)
-   - או תוכלי להריץ את הסקריפט דרך Render Shell
+**From Render Shell** (only if your plan includes Shell access):
 
-## שלב 4: Deployment
+```bash
+python3 migrate_to_db.py
+```
 
-1. ודאי שהקוד שלך ב-GitHub כולל את כל השינויים
-2. Push את השינויים:
+To import into a local SQLite database instead, run the script without setting `DATABASE_URL`.
+
+## Step 4: Deploy
+
+1. Make sure your code on GitHub includes all your changes.
+2. Push your changes:
    ```bash
    git add .
    git commit -m "Migrate to PostgreSQL"
    git push
    ```
-3. Render יבצע deployment אוטומטי
-4. הטבלאות ייווצרו אוטומטית כשהשרת יעלה בפעם הראשונה
+3. Render deploys automatically.
+4. The tables are created automatically the first time the server starts. Only the tables are created. Recipe data is not imported (see Step 3).
 
-## בדיקה
+## Verification
 
-לאחר ה-deployment:
-1. פתחי את האפליקציה
-2. נסי להוסיף מתכון חדש
-3. המתכון צריך להישמר ולא להיעלם אחרי restart
+After deploying:
 
-## הערות חשובות
+1. Open the app. If you ran the import, your recipes should appear.
+2. Try adding a new recipe.
+3. The recipe should be saved and still be there after the service restarts.
 
-- **הטבלאות נוצרות אוטומטית** - הקוד יוצר את הטבלאות בפעם הראשונה שהשרת עולה
-- **Cascade Delete** - מחיקת מתכון תמחק אוטומטית את התרגומים והקטגוריות שלו
-- **Fallback ל-SQLite** - אם אין DATABASE_URL, האפליקציה תשתמש ב-SQLite מקומי (רק לפיתוח)
-- **Backup** - Render מבצע backup אוטומטי של ה-PostgreSQL, אבל מומלץ גם לבצע backup ידני מדי פעם
+## Important notes
 
-## פתרון בעיות
+- **Tables are created automatically.** The code creates them on startup if they do not exist. There is no migration tool, so later schema changes need to be applied manually.
+- **Cascade delete.** Deleting a recipe automatically deletes its translations and categories.
+- **SQLite fallback.** If `DATABASE_URL` is not set, the app uses a local SQLite database (development only).
+- **Backups.** Render's backup availability depends on your plan. Check your plan's details, and consider taking manual backups (for example with `pg_dump`) from time to time.
+- **Access control.** The add, update, and delete endpoints currently have no authentication, so anyone who knows the site URL can modify recipes.
 
-אם יש שגיאות:
-1. ודאי שה-DATABASE_URL מוגדר נכון
-2. ודאי שה-PostgreSQL service פעיל
-3. בדקי את ה-logs ב-Render Dashboard
-4. ודאי שה-requirements.txt כולל את כל החבילות הנדרשות
+## Troubleshooting
 
+If you run into errors:
+
+1. Make sure `DATABASE_URL` is set correctly.
+2. Make sure the PostgreSQL service is running.
+3. Check the logs in the Render Dashboard.
+4. Make sure `requirements.txt` includes all required packages (`flask-sqlalchemy` and `psycopg2-binary` in particular).
+5. If the app shows no recipes and no error, the database may be unreachable or empty. The app currently hides database read errors and returns an empty list, so check the logs and confirm you ran the import in Step 3.
