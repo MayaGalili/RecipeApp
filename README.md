@@ -152,13 +152,17 @@ To use the AI-powered recipe parser, you need to set up an OpenAI API key:
 ```
 RecipeApp/
 ├── templates/          # HTML templates (Flask)
-│   └── main.html      # Main application template
+│   ├── index.html     # Recipe browsing page
+│   ├── manage.html    # Add / edit / delete recipes
+│   └── share.html     # Shared single-recipe page
 ├── static/            # Static files (CSS, JS, images)
 │   ├── css/
 │   │   └── tailwind.css  # Compiled Tailwind CSS
 │   └── js/
-├── data/              # Data directory (writable files)
-│   └── recipes.json   # Recipe data storage
+├── data/              # Seed data
+│   └── recipes.json   # Initial recipes, imported by migrate_to_db.py
+├── migrate_to_db.py   # One-time import of recipes.json into the database
+├── DATABASE_SETUP.md  # Database setup guide
 ├── app.py             # Flask application (main entry point)
 ├── render.yaml        # Render deployment configuration
 ├── input.css          # Tailwind CSS source file
@@ -170,7 +174,7 @@ RecipeApp/
 
 ## Recipe Data Format
 
-Recipes are stored in `recipes.json`. The structure includes:
+Recipes are stored in the database (PostgreSQL, or SQLite locally; see `DATABASE_SETUP.md`). `data/recipes.json` is only the seed file imported by `migrate_to_db.py`. Its structure includes:
 - `recipes`: Recipe data with ingredients and instructions
 - `recipeTranslations`: Recipe names in Hebrew and English
 - `recipeCategoryMap`: Categories and their associated recipes
@@ -180,8 +184,7 @@ Recipes are stored in `recipes.json`. The structure includes:
 - The application uses Flask for the backend and serves static files from the `static/` folder
 - Templates are stored in the `templates/` folder
 - Tailwind CSS is built locally (not using CDN) for better reliability
-- The app is fully decoupled - recipes are stored in `data/recipes.json` separate from the HTML
-- Recipe data is stored in the `data/` directory to allow write operations on Render
+- The app is fully decoupled - recipes are stored in the database, separate from the HTML
 
 ## Deployment to Render
 
