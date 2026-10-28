@@ -145,7 +145,21 @@ To use the AI-powered recipe parser, you need to set up an OpenAI API key:
    - Add environment variable: `OPENAI_API_KEY` with your API key value
    - Save and redeploy
 
-**Note:** The AI parser uses `gpt-4o-mini` model which is cost-effective. Without the API key, you can still use the manual form entry method.
+**Note:** The AI parser uses `gpt-4o-mini` model which is cost-effective. Without the API key, you can still use the manual form entry method. The parser is limited to admins, 5000 characters per request and 10 requests per hour. Also set a monthly spend limit in your OpenAI account.
+
+## Admin Login
+
+Viewing recipes is public. The management page (`/manage`) and all write APIs require the admin password. Set these environment variables (locally in `.env`, on Render under "Environment"):
+
+- `SECRET_KEY`: a random secret used to sign the session cookie.
+  `python3 -c "import secrets; print(secrets.token_hex(32))"`
+- `ADMIN_PASSWORD_HASH`: a hash of your admin password (never store the plain password).
+  `python3 -c "from werkzeug.security import generate_password_hash as g; print(g(input()))"`
+  In `.env`, wrap the hash in single quotes.
+
+If either is missing, admin login is disabled and the site stays read-only. Set `FLASK_DEBUG=1` for local runs over plain http (production uses a Secure cookie).
+
+Run the tests with `pip install -r requirements-dev.txt` and `pytest`.
 
 ## Project Structure
 

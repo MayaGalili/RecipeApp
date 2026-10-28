@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>מתכונים ונהנים</title>
   <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
@@ -110,6 +111,10 @@
    </div><!-- Navigation to Home Page -->
    <div class="text-center mb-6">
     <a href="{{ url_for('index') }}" id="back-to-home" class="inline-block bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md">← חזרה לדף הראשי</a>
+    <form method="post" action="{{ url_for('logout') }}" class="inline-block">
+     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+     <button type="submit" id="logout-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md">התנתקות</button>
+    </form>
    </div><!-- Recipe Selector -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
     <h2 id="recipe-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">ניהול מתכונים</h2>
@@ -397,6 +402,18 @@
             deleteRecipe: '{{ url_for("delete_recipe") }}'
         };
         
+        // fetch wrapper for admin API calls: adds the CSRF token and returns to login when the session expired
+        async function apiFetch(url, options = {}) {
+            const headers = Object.assign({}, options.headers, {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            });
+            const response = await fetch(url, Object.assign({}, options, { headers }));
+            if (response.status === 401) {
+                window.location.href = '{{ url_for("login") }}';
+            }
+            return response;
+        }
+
         // Track if we're editing a recipe
         let editingRecipeKey = null;
 
@@ -711,7 +728,7 @@
             }
             
             try {
-                const response = await fetch(API_ENDPOINTS.deleteRecipe, {
+                const response = await apiFetch(API_ENDPOINTS.deleteRecipe, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
@@ -867,7 +884,7 @@
                 const endpoint = editingRecipeKey ? API_ENDPOINTS.updateRecipe : API_ENDPOINTS.addRecipe;
                 const method = editingRecipeKey ? 'PUT' : 'POST';
                 
-                const response = await fetch(endpoint, {
+                const response = await apiFetch(endpoint, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json'
@@ -1111,7 +1128,7 @@
             parseBtnLoading.classList.remove('hidden');
             
             try {
-                const response = await fetch('{{ url_for("parse_recipe") }}', {
+                const response = await apiFetch('{{ url_for("parse_recipe") }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
