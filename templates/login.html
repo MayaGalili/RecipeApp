@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="he" dir="rtl" style="height: 100%;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>התחברות</title>
+  <link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+</head>
+<body class="min-h-full bg-gradient-to-br from-orange-50 to-red-50">
+  <div class="container mx-auto px-4 py-8" style="max-width: 24rem;">
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h1 class="text-2xl font-semibold text-gray-800 mb-4 text-center">התחברות מנהל</h1>
+      {% if error %}
+      <p class="text-red-600 text-sm mb-4 text-center">{{ error }}</p>
+      {% endif %}
+      <form method="post" action="{{ url_for('login') }}" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="password" name="password" required autofocus autocomplete="current-password"
+               placeholder="סיסמה"
+               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md">כניסה</button>
+      </form>
+      <div class="text-center mt-4">
+        <a href="{{ url_for('index') }}" class="text-gray-500 hover:text-gray-700 text-sm">← חזרה לדף הראשי</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

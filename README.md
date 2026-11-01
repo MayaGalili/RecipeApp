@@ -145,20 +145,38 @@ To use the AI-powered recipe parser, you need to set up an OpenAI API key:
    - Add environment variable: `OPENAI_API_KEY` with your API key value
    - Save and redeploy
 
-**Note:** The AI parser uses `gpt-4o-mini` model which is cost-effective. Without the API key, you can still use the manual form entry method.
+**Note:** The AI parser uses `gpt-4o-mini` model which is cost-effective. Without the API key, you can still use the manual form entry method. The parser is limited to admins, 5000 characters per request and 10 requests per hour. Also set a monthly spend limit in your OpenAI account.
+
+## Admin Login
+
+Viewing recipes is public. The management page (`/manage`) and all write APIs require the admin password. Set these environment variables (locally in `.env`, on Render under "Environment"):
+
+- `SECRET_KEY`: a random secret used to sign the session cookie.
+  `python3 -c "import secrets; print(secrets.token_hex(32))"`
+- `ADMIN_PASSWORD_HASH`: a hash of your admin password (never store the plain password).
+  `python3 -c "from werkzeug.security import generate_password_hash as g; print(g(input()))"`
+  In `.env`, wrap the hash in single quotes.
+
+If either is missing, admin login is disabled and the site stays read-only. Set `FLASK_DEBUG=1` for local runs over plain http (production uses a Secure cookie).
+
+Run the tests with `pip install -r requirements-dev.txt` and `pytest`.
 
 ## Project Structure
 
 ```
 RecipeApp/
 ├── templates/          # HTML templates (Flask)
-│   └── main.html      # Main application template
+│   ├── index.html     # Recipe browsing page
+│   ├── manage.html    # Add / edit / delete recipes
+│   └── share.html     # Shared single-recipe page
 ├── static/            # Static files (CSS, JS, images)
 │   ├── css/
 │   │   └── tailwind.css  # Compiled Tailwind CSS
 │   └── js/
-├── data/              # Data directory (writable files)
-│   └── recipes.json   # Recipe data storage
+├── data/              # Seed data
+│   └── recipes.json   # Initial recipes, imported by migrate_to_db.py
+├── migrate_to_db.py   # One-time import of recipes.json into the database
+├── DATABASE_SETUP.md  # Database setup guide
 ├── app.py             # Flask application (main entry point)
 ├── render.yaml        # Render deployment configuration
 ├── input.css          # Tailwind CSS source file
@@ -170,7 +188,7 @@ RecipeApp/
 
 ## Recipe Data Format
 
-Recipes are stored in `recipes.json`. The structure includes:
+Recipes are stored in the database (PostgreSQL, or SQLite locally; see `DATABASE_SETUP.md`). `data/recipes.json` is only the seed file imported by `migrate_to_db.py`. Its structure includes:
 - `recipes`: Recipe data with ingredients and instructions
 - `recipeTranslations`: Recipe names in Hebrew and English
 - `recipeCategoryMap`: Categories and their associated recipes
@@ -180,8 +198,7 @@ Recipes are stored in `recipes.json`. The structure includes:
 - The application uses Flask for the backend and serves static files from the `static/` folder
 - Templates are stored in the `templates/` folder
 - Tailwind CSS is built locally (not using CDN) for better reliability
-- The app is fully decoupled - recipes are stored in `data/recipes.json` separate from the HTML
-- Recipe data is stored in the `data/` directory to allow write operations on Render
+- The app is fully decoupled - recipes are stored in the database, separate from the HTML
 
 ## Deployment to Render
 
