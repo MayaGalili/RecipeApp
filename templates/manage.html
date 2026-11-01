@@ -242,6 +242,8 @@
          <option value="🍹">🍹</option>
          <option value="🍾">🍾</option>
         </select>
+        <input type="text" id="recipe-emoji-custom" maxlength="20" autocomplete="off" placeholder="או הקלד אימוג'י"
+               class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-2xl text-center">
        </div>
        <div>
         <label id="category-label" class="block text-sm font-medium text-gray-700 mb-2">קטגוריה</label>
@@ -311,6 +313,7 @@
                 recipe_name_en: "Recipe Name (English)",
                 emoji_label: "אימוג'י",
                 emoji_select: "בחר אימוג'י",
+                emoji_custom: "או הקלד אימוג'י",
                 category_label: "קטגוריה",
                 ingredients_he_label: "מרכיבים עבור יחידה אחת (עברית) - כל שורה: שם, כמות, יחידה, קטגוריה (מופרדים בפסיק)",
                 ingredients_he_placeholder: "קמח, 200, גרם, דגנים ופחמימות\nביצים, 2, יחידות, מוצרי חלב",
@@ -364,6 +367,7 @@
                 recipe_name_en: "Recipe Name (English)",
                 emoji_label: "Emoji",
                 emoji_select: "Select Emoji",
+                emoji_custom: "or type an emoji",
                 category_label: "Category",
                 ingredients_he_label: "Ingredients for single dish (Hebrew) - Each line: name, amount, unit, category (comma-separated)",
                 ingredients_he_placeholder: "Flour, 200, g, Grains & Carbs\nEggs, 2, pieces, Dairy Products",
@@ -585,6 +589,7 @@
             document.getElementById('recipe-name-en-label').textContent = t.recipe_name_en;
             document.getElementById('emoji-label').textContent = t.emoji_label;
             document.getElementById('emoji-select-option').textContent = t.emoji_select;
+            document.getElementById('recipe-emoji-custom').placeholder = t.emoji_custom;
             document.getElementById('category-label').textContent = t.category_label;
             document.getElementById('ingredients-he-label').textContent = t.ingredients_he_label;
             document.getElementById('ingredients-he').placeholder = t.ingredients_he_placeholder;
@@ -1038,6 +1043,27 @@
             }
         }
 
+        // Select an emoji in the form. If it isn't one of the predefined options
+        // (e.g. an AI-chosen 🍅), add it as an option so it stays selected.
+        function setRecipeEmoji(emoji) {
+            const select = document.getElementById('recipe-emoji');
+            select.querySelectorAll('option[data-custom]').forEach(option => option.remove());
+            if (emoji && !Array.from(select.options).some(option => option.value === emoji)) {
+                const option = document.createElement('option');
+                option.value = emoji;
+                option.textContent = emoji;
+                option.dataset.custom = 'true';
+                select.appendChild(option);
+            }
+            select.value = emoji || '';
+        }
+
+        // Emoji-only text (pictographs, flags, skin tones, ZWJ/variation selectors), at most 10 characters (DB column size)
+        function isValidEmoji(text) {
+            return text !== '' && Array.from(text).length <= 10 &&
+                text.replace(/[\p{Extended_Pictographic}\p{Regional_Indicator}\p{Emoji_Modifier}‍️]/gu, '') === '';
+        }
+
         // Toggle form visibility
         function toggleForm() {
             editingRecipeKey = null;
@@ -1046,6 +1072,7 @@
             // Reset form when toggling
             if (form.classList.contains('hidden')) {
                 document.getElementById('recipe-form').reset();
+                setRecipeEmoji('');
                 document.getElementById('form-message').classList.add('hidden');
             }
         }
@@ -1060,7 +1087,8 @@
             // Fill form with recipe data
             document.getElementById('recipe-name-he').value = recipeNameHe;
             document.getElementById('recipe-name-en').value = recipeNameEn;
-            document.getElementById('recipe-emoji').value = recipe.emoji;
+            setRecipeEmoji(recipe.emoji);
+            document.getElementById('recipe-emoji-custom').value = '';
             
             // Find category
             let category = '';
@@ -1181,7 +1209,8 @@
             // Fill form fields
             document.getElementById('recipe-name-he').value = parsedRecipeData.nameHe || '';
             document.getElementById('recipe-name-en').value = parsedRecipeData.nameEn || '';
-            document.getElementById('recipe-emoji').value = parsedRecipeData.emoji || '🍳';
+            setRecipeEmoji(parsedRecipeData.emoji || '🍳');
+            document.getElementById('recipe-emoji-custom').value = '';
             document.getElementById('recipe-category').value = parsedRecipeData.category || 'meat_fish';
             
             // Fill ingredients
@@ -1233,7 +1262,18 @@
             const approveBtn = document.getElementById('approve-parse-btn');
             const rejectBtn = document.getElementById('reject-parse-btn');
             const freeTextArea = document.getElementById('free-text-recipe');
-            
+            const emojiSelect = document.getElementById('recipe-emoji');
+            const emojiCustom = document.getElementById('recipe-emoji-custom');
+
+            // Typing a valid emoji selects it; picking from the list clears the typed text
+            emojiCustom.addEventListener('input', () => {
+                const value = emojiCustom.value.trim();
+                if (isValidEmoji(value)) {
+                    setRecipeEmoji(value);
+                }
+            });
+            emojiSelect.addEventListener('change', () => { emojiCustom.value = ''; });
+
             if (parseBtn) {
                 parseBtn.addEventListener('click', parseFreeTextRecipe);
             }
