@@ -88,6 +88,10 @@
             }
         }
 
+        /* Hide the "add detailed recipe" button while the form right after it is open */
+        #toggle-form-btn:has(+ #add-recipe-form:not(.hidden)) {
+            display: none;
+        }
         .falling-emoji {
             position: fixed;
             font-size: 3rem;
@@ -133,16 +137,6 @@
       <span id="parse-btn-text">🤖 פרסם מתכון עם AI</span>
       <span id="parse-btn-loading" class="hidden">⏳ מעבד...</span>
      </button>
-     <div id="parse-result" class="hidden">
-      <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-       <h3 id="parse-result-title" class="font-semibold text-blue-800 mb-2">המתכון שפורש:</h3>
-       <div id="parse-preview" class="text-sm text-gray-700"></div>
-      </div>
-      <div class="flex gap-4">
-       <button id="approve-parse-btn" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">אשר ומלא טופס</button>
-       <button id="reject-parse-btn" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">בטל</button>
-      </div>
-     </div>
      <div id="parse-error" class="hidden bg-red-50 border border-red-200 rounded-lg p-4 text-red-700"></div>
     </div>
    </div><!-- Add Recipe Form -->
@@ -297,18 +291,10 @@
                 free_text_placeholder: "לדוגמה:\nמרק אפונה\n\nמצרכים:\nשתי כוסות אפונה יבשה\nשמונה כוסות מים\n1 בצל חתוך לרבעים\n...\n\nאופן ההכנה:\nלטגן היטב את הבצל בסיר עמוק\nלהוסיף את האפונה ולקצת לטגן\n...",
                 parse_btn: "🤖 פרסם מתכון עם AI",
                 parse_loading: "⏳ מעבד...",
-                parse_result_title: "המתכון שפורש:",
-                parse_name_he: "שם (עברית):",
-                parse_name_en: "שם (אנגלית):",
-                parse_category: "קטגוריה:",
-                parse_emoji: "אימוג'י:",
-                parse_ingredients_count: "מספר מרכיבים:",
-                parse_steps_count: "מספר שלבים:",
-                parse_approve: "אשר ומלא טופס",
-                parse_reject: "בטל",
                 add_recipe_title: "הוסף מתכון באפשרות מפורטת יותר",
-                edit_recipe_title: "ערוך מתכון",
                 toggle_form_btn: "+ הוסף מתכון באפשרות מפורטת יותר",
+                edit_recipe_title: "ערוך מתכון",
+                review_recipe_title: "עריכת המתכון",
                 recipe_name_he: "שם המתכון (עברית)",
                 recipe_name_en: "Recipe Name (English)",
                 emoji_label: "אימוג'י",
@@ -337,8 +323,7 @@
                 parse_error_empty: "אנא הכנס מתכון",
                 parse_error: "שגיאה: {error}",
                 link_copied: "הקישור הועתק ללוח!",
-                link_copy_error: "לא ניתן להעתיק. הקישור: {link}",
-                not_recognized: "לא זוהה"
+                link_copy_error: "לא ניתן להעתיק. הקישור: {link}"
             },
             en: {
                 recipe_title: "Recipes & Enjoy",
@@ -351,18 +336,10 @@
                 free_text_placeholder: "For example:\nPea Soup\n\nIngredients:\nTwo cups of dried peas\nEight cups of water\n1 onion cut into quarters\n...\n\nInstructions:\nFry the onion well in a deep pot\nAdd the peas and fry a bit\n...",
                 parse_btn: "🤖 Parse Recipe with AI",
                 parse_loading: "⏳ Processing...",
-                parse_result_title: "Parsed Recipe:",
-                parse_name_he: "Name (Hebrew):",
-                parse_name_en: "Name (English):",
-                parse_category: "Category:",
-                parse_emoji: "Emoji:",
-                parse_ingredients_count: "Number of ingredients:",
-                parse_steps_count: "Number of steps:",
-                parse_approve: "Approve and Fill Form",
-                parse_reject: "Cancel",
                 add_recipe_title: "Add Recipe (Detailed Option)",
-                edit_recipe_title: "Edit Recipe",
                 toggle_form_btn: "+ Add Recipe (Detailed Option)",
+                edit_recipe_title: "Edit Recipe",
+                review_recipe_title: "Review & Edit Recipe",
                 recipe_name_he: "Recipe Name (Hebrew)",
                 recipe_name_en: "Recipe Name (English)",
                 emoji_label: "Emoji",
@@ -391,8 +368,7 @@
                 parse_error_empty: "Please enter a recipe",
                 parse_error: "Error: {error}",
                 link_copied: "Link copied to clipboard!",
-                link_copy_error: "Cannot copy. Link: {link}",
-                not_recognized: "Not recognized"
+                link_copy_error: "Cannot copy. Link: {link}"
             }
         };
 
@@ -580,11 +556,8 @@
             document.getElementById('free-text-recipe').placeholder = t.free_text_placeholder;
             document.getElementById('parse-btn-text').textContent = t.parse_btn;
             document.getElementById('parse-btn-loading').textContent = t.parse_loading;
-            document.getElementById('parse-result-title').textContent = t.parse_result_title;
-            document.getElementById('approve-parse-btn').textContent = t.parse_approve;
-            document.getElementById('reject-parse-btn').textContent = t.parse_reject;
-            document.getElementById('add-recipe-title').textContent = editingRecipeKey ? t.edit_recipe_title : t.add_recipe_title;
             document.getElementById('toggle-form-btn').textContent = t.toggle_form_btn;
+            document.getElementById('add-recipe-title').textContent = editingRecipeKey ? t.edit_recipe_title : (reviewingParsedRecipe ? t.review_recipe_title : t.add_recipe_title);
             document.getElementById('recipe-name-he-label').textContent = t.recipe_name_he;
             document.getElementById('recipe-name-en-label').textContent = t.recipe_name_en;
             document.getElementById('emoji-label').textContent = t.emoji_label;
@@ -937,6 +910,7 @@
                 editingRecipeKey = null;
                 
                 // Update form title back to "Add Recipe"
+                reviewingParsedRecipe = false;
                 const formTitle = document.getElementById('add-recipe-title');
                 formTitle.textContent = translations[currentLanguage].add_recipe_title;
                 
@@ -1067,6 +1041,8 @@
         // Toggle form visibility
         function toggleForm() {
             editingRecipeKey = null;
+            reviewingParsedRecipe = false;
+            document.getElementById('add-recipe-title').textContent = translations[currentLanguage].add_recipe_title;
             const form = document.getElementById('add-recipe-form');
             form.classList.toggle('hidden');
             // Reset form when toggling
@@ -1127,19 +1103,17 @@
         }
 
         // Parse free text recipe using LLM
-        let parsedRecipeData = null;
+        // True while the form holds an AI-parsed recipe the user is reviewing (affects the form title)
+        let reviewingParsedRecipe = false;
         
         async function parseFreeTextRecipe() {
             const freeText = document.getElementById('free-text-recipe').value.trim();
             const parseBtn = document.getElementById('parse-recipe-btn');
             const parseBtnText = document.getElementById('parse-btn-text');
             const parseBtnLoading = document.getElementById('parse-btn-loading');
-            const parseResult = document.getElementById('parse-result');
             const parseError = document.getElementById('parse-error');
-            const parsePreview = document.getElementById('parse-preview');
             
             // Hide previous results
-            parseResult.classList.add('hidden');
             parseError.classList.add('hidden');
             
             const t = translations[currentLanguage];
@@ -1170,24 +1144,9 @@
                     throw new Error(data.error || 'שגיאה בפרסור המתכון');
                 }
                 
-                // Store parsed data
-                parsedRecipeData = data.parsedRecipe;
-                
-                // Display preview
-                const t = translations[currentLanguage];
-                const notRecognized = t.not_recognized;
-                let previewHtml = `<div class="space-y-2">`;
-                previewHtml += `<p><strong>${t.parse_name_he}</strong> ${data.parsedRecipe.nameHe || notRecognized}</p>`;
-                previewHtml += `<p><strong>${t.parse_name_en}</strong> ${data.parsedRecipe.nameEn || notRecognized}</p>`;
-                previewHtml += `<p><strong>${t.parse_category}</strong> ${data.parsedRecipe.category || notRecognized}</p>`;
-                previewHtml += `<p><strong>${t.parse_emoji}</strong> ${data.parsedRecipe.emoji || notRecognized}</p>`;
-                previewHtml += `<p><strong>${t.parse_ingredients_count}</strong> ${data.parsedRecipe.ingredientsHe?.length || 0} (עברית), ${data.parsedRecipe.ingredientsEn?.length || 0} (אנגלית)</p>`;
-                previewHtml += `<p><strong>${t.parse_steps_count}</strong> ${data.parsedRecipe.instructionsHe?.length || 0} (עברית), ${data.parsedRecipe.instructionsEn?.length || 0} (אנגלית)</p>`;
-                previewHtml += `</div>`;
-                
-                parsePreview.innerHTML = previewHtml;
-                parseResult.classList.remove('hidden');
-                
+                // Open the editable form directly, pre-filled with the parsed recipe
+                fillFormFromParsedRecipe(data.parsedRecipe);
+
             } catch (error) {
                 const t = translations[currentLanguage];
                 parseError.textContent = t.parse_error.replace('{error}', error.message);
@@ -1200,12 +1159,13 @@
             }
         }
         
-        // Approve parsed recipe and fill form
-        function approveParsedRecipe() {
-            if (!parsedRecipeData) {
-                return;
-            }
-            
+        // Fill the form with a parsed recipe so the user can review and edit it before saving
+        function fillFormFromParsedRecipe(parsedRecipeData) {
+            // A parsed recipe is always a new recipe: leave edit mode and clear stale field values
+            editingRecipeKey = null;
+            document.getElementById('recipe-form').reset();
+            document.getElementById('form-message').classList.add('hidden');
+
             // Fill form fields
             document.getElementById('recipe-name-he').value = parsedRecipeData.nameHe || '';
             document.getElementById('recipe-name-en').value = parsedRecipeData.nameEn || '';
@@ -1237,30 +1197,22 @@
                 document.getElementById('instructions-en').value = parsedRecipeData.instructionsEn.join('\n');
             }
             
-            // Show form and hide parse result
+            // Show the form with the review title
+            reviewingParsedRecipe = true;
+            document.getElementById('add-recipe-title').textContent = translations[currentLanguage].review_recipe_title;
             document.getElementById('add-recipe-form').classList.remove('hidden');
-            document.getElementById('parse-result').classList.add('hidden');
             document.getElementById('free-text-recipe').value = '';
-            parsedRecipeData = null;
             
             // Scroll to form
             document.getElementById('add-recipe-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
         
-        // Reject parsed recipe
-        function rejectParsedRecipe() {
-            document.getElementById('parse-result').classList.add('hidden');
-            parsedRecipeData = null;
-        }
-
         // Initialize form event listeners
         function initializeFormListeners() {
             const toggleBtn = document.getElementById('toggle-form-btn');
             const cancelBtn = document.getElementById('cancel-form-btn');
             const recipeForm = document.getElementById('recipe-form');
             const parseBtn = document.getElementById('parse-recipe-btn');
-            const approveBtn = document.getElementById('approve-parse-btn');
-            const rejectBtn = document.getElementById('reject-parse-btn');
             const freeTextArea = document.getElementById('free-text-recipe');
             const emojiSelect = document.getElementById('recipe-emoji');
             const emojiCustom = document.getElementById('recipe-emoji-custom');
@@ -1289,13 +1241,6 @@
                 });
             }
             
-            if (approveBtn) {
-                approveBtn.addEventListener('click', approveParsedRecipe);
-            }
-            if (rejectBtn) {
-                rejectBtn.addEventListener('click', rejectParsedRecipe);
-            }
-
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', toggleForm);
             }
@@ -1306,6 +1251,7 @@
                     document.getElementById('form-message').classList.add('hidden');
                     editingRecipeKey = null;
                     // Update form title back to "Add Recipe"
+                    reviewingParsedRecipe = false;
                     const formTitle = document.getElementById('add-recipe-title');
                     formTitle.textContent = translations[currentLanguage].add_recipe_title;
                 });
