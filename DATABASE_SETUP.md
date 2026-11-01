@@ -30,7 +30,15 @@ The app stores recipes in a SQL database through Flask-SQLAlchemy. In production
 
 The app automatically rewrites a `postgres://` prefix to `postgresql://`, so you can paste the URL as-is.
 
-## Step 3: Import existing recipes (one-time, manual)
+## Step 3.1: create recipes local json file from existing recipes folder
+   ```bash
+   pip install -r requirements.txt
+
+   # Run the json db script script
+   python3 -m scripts.build_recipes_json < path to local reciped folder>  --output < path to the new json DB file > --force
+   ```
+
+## Step 3.2: Import existing recipes (one-time, manual)
 
 If you have existing recipes in `data/recipes.json`, you must import them yourself. **This does not happen automatically when the server starts.** If you skip this step, the app will start with an empty recipe list.
 
@@ -53,10 +61,13 @@ The script `migrate_to_db.py` reads `data/recipes.json` and inserts the recipes,
 **From Render Shell** (only if your plan includes Shell access):
 
 ```bash
-python3 migrate_to_db.py
+python3 -m scripts.migrate_to_db --input < path to db json file >
 ```
 
 To import into a local SQLite database instead, run the script without setting `DATABASE_URL`.
+
+To add new recipes to existing DB recipes, run with --append.
+
 
 ## Step 4: Deploy
 
