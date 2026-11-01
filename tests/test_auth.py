@@ -6,8 +6,6 @@ from pathlib import Path
 import pytest
 from werkzeug.security import generate_password_hash
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 PASSWORD = 'test-password'
 RECIPE = {
     'recipeKey': 'test_recipe',
@@ -127,6 +125,7 @@ def test_parse_recipe_never_calls_openai_when_anonymous(client, app_module):
 
 
 def test_parse_recipe_limits(admin, app_module):
+    app_module.app.config['PROPAGATE_EXCEPTIONS'] = False
     calls = []
 
     class FakeCompletions:
