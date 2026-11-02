@@ -7,7 +7,8 @@ const API_ENDPOINTS = {
     recipes: APP_CONFIG.recipes
 };
 
-let currentServings = 4;
+let selectedRecipes = {}; // { recipeKey: servings } for the combined shopping list
+let shoppingListGenerated = false; // The list is only shown after "Generate"
 let currentRecipe = null; // Will be set after recipes load
 let searchQuery = ''; // Recipe name filter; kept across language switches
 
@@ -30,6 +31,7 @@ function initializeApp() {
     
     // Initialize the UI
     createRecipeSelector();
+    renderSelectedRecipes();
     updateAll();
 }
 
@@ -67,14 +69,12 @@ function updateLanguageTexts() {
     document.getElementById('recipe-title').textContent = t.recipe_title;
     document.getElementById('subtitle').textContent = t.subtitle;
     document.getElementById('recipe-selector-title').textContent = t.recipe_selector_title;
-    document.getElementById('serving-selector-title').textContent = t.serving_selector_title;
-    document.getElementById('serving-label').textContent = t.serving_label;
-    document.getElementById('ingredients-title').textContent = t.ingredients_title;
     document.getElementById('instructions-title').textContent = t.instructions_title;
     document.getElementById('shopping-list-title').textContent = t.shopping_list_title;
     document.getElementById('print-text').textContent = t.print_text;
     document.getElementById('copy-clipboard-text').textContent = t.copy_clipboard_text;
     document.getElementById('reset-text').textContent = t.reset_text;
+
     const searchInput = document.getElementById('recipe-search');
     searchInput.placeholder = t.search_label;
     searchInput.setAttribute('aria-label', t.search_label);
@@ -83,23 +83,16 @@ function updateLanguageTexts() {
         manageBtn.textContent = t.manage_recipes;
         manageBtn.title = currentLanguage === 'he' ? 'ניהול מתכונים' : 'Manage Recipes';
     }
-   
-    // Update preset buttons
-    updatePresetButtons();
-   
+
     // Update recipe selector
     updateRecipeSelector();
-   
+
+    // Update selected recipes, and rebuild a shown list in the new language
+    renderSelectedRecipes();
+    if (shoppingListGenerated) {
+        updateShoppingList();
+    }
+
     // Update all content
     updateAll();
-}
-
-// Update preset buttons with current language
-function updatePresetButtons() {
-    const t = translations[currentLanguage];
-    const presetButtons = document.querySelectorAll('.preset-btn');
-    presetButtons.forEach(btn => {
-        const servings = btn.dataset.servings;
-        btn.textContent = `${servings} ${t.servings_text}`;
-    });
 }

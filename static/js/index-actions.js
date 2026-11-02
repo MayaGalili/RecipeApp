@@ -1,34 +1,10 @@
-// Index page: serving buttons, print, copy / reset shopping list.
-
-// Event listeners
-document.getElementById('decrease-btn').addEventListener('click', () => {
-    if (currentServings > 1) {
-        currentServings--;
-        updateAll();
-    }
-});
-
-document.getElementById('increase-btn').addEventListener('click', () => {
-    if (currentServings < 20) {
-        currentServings++;
-        updateAll();
-    }
-});
-
-// Preset buttons
-document.querySelectorAll('.preset-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        currentServings = parseInt(btn.dataset.servings);
-        updateAll();
-    });
-});
+// Index page: print, copy / reset shopping list.
 
 // Print functionality
 document.getElementById('print-btn').addEventListener('click', () => {
     const printWindow = window.open('', '_blank');
     const shoppingListContent = document.getElementById('shopping-list').innerHTML;
-    const servingCount = document.getElementById('serving-count').textContent;
-    const recipeName = recipeTranslations[currentLanguage][currentRecipe];
+    const summary = selectedRecipesSummary();
     const t = translations[currentLanguage];
     const direction = (currentLanguage === 'he') ? 'rtl' : 'ltr';
     const marginSide = (currentLanguage === 'he') ? 'margin-left' : 'margin-right';
@@ -36,7 +12,7 @@ document.getElementById('print-btn').addEventListener('click', () => {
     printWindow.document.write(`
         <html dir="${direction}">
         <head>
-            <title>${t.shopping_list_title} - ${recipeName}</title>
+            <title>${t.shopping_list_title}</title>
             <style>
                 body { font-family: Arial, sans-serif; padding: 20px; }
                 h1 { color: #333; border-bottom: 2px solid #ff6b35; }
@@ -46,8 +22,8 @@ document.getElementById('print-btn').addEventListener('click', () => {
             </style>
         </head>
         <body>
-            <h1>${recipeName} - ${servingCount} ${t.serving_label}</h1>
-            <h2>${t.shopping_list_title}</h2>
+            <h1>${t.shopping_list_title}</h1>
+            <p>${summary}</p>
             ${shoppingListContent}
         </body>
         </html>
@@ -58,12 +34,10 @@ document.getElementById('print-btn').addEventListener('click', () => {
 
 // Copy shopping list to clipboard
 document.getElementById('copy-clipboard-btn').addEventListener('click', async () => {
-    const recipeName = recipeTranslations[currentLanguage][currentRecipe] || currentRecipe;
-    const servingCount = document.getElementById('serving-count').textContent;
     const t = translations[currentLanguage];
     
     // Build the shopping list text with checkboxes
-    let clipboardText = `${recipeName} - ${servingCount} ${t.serving_label}\n${t.shopping_list_title}\n\n`;
+    let clipboardText = `${t.shopping_list_title}\n${selectedRecipesSummary()}\n\n`;
     
     // Get all shopping list items
     const shoppingList = document.getElementById('shopping-list');

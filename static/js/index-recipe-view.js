@@ -1,18 +1,8 @@
 // Index page: recipe selector, ingredients, instructions and shopping list.
 
-// Calculate scaled amount
+// Calculate scaled amount (rounded for display)
 function scaleAmount(baseAmount, servings) {
-    const scaleFactor = servings / 4;
-    const scaledAmount = baseAmount * scaleFactor;
-   
-    // Round to reasonable precision
-    if (scaledAmount < 1) {
-        return Math.round(scaledAmount * 10) / 10;
-    } else if (scaledAmount < 10) {
-        return Math.round(scaledAmount * 4) / 4;
-    } else {
-        return Math.round(scaledAmount * 2) / 2;
-    }
+    return ShoppingListAggregate.roundAmount(ShoppingListAggregate.scaleExact(baseAmount, servings));
 }
 
 // Format amount for display
@@ -77,11 +67,24 @@ function createRecipeSelector() {
        
         matchingKeys.forEach(recipeKey => {
             const recipe = recipes[recipeKey];
-            
+
             // Create container for recipe button and share button
             const recipeContainer = document.createElement('div');
-            recipeContainer.className = 'relative group';
-            
+            recipeContainer.className = 'relative group recipe-card';
+            recipeContainer.dataset.recipe = recipeKey;
+
+            // Create checkbox for multi-recipe selection
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'recipe-checkbox absolute top-2 left-2 w-5 h-5 cursor-pointer z-10';
+            checkbox.style.accentColor = '#f97316';
+            checkbox.checked = selectedRecipes[recipeKey] !== undefined;
+            checkbox.setAttribute('aria-label', recipeTranslations[currentLanguage][recipeKey]);
+            checkbox.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleRecipeSelection(recipeKey);
+            });
+
             const button = document.createElement('button');
             const isActive = recipeKey === currentRecipe;
             button.className = `recipe-button w-full p-4 bg-white border-2 rounded-lg text-center shadow-md transition-all duration-200 ${isActive ? 'active border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300 hover:shadow-lg'}`;
@@ -96,7 +99,7 @@ function createRecipeSelector() {
                 updateRecipeSelector();
                 updateAll();
             });
-            
+
             // Create share button (top-right corner inside the button)
             const shareBtn = document.createElement('button');
             shareBtn.className = 'w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110';
@@ -113,7 +116,8 @@ function createRecipeSelector() {
                 e.stopPropagation();
                 copyShareLink(recipeKey);
             });
-            
+
+            recipeContainer.appendChild(checkbox);
             button.appendChild(shareBtn);
             recipeContainer.appendChild(button);
             
@@ -138,6 +142,11 @@ function updateRecipeSelector() {
     createRecipeSelector();
 }
 
+// Servings used for a recipe: its selected servings, or the default
+function servingsFor(recipeKey) {
+    return selectedRecipes[recipeKey] || ShoppingListAggregate.DEFAULT_SERVINGS;
+}
+
 // Update ingredients display
 function updateIngredients() {
     const ingredientsList = document.getElementById('ingredients-list');
@@ -145,9 +154,12 @@ function updateIngredients() {
 
     const recipe = recipes[currentRecipe];
     const ingredients = recipe.ingredients[currentLanguage] || recipe.ingredients.he;
-   
+    const servings = servingsFor(currentRecipe);
+    const t = translations[currentLanguage];
+    document.getElementById('ingredients-title').textContent = `${t.ingredients_title} (${servings} ${t.servings_text})`;
+
     ingredients.forEach((ingredient, index) => {
-        const scaledAmount = scaleAmount(ingredient.amount, currentServings);
+        const scaledAmount = scaleAmount(ingredient.amount, servings);
         const ingredientDiv = document.createElement('div');
         ingredientDiv.className = 'ingredient-item flex justify-between items-center p-3 bg-gray-50 rounded-lg';
         ingredientDiv.innerHTML = `
@@ -180,31 +192,15 @@ function updateInstructions() {
     });
 }
 
-// Update shopping list
+// Render the combined shopping list for the selected recipes (only called from "Generate")
 function updateShoppingList() {
     const shoppingList = document.getElementById('shopping-list');
     shoppingList.innerHTML = '';
 
-    const recipe = recipes[currentRecipe];
-    const ingredients = recipe.ingredients[currentLanguage] || recipe.ingredients.he;
-   
-    // Group ingredients by category
-    const categories = {};
-    ingredients.forEach((ingredient, index) => {
-        if (!categories[ingredient.category]) {
-            categories[ingredient.category] = [];
-        }
-        const scaledAmount = scaleAmount(ingredient.amount, currentServings);
-        categories[ingredient.category].push({
-            name: ingredient.name,
-            amount: scaledAmount,
-            unit: ingredient.unit,
-            id: `item-${currentRecipe}-${index}`
-        });
-    });
+    const categories = ShoppingListAggregate.aggregateIngredients(selectedRecipes, recipes, currentLanguage);
 
     // Display by categories
-    Object.keys(categories).forEach(category => {
+    categories.forEach(({ category, items }, categoryIndex) => {
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'mb-4';
        
@@ -213,13 +209,14 @@ function updateShoppingList() {
         categoryTitle.textContent = category;
         categoryDiv.appendChild(categoryTitle);
 
-        categories[category].forEach(item => {
+        items.forEach((item, itemIndex) => {
+            const itemId = `item-${categoryIndex}-${itemIndex}`;
             const itemDiv = document.createElement('div');
             itemDiv.className = 'shopping-item flex items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-all duration-200';
             const checkboxMargin = (currentLanguage === 'he') ? 'ml-3' : 'mr-3';
             itemDiv.innerHTML = `
-                <input type="checkbox" id="${item.id}" class="${checkboxMargin} w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 cursor-pointer">
-                <label for="${item.id}" class="flex-1 flex justify-between items-center cursor-pointer">
+                <input type="checkbox" id="${itemId}" class="${checkboxMargin} w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 cursor-pointer">
+                <label for="${itemId}" class="flex-1 flex justify-between items-center cursor-pointer">
                     <span class="text-gray-800 font-medium">${item.name}</span>
                     <span class="text-orange-600 font-semibold">${formatAmount(item.amount)} ${item.unit}</span>
                 </label>
@@ -251,15 +248,8 @@ function updateShoppingList() {
     });
 }
 
-// Update serving count display
-function updateServingDisplay() {
-    document.getElementById('serving-count').textContent = currentServings;
-}
-
-// Update all displays
+// Update details (the shopping list is only rebuilt by the Generate button)
 function updateAll() {
-    updateServingDisplay();
     updateIngredients();
     updateInstructions();
-    updateShoppingList();
 }

@@ -16,7 +16,7 @@
    </div><!-- Header -->
    <div class="text-center mb-8">
     <h1 id="recipe-title" class="text-4xl font-bold text-gray-800 mb-2">מתכונים ונהנים</h1>
-    <p id="subtitle" class="text-gray-600 text-lg">בחר מתכון ומספר מנות וקבל רשימת קניות מותאמת</p>
+    <p id="subtitle" class="text-gray-600 text-lg">בחר מתכון אחד או יותר וקבל רשימת קניות מאוחדת</p>
    </div><!-- Recipe Selector -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
     <h2 id="recipe-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מתכון</h2>
@@ -26,15 +26,19 @@
    </div><!-- Navigation to Manage Page -->
    <div class="text-center mb-8">
     <a href="{{ url_for('manage') }}" id="manage-recipes-btn" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md text-2xl" title="ניהול מתכונים">✍🏻</a>
-   </div><!-- Serving Size Selector -->
-   <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-    <h2 id="serving-selector-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">בחר מספר מנות</h2>
-    <div class="flex justify-center items-center gap-4 mb-4"><button id="decrease-btn" class="serving-button bg-red-500 hover:bg-red-600 text-white w-12 h-12 rounded-full text-xl font-bold shadow-md">-</button>
-     <div class="text-center"><span id="serving-count" class="text-4xl font-bold text-gray-800">4</span>
-      <p id="serving-label" class="text-gray-600 mt-1">מנות</p>
-     </div><button id="increase-btn" class="serving-button bg-green-500 hover:bg-green-600 text-white w-12 h-12 rounded-full text-xl font-bold shadow-md">+</button>
+   </div><!-- Selected Recipes -->
+   <div id="selected-recipes-panel" class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    <h2 id="selected-recipes-title" class="text-2xl font-semibold text-gray-800 mb-4 text-center">מתכונים שנבחרו</h2>
+    <p id="selected-recipes-empty" class="text-center text-gray-500 mb-4">סמנו מתכונים כדי להוסיף אותם לרשימת הקניות</p>
+    <div id="selected-recipes-list" class="space-y-2 mb-4"><!-- Selected recipes will be populated by JavaScript -->
     </div>
-    <div class="flex justify-center gap-2 flex-wrap" id="preset-buttons"><button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="2">2 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="4">4 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="6">6 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="8">8 מנות</button> <button class="preset-btn serving-button bg-orange-100 hover:bg-orange-200 text-orange-800 px-4 py-2 rounded-lg font-medium" data-servings="12">12 מנות</button>
+    <div class="flex gap-3 flex-wrap">
+      <button id="generate-list-btn" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors min-w-[150px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-500" disabled>
+        <span id="generate-list-text">🛒 צור רשימת קניות</span>
+      </button>
+      <button id="clear-selection-btn" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium shadow-md transition-colors min-w-[150px] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-500" disabled>
+        <span id="clear-selection-text">🗑️ נקה בחירה</span>
+      </button>
     </div>
    </div><!-- Recipe Ingredients -->
    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
@@ -47,7 +51,7 @@
     <div id="instructions-list" class="space-y-3"><!-- Instructions will be populated by JavaScript -->
     </div>
    </div><!-- Shopping List -->
-   <div class="bg-white rounded-xl shadow-lg p-6">
+   <div id="shopping-list-card" class="bg-white rounded-xl shadow-lg p-6" style="display: none;">
     <h2 id="shopping-list-title" class="text-2xl font-semibold text-gray-800 mb-6">רשימת קניות</h2>
     <div id="shopping-list" class="space-y-2"><!-- Shopping list will be populated by JavaScript -->
     </div>
@@ -72,8 +76,10 @@
   </script>
   <script src="{{ url_for('static', filename='js/index-i18n.js') }}"></script>
   <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/shopping-list-aggregate.js') }}"></script>
   <script src="{{ url_for('static', filename='js/index-core.js') }}"></script>
   <script src="{{ url_for('static', filename='js/index-recipe-view.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/index-multi-recipe.js') }}"></script>
   <script src="{{ url_for('static', filename='js/index-actions.js') }}"></script>
   <script src="{{ url_for('static', filename='js/index-share.js') }}"></script>
   <script src="{{ url_for('static', filename='js/index-init.js') }}"></script>
