@@ -6,8 +6,6 @@ from pathlib import Path
 import pytest
 from werkzeug.security import generate_password_hash
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-
 PASSWORD = 'test-password'
 RECIPE = {
     'recipeKey': 'test_recipe',
@@ -122,11 +120,12 @@ def test_parse_recipe_never_calls_openai_when_anonymous(client, app_module):
     class Boom:
         def __getattr__(self, name):
             raise AssertionError('OpenAI must not be called')
-    app_module.openai_client = Boom()
+    app_module.app.config['OPENAI_CLIENT'] = Boom()
     assert client.post('/api/parse-recipe', json={'freeText': 'soup'}).status_code == 401
 
 
 def test_parse_recipe_limits(admin, app_module):
+    app_module.app.config['PROPAGATE_EXCEPTIONS'] = False
     calls = []
 
     class FakeCompletions:
@@ -137,7 +136,7 @@ def test_parse_recipe_limits(admin, app_module):
     class FakeClient:
         chat = type('Chat', (), {'completions': FakeCompletions()})()
 
-    app_module.openai_client = FakeClient()
+    app_module.app.config['OPENAI_CLIENT'] = FakeClient()
     too_long = admin.post('/api/parse-recipe', json={'freeText': 'x' * 5001}, headers=admin.csrf)
     assert too_long.status_code == 400 and not calls
     for _ in range(10):

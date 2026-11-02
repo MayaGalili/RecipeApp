@@ -88,23 +88,43 @@ def load_and_validate(path):
     return recipes, translations, categories, errors
 
 
+def select_new(recipes, translations, categories, existing_keys):
+    """Filter recipes/translations/categories to only those not already in the DB (by recipe key).
+
+    Args:
+        recipes, translations, categories: lists of SQLAlchemy model instances.
+        existing_keys: set of recipe keys already in the Recipe table.
+
+    Returns:
+        (recipes_new, translations_new, categories_new) filtered lists.
+    """
+    recipes_new = [r for r in recipes if r.recipe_key not in existing_keys]
+    recipe_keys_new = {r.recipe_key for r in recipes_new}
+    translations_new = [t for t in translations if t.recipe_key in recipe_keys_new]
+    categories_new = [c for c in categories if c.recipe_key in recipe_keys_new]
+    return recipes_new, translations_new, categories_new
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[1])
+    parser.add_argument('--input', default=None, help='Input JSON file (default: data/recipes.json)')
     parser.add_argument('--dry-run', action='store_true', help='validate and count, write nothing')
+    parser.add_argument('--append', action='store_true', help='append mode: skip existing recipes and insert only new ones')
     args = parser.parse_args()
 
     if not os.environ.get('DATABASE_URL'):
         sys.exit("DATABASE_URL is not set; refusing to fall back to local SQLite.")
-    if not os.path.exists(JSON_FILE):
-        sys.exit(f"{JSON_FILE} not found.")
 
-    recipes, translations, categories, errors = load_and_validate(JSON_FILE)
+    json_file = args.input if args.input else JSON_FILE
+    if not os.path.exists(json_file):
+        sys.exit(f"File not found: {json_file}")
+
+    recipes, translations, categories, errors = load_and_validate(json_file)
     if errors:
         print("Validation failed, nothing written:")
         for error in errors:
             print(f"  - {error}")
         sys.exit(1)
-    planned = {'recipes': len(recipes), 'recipe_translations': len(translations), 'recipe_categories': len(categories)}
 
     try:
         with app.app_context():
@@ -115,9 +135,23 @@ def main():
                 sys.exit("Target is not PostgreSQL; aborting.")
 
             existing = {name: db.session.query(model).count() for name, model in TABLES}
-            if any(existing.values()):
-                print(f"Existing rows: {existing}")
-                sys.exit("Destination tables are not empty; this is a first-time import only. Aborting.")
+
+            # Determine what to import
+            if args.append:
+                # In append mode, filter to only new recipes
+                existing_keys = {r.recipe_key for r in db.session.query(Recipe).all()}
+                recipes, translations, categories = select_new(recipes, translations, categories, existing_keys)
+                if not recipes:
+                    print(f"No new recipes to import (all keys already in database).")
+                    sys.exit(0)
+                planned = {'recipes': len(recipes), 'recipe_translations': len(translations), 'recipe_categories': len(categories)}
+                print(f"Append mode: will insert {planned['recipes']} new recipe{'s' if planned['recipes'] != 1 else ''}")
+            else:
+                # First-time mode: require empty tables
+                if any(existing.values()):
+                    print(f"Existing rows: {existing}")
+                    sys.exit("Destination tables are not empty; this is a first-time import only. Aborting.")
+                planned = {'recipes': len(recipes), 'recipe_translations': len(translations), 'recipe_categories': len(categories)}
 
             print(f"Validated from JSON: {planned}")
             if args.dry_run:
