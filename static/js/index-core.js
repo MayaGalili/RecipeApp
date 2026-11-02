@@ -9,6 +9,7 @@ const API_ENDPOINTS = {
 
 let currentServings = 4;
 let currentRecipe = null; // Will be set after recipes load
+let searchQuery = ''; // Recipe name filter; kept across language switches
 
 // Initialize the application after recipes are loaded
 function initializeApp() {
@@ -74,6 +75,9 @@ function updateLanguageTexts() {
     document.getElementById('print-text').textContent = t.print_text;
     document.getElementById('copy-clipboard-text').textContent = t.copy_clipboard_text;
     document.getElementById('reset-text').textContent = t.reset_text;
+    const searchInput = document.getElementById('recipe-search');
+    searchInput.placeholder = t.search_label;
+    searchInput.setAttribute('aria-label', t.search_label);
     const manageBtn = document.getElementById('manage-recipes-btn');
     if (manageBtn) {
         manageBtn.textContent = t.manage_recipes;

@@ -28,13 +28,40 @@ function formatAmount(amount) {
     }
 }
 
+// Trim, collapse whitespace and lower-case text for search matching
+function normalizeSearchText(text) {
+    return String(text || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+// True if the recipe's Hebrew or English name contains the query (empty query matches all)
+function recipeMatchesQuery(names, query) {
+    const normalizedQuery = normalizeSearchText(query);
+    if (!normalizedQuery) {
+        return true;
+    }
+    return Object.values(names).some(name => normalizeSearchText(name).includes(normalizedQuery));
+}
+
 // Create recipe selector buttons organized by categories
 function createRecipeSelector() {
     const recipeSelector = document.getElementById('recipe-selector');
     recipeSelector.innerHTML = '';
 
+    let matchCount = 0;
+
     // Create categories
     Object.keys(recipeCategoryMap).forEach(categoryKey => {
+        const matchingKeys = recipeCategoryMap[categoryKey].filter(recipeKey =>
+            recipeMatchesQuery({
+                he: recipeTranslations.he[recipeKey],
+                en: recipeTranslations.en[recipeKey]
+            }, searchQuery)
+        );
+        if (matchingKeys.length === 0) {
+            return;
+        }
+        matchCount += matchingKeys.length;
+
         const categoryDiv = document.createElement('div');
         categoryDiv.className = 'category-section';
        
@@ -48,7 +75,7 @@ function createRecipeSelector() {
         const recipesGrid = document.createElement('div');
         recipesGrid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3';
        
-        recipeCategoryMap[categoryKey].forEach(recipeKey => {
+        matchingKeys.forEach(recipeKey => {
             const recipe = recipes[recipeKey];
             
             // Create container for recipe button and share button
@@ -96,6 +123,13 @@ function createRecipeSelector() {
         categoryDiv.appendChild(recipesGrid);
         recipeSelector.appendChild(categoryDiv);
     });
+
+    if (matchCount === 0) {
+        const noResults = document.createElement('p');
+        noResults.className = 'text-center text-gray-600';
+        noResults.textContent = translations[currentLanguage].no_results;
+        recipeSelector.appendChild(noResults);
+    }
 }
 
 // Update recipe selector active state
