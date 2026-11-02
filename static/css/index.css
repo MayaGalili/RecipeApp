@@ -190,11 +190,13 @@ body {
 .hero {
     position: relative;
     overflow: hidden;
-    min-height: 212px;
+    /* tall enough to show the banner's tomatoes/basil in full at any desktop width */
+    min-height: max(212px, 19vw);
     padding: 1.4rem 1rem 1.7rem;
     background:
-        radial-gradient(ellipse at 50% 30%, #fffaf3 0%, rgba(255, 250, 243, 0) 60%),
-        linear-gradient(180deg, #f6e8d8 0%, #f9efe3 70%, var(--cream) 100%);
+        radial-gradient(ellipse at 50% 40%, rgba(255, 250, 243, 0.6) 0%, rgba(255, 250, 243, 0) 60%),
+        url('../img/kitchen-banner.jpg') center top / 100% auto no-repeat,
+        #f5dcc5;
 }
 
 .hero-inner {
@@ -282,87 +284,6 @@ body {
     transform: translateY(-50%);
     color: var(--ink);
     pointer-events: none;
-}
-
-/* Decorative food photography substitutes, drawn with SVG/CSS */
-.hero-deco {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    z-index: 1;
-    pointer-events: none;
-}
-
-.hero-deco-left {
-    left: 0;
-    width: min(26vw, 380px);
-    -webkit-mask-image: linear-gradient(to right, #000 55%, transparent 100%);
-    mask-image: linear-gradient(to right, #000 55%, transparent 100%);
-}
-
-.hero-deco-left svg {
-    position: absolute;
-    left: -1.5rem;
-    top: -0.5rem;
-    width: 100%;
-    height: auto;
-}
-
-.hero-deco-right {
-    right: 0;
-    width: min(28vw, 420px);
-    -webkit-mask-image: linear-gradient(to left, #000 55%, transparent 100%);
-    mask-image: linear-gradient(to left, #000 55%, transparent 100%);
-}
-
-.hero-deco-right .cloth {
-    position: absolute;
-    top: -2.5rem;
-    right: -3rem;
-    width: 78%;
-    height: 215px;
-    transform: rotate(-14deg);
-    background:
-        repeating-linear-gradient(0deg, rgba(205, 35, 45, 0.6) 0 17px, transparent 17px 34px),
-        repeating-linear-gradient(90deg, rgba(205, 35, 45, 0.6) 0 17px, transparent 17px 34px),
-        #fff;
-    border-radius: 18px;
-    box-shadow: 0 6px 14px rgba(90, 40, 20, 0.2);
-}
-
-.hero-deco-right .board {
-    position: absolute;
-    top: 3rem;
-    right: 2.5rem;
-    width: 46%;
-    height: 96px;
-    transform: rotate(-9deg);
-    border-radius: 8px;
-    background: linear-gradient(135deg, #c98f57, #a56a37);
-    box-shadow: 0 6px 12px rgba(60, 30, 10, 0.3);
-}
-
-.hero-deco-right .board i {
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #5a4a40, #1c1512);
-}
-
-.hero-deco-right .board i:nth-child(1) { top: 28px; left: 36%; }
-.hero-deco-right .board i:nth-child(2) { top: 40px; left: 46%; }
-.hero-deco-right .board i:nth-child(3) { top: 24px; left: 52%; }
-.hero-deco-right .board i:nth-child(4) { top: 46px; left: 60%; }
-.hero-deco-right .board i:nth-child(5) { top: 34px; left: 68%; }
-
-.hero-deco-right .basil {
-    position: absolute;
-    top: -1rem;
-    left: 0;
-    width: 70%;
-    height: auto;
-    opacity: 0.9;
 }
 
 /* ---------- Page body ---------- */
@@ -819,9 +740,6 @@ body {
 }
 
 @media (max-width: 860px) {
-    .hero-deco { opacity: 0.55; }
-    .hero-deco-left { width: 22vw; }
-    .hero-deco-right { width: 24vw; }
     .nav-link span { display: none; }
     .nav-link svg { width: 1.7rem; height: 1.7rem; }
     .main-nav { gap: 1.1rem; }
@@ -868,8 +786,8 @@ body {
     .user-link { width: 2.2rem; height: 2.2rem; }
     .user-link svg { width: 1.6rem; height: 1.6rem; }
 
-    .hero { min-height: 0; padding: 1.4rem 0.9rem 1.4rem; }
-    .hero-deco { display: none; }
+    /* the banner is only ~33vw tall here: start the text below its ingredients */
+    .hero { min-height: 0; padding: calc(24vw + 0.6rem) 0.9rem 1.4rem; }
     .hero-title-wrap h1 { font-size: 2.1rem; }
     .hero-heart { width: 1.8rem; height: 1.8rem; inset-inline-start: calc(100% - 0.4rem); top: 0.6rem; }
     #subtitle { font-size: 1.05rem; }
