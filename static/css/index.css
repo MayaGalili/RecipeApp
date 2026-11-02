@@ -560,10 +560,9 @@ body {
     overflow-wrap: anywhere;
 }
 
-.recipe-leaf svg {
-    display: block;
-    width: 1.8rem;
-    height: 0.75rem;
+.recipe-leaf {
+    font-size: 1.1rem;
+    line-height: 1;
 }
 
 .recipe-button:hover {

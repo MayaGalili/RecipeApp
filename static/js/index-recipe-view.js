@@ -32,8 +32,7 @@ function recipeMatchesQuery(names, query) {
     return Object.values(names).some(name => normalizeSearchText(name).includes(normalizedQuery));
 }
 
-// Decorative sprout shown at the bottom of every recipe card
-const LEAF_ICON = '<svg viewBox="0 0 40 16" fill="none" aria-hidden="true"><path d="M20 15V9" stroke="#6b9a2b" stroke-width="1.6" stroke-linecap="round"/><path d="M20 10C14 10 9 7 6 2c6-1 12 1 14 8z" fill="#8bb542"/><path d="M20 10c6 0 11-3 14-8-6-1-12 1-14 8z" fill="#6b9a2b"/></svg>';
+// Emoji shown at the bottom of every recipe card
 const CHEVRON_ICON = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
 
 // Create recipe selector buttons organized by categories
@@ -135,7 +134,7 @@ function createRecipeSelector() {
             nameSpan.textContent = recipeName;
             const leaf = document.createElement('span');
             leaf.className = 'recipe-leaf';
-            leaf.innerHTML = LEAF_ICON;
+            leaf.textContent = recipes[recipeKey].emoji;
             button.append(nameSpan, leaf);
             button.addEventListener('click', () => {
                 currentRecipe = recipeKey;
