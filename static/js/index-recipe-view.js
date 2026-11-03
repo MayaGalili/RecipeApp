@@ -32,15 +32,23 @@ function recipeMatchesQuery(names, query) {
     return Object.values(names).some(name => normalizeSearchText(name).includes(normalizedQuery));
 }
 
+// Emoji shown at the bottom of every recipe card
+const CHEVRON_ICON = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>';
+
 // Create recipe selector buttons organized by categories
 function createRecipeSelector() {
     const recipeSelector = document.getElementById('recipe-selector');
     recipeSelector.innerHTML = '';
 
     let matchCount = 0;
+    const searching = normalizeSearchText(searchQuery) !== '';
 
-    // Create categories
-    Object.keys(recipeCategoryMap).forEach(categoryKey => {
+    // Create categories in the display order of recipeCategories (the JSON feed may reorder keys),
+    // followed by any category the feed has that the UI doesn't know about
+    const knownKeys = Object.keys(recipeCategories[currentLanguage]);
+    const categoryOrder = knownKeys.filter(key => recipeCategoryMap[key])
+        .concat(Object.keys(recipeCategoryMap).filter(key => !knownKeys.includes(key)));
+    categoryOrder.forEach(categoryKey => {
         const matchingKeys = recipeCategoryMap[categoryKey].filter(recipeKey =>
             recipeMatchesQuery({
                 he: recipeTranslations.he[recipeKey],
@@ -52,34 +60,66 @@ function createRecipeSelector() {
         }
         matchCount += matchingKeys.length;
 
+        // A search always shows its matches, even inside a folded category
+        const collapsed = collapsedCategories.has(categoryKey) && !searching;
+
         const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'category-section';
-       
-        // Category title
-        const categoryTitle = document.createElement('div');
+        categoryDiv.className = 'category-section' + (collapsed ? ' is-collapsed' : '');
+        categoryDiv.dataset.category = categoryKey;
+
+        // Category header: title, illustration and fold toggle
+        const categoryHead = document.createElement('div');
+        categoryHead.className = 'category-head';
+
+        const categoryTitle = document.createElement('h3');
         categoryTitle.className = 'category-title';
         categoryTitle.textContent = recipeCategories[currentLanguage][categoryKey];
-        categoryDiv.appendChild(categoryTitle);
-       
-        // Recipe buttons grid
-        const recipesGrid = document.createElement('div');
-        recipesGrid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3';
-       
-        matchingKeys.forEach(recipeKey => {
-            const recipe = recipes[recipeKey];
 
-            // Create container for recipe button and share button
+        const categoryArt = document.createElement('img');
+        categoryArt.className = 'category-art';
+        categoryArt.src = `${APP_CONFIG.categoryImages}${categoryKey}.png`;
+        categoryArt.alt = '';
+        categoryArt.loading = 'lazy';
+        categoryArt.addEventListener('error', () => categoryArt.remove());
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'category-toggle';
+        toggle.innerHTML = CHEVRON_ICON;
+        toggle.setAttribute('aria-expanded', String(!collapsed));
+        toggle.setAttribute('aria-label', `${translations[currentLanguage].toggle_category}: ${categoryTitle.textContent}`);
+        toggle.addEventListener('click', () => {
+            const nowCollapsed = !categoryDiv.classList.contains('is-collapsed');
+            categoryDiv.classList.toggle('is-collapsed', nowCollapsed);
+            toggle.setAttribute('aria-expanded', String(!nowCollapsed));
+            if (nowCollapsed) {
+                collapsedCategories.add(categoryKey);
+            } else {
+                collapsedCategories.delete(categoryKey);
+            }
+        });
+
+        categoryHead.append(categoryTitle, categoryArt, toggle);
+        categoryDiv.appendChild(categoryHead);
+
+        // Recipe cards grid
+        const recipesGrid = document.createElement('div');
+        recipesGrid.className = 'recipes-grid';
+
+        matchingKeys.forEach(recipeKey => {
+            const recipeName = recipeTranslations[currentLanguage][recipeKey];
+
+            // Container for the recipe button, selection checkbox and share button
             const recipeContainer = document.createElement('div');
-            recipeContainer.className = 'relative group recipe-card';
+            recipeContainer.className = 'recipe-card group';
             recipeContainer.dataset.recipe = recipeKey;
 
             // Create checkbox for multi-recipe selection
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            checkbox.className = 'recipe-checkbox absolute top-2 left-2 w-5 h-5 cursor-pointer z-10';
-            checkbox.style.accentColor = '#f97316';
+            checkbox.className = 'recipe-checkbox';
             checkbox.checked = selectedRecipes[recipeKey] !== undefined;
-            checkbox.setAttribute('aria-label', recipeTranslations[currentLanguage][recipeKey]);
+            checkbox.setAttribute('aria-label', recipeName);
             checkbox.addEventListener('click', (e) => {
                 e.stopPropagation();
                 toggleRecipeSelection(recipeKey);
@@ -87,50 +127,44 @@ function createRecipeSelector() {
 
             const button = document.createElement('button');
             const isActive = recipeKey === currentRecipe;
-            button.className = `recipe-button w-full p-4 bg-white border-2 rounded-lg text-center shadow-md transition-all duration-200 ${isActive ? 'active border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300 hover:shadow-lg'}`;
-            button.style.position = 'relative';
-            button.style.overflow = 'visible';
-            button.innerHTML = `
-                <div class="text-3xl mb-2">${recipe.emoji}</div>
-                <div class="text-sm font-medium ${isActive ? 'text-white' : 'text-gray-700'}">${recipeTranslations[currentLanguage][recipeKey]}</div>
-            `;
+            button.type = 'button';
+            button.className = 'recipe-button' + (isActive ? ' active' : '');
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'recipe-name';
+            nameSpan.textContent = recipeName;
+            const leaf = document.createElement('span');
+            leaf.className = 'recipe-leaf';
+            leaf.textContent = recipes[recipeKey].emoji;
+            button.append(nameSpan, leaf);
             button.addEventListener('click', () => {
                 currentRecipe = recipeKey;
                 updateRecipeSelector();
                 updateAll();
             });
 
-            // Create share button (top-right corner inside the button)
+            // Share button (top corner of the card, a sibling of the main button)
             const shareBtn = document.createElement('button');
-            shareBtn.className = 'w-8 h-8 bg-blue-500 hover:bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl opacity-0 group-hover:opacity-100 transition-all duration-200 transform hover:scale-110';
-            shareBtn.style.position = 'absolute';
-            shareBtn.style.top = '0.5rem';
-            shareBtn.style.right = '0.5rem';
-            shareBtn.style.left = 'auto';
-            shareBtn.style.zIndex = '20';
+            shareBtn.type = 'button';
+            shareBtn.className = 'share-btn';
             shareBtn.innerHTML = '🔗';
             shareBtn.title = 'שתף מתכון';
-            shareBtn.style.fontSize = '0.875rem';
-            shareBtn.style.lineHeight = '1';
+            shareBtn.setAttribute('aria-label', 'שתף מתכון');
             shareBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 copyShareLink(recipeKey);
             });
 
-            recipeContainer.appendChild(checkbox);
-            button.appendChild(shareBtn);
-            recipeContainer.appendChild(button);
-            
+            recipeContainer.append(checkbox, button, shareBtn);
             recipesGrid.appendChild(recipeContainer);
         });
-       
+
         categoryDiv.appendChild(recipesGrid);
         recipeSelector.appendChild(categoryDiv);
     });
 
     if (matchCount === 0) {
         const noResults = document.createElement('p');
-        noResults.className = 'text-center text-gray-600';
+        noResults.className = 'no-results';
         noResults.textContent = translations[currentLanguage].no_results;
         recipeSelector.appendChild(noResults);
     }

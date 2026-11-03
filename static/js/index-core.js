@@ -11,6 +11,7 @@ let selectedRecipes = {}; // { recipeKey: servings } for the combined shopping l
 let shoppingListGenerated = false; // The list is only shown after "Generate"
 let currentRecipe = null; // Will be set after recipes load
 let searchQuery = ''; // Recipe name filter; kept across language switches
+const collapsedCategories = new Set(); // Category keys whose recipe row is folded away
 
 // Initialize the application after recipes are loaded
 function initializeApp() {
@@ -41,11 +42,9 @@ function switchLanguage(lang) {
    
     // Update language button states
     document.querySelectorAll('.language-btn').forEach(btn => {
-        if (btn.dataset.lang === lang) {
-            btn.className = 'language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 bg-orange-500 text-white';
-        } else {
-            btn.className = 'language-btn px-4 py-2 rounded-md font-medium transition-all duration-200 text-gray-600 hover:bg-gray-100';
-        }
+        const isActive = btn.dataset.lang === lang;
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
     });
 
     // Update page direction
@@ -66,7 +65,11 @@ function switchLanguage(lang) {
 function updateLanguageTexts() {
     const t = translations[currentLanguage];
    
+    document.title = t.recipe_title;
     document.getElementById('recipe-title').textContent = t.recipe_title;
+    document.getElementById('brand-name').textContent = t.recipe_title;
+    document.getElementById('nav-all-text').textContent = t.nav_all;
+    document.getElementById('nav-plan-text').textContent = t.nav_plan;
     document.getElementById('subtitle').textContent = t.subtitle;
     document.getElementById('recipe-selector-title').textContent = t.recipe_selector_title;
     document.getElementById('instructions-title').textContent = t.instructions_title;
@@ -80,8 +83,8 @@ function updateLanguageTexts() {
     searchInput.setAttribute('aria-label', t.search_label);
     const manageBtn = document.getElementById('manage-recipes-btn');
     if (manageBtn) {
-        manageBtn.textContent = t.manage_recipes;
-        manageBtn.title = currentLanguage === 'he' ? 'ניהול מתכונים' : 'Manage Recipes';
+        manageBtn.title = t.manage_recipes;
+        manageBtn.setAttribute('aria-label', t.manage_recipes);
     }
 
     // Update recipe selector
