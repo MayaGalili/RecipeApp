@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-One-time import of data/recipes.json into an empty PostgreSQL database.
+Import data/recipes.json into an empty database (SQLite or PostgreSQL).
 
-    python3 migrate_to_db.py --dry-run   # validate and count, write nothing
-    python3 migrate_to_db.py             # real import (asks for confirmation)
+    python3 -m scripts.migrate_to_db --dry-run   # validate and count, write nothing
+    python3 -m scripts.migrate_to_db             # real import (asks for confirmation)
+    python3 -m scripts.migrate_to_db --input recipes_import.json  # import custom file
+    python3 -m scripts.migrate_to_db --append    # add new recipes to existing DB
 
-The import aborts unless the target is PostgreSQL and all three destination
-tables are empty. It runs in a single transaction. Delete this file afterwards.
+The import aborts unless all three destination tables are empty (unless --append).
+It runs in a single transaction.
 """
 
 import argparse
@@ -15,7 +17,8 @@ import os
 import sys
 from app import app, db, Recipe, RecipeTranslation, RecipeCategory
 
-JSON_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'recipes.json')
+# Resolve to <repo>/data/recipes.json (one level up from scripts/)
+JSON_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data', 'recipes.json')
 VALID_CATEGORIES = ['meat_fish', 'pasta_sauces', 'sides', 'salads', 'soups', 'desserts', 'holidays']
 LANGUAGES = ('he', 'en')
 TABLES = (('recipes', Recipe), ('recipe_translations', RecipeTranslation), ('recipe_categories', RecipeCategory))
@@ -112,9 +115,6 @@ def main():
     parser.add_argument('--append', action='store_true', help='append mode: skip existing recipes and insert only new ones')
     args = parser.parse_args()
 
-    if not os.environ.get('DATABASE_URL'):
-        sys.exit("DATABASE_URL is not set; refusing to fall back to local SQLite.")
-
     json_file = args.input if args.input else JSON_FILE
     if not os.path.exists(json_file):
         sys.exit(f"File not found: {json_file}")
@@ -131,8 +131,6 @@ def main():
             # Never print the URL, host or credentials: only the dialect name.
             dialect = db.engine.dialect.name
             print(f"Target database: {dialect}")
-            if dialect != 'postgresql':
-                sys.exit("Target is not PostgreSQL; aborting.")
 
             existing = {name: db.session.query(model).count() for name, model in TABLES}
 

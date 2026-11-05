@@ -110,8 +110,6 @@ Return only JSON, with no additional text."""
     if parsed_recipe['category'] not in VALID_CATEGORIES:
         parsed_recipe['category'] = 'meat_fish'
 
-    print(parse_recipe)
-
     return parsed_recipe
 
 
