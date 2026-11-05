@@ -40,3 +40,8 @@ def serve_recipes():
     """Serve recipes as JSON from database"""
     recipes_data = load_recipes()
     return jsonify(recipes_data)
+
+
+def account():
+    """Serve Firebase phone sign-in and account status page."""
+    return render_template('account.html')

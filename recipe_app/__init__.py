@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask
 
-from . import ai_parser, auth, pages, recipes_api
+from . import ai_parser, auth, pages, recipes_api, firebase_auth_api
 from .config import load_config
 from .extensions import db
 
@@ -39,4 +39,8 @@ def create_app():
     app.add_url_rule('/api/update-recipe', view_func=recipes_api.update_recipe, methods=['PUT'])
     app.add_url_rule('/api/delete-recipe', view_func=recipes_api.delete_recipe, methods=['DELETE'])
     app.add_url_rule('/api/parse-recipe', view_func=ai_parser.parse_recipe, methods=['POST'])
+    app.add_url_rule('/account', view_func=pages.account)
+    app.add_url_rule('/api/account', view_func=firebase_auth_api.account, methods=['GET'])
+    app.add_url_rule('/api/devices', view_func=firebase_auth_api.devices, methods=['GET', 'POST'])
+    app.add_url_rule('/api/devices/<device_id>', view_func=firebase_auth_api.delete_device, methods=['DELETE'])
     return app

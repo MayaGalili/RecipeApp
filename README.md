@@ -1,219 +1,262 @@
 # RecipeApp
 
-A modern, bilingual (Hebrew/English) recipe browsing and management application. Quickly find recipes by category, adjust serving sizes, generate shopping lists, and add new recipes with an optional AI-powered parser.
+The application is used for many things, one of the main things is to quickly find the recipe.
 
 ## Features
 
 - Browse recipes by category (Meat/Fish, Pasta & Sauces, Sides, Salads, Soups, Desserts, Holidays & Celebrations)
 - Adjust serving sizes dynamically
 - Generate shopping lists
-- Add new recipes through the web interface (manual or AI-powered)
-- AI-powered recipe parser (paste free-text recipes and the AI structures them)
-- Bilingual interface (Hebrew/English)
+- **Add new recipes** - Recipes are automatically added to the app and saved to `recipes.json`
+- **AI-Powered Recipe Parser** - Paste a free-text recipe and the AI will automatically parse it into the structured format
+- Modern UI with Tailwind CSS
 
 ## Prerequisites
 
-- **Python 3.9+** (3.11+ recommended)
-- **Node.js 18+** (only needed if you modify CSS)
-- **OpenAI API key** (optional, for AI recipe parsing — get one at [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys))
+- Python 3.7+
+- Node.js 14+ (for building Tailwind CSS)
+- OpenAI API key (for AI-powered recipe parsing) - Get one at [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys)
 
-## Quick Start (5 steps)
+## Running the Application Locally
 
-### Step 1: Clone and set up the environment
+**Note:** You can run the application locally even after deploying to Render. Local development and production deployment are independent.
 
-```bash
-git clone <your-repo-url>
-cd RecipeApp
-python3 -m venv venv
-source venv/bin/activate
-```
+### Initial Setup (First Time Only)
 
-### Step 2: Install dependencies
-
-```bash
-pip install -r requirements.txt
-npm install
-```
-
-### Step 3: Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Then edit `.env` to fill in the required variables:
-
-- **`SECRET_KEY`**: Generate a random secret key:
-  ```bash
-  python3 -c "import secrets; print(secrets.token_hex(32))"
-  ```
-  Copy the output to `.env`
-
-- **`ADMIN_PASSWORD_HASH`**: Generate a hash of your admin password:
-  ```bash
-  python3 -c "from werkzeug.security import generate_password_hash as g; print(g(input()))"
-  ```
-  Type your password and copy the hash to `.env`
-
-- **`OPENAI_API_KEY`** (optional): Paste your OpenAI API key if you want AI recipe parsing
-- **`FLASK_DEBUG=1`**: Keep this as-is for local development
-
-### Step 4: Load sample recipes into the database
-
-```bash
-python3 -m scripts.migrate_to_db
-```
-
-This imports the 7 sample recipes into a local SQLite database (`instance/recipes.db`). You'll see a summary and be asked to type `import` to confirm.
-
-### Step 5: Start the application
-
-```bash
-python3 app.py
-```
-
-Open http://localhost:5001 in your browser. You should see the 7 sample recipes ready to browse.
-
----
-
-## Using Your Own Recipes
-
-### Option 1: Add recipes manually
-
-1. Click **"Add New Recipe"** on the management page (`/manage`)
-2. Fill in the recipe details (name, ingredients, instructions, etc.)
-3. Click **"Save Recipe"** — it's immediately saved to the database
-
-### Option 2: Use AI to parse free-text recipes
-
-1. Go to the management page (`/manage`)
-2. Paste a recipe in free-text format
-3. Click **"Parse Recipe"** — the AI structures it for you
-4. Review the parsed recipe and click **"Save Recipe"**
-
-### Option 3: Batch-import from Word documents
-
-1. Organize your recipes into category folders (e.g., `recipes_data/meat_fish/`, `recipes_data/desserts/`)
-2. Place `.docx` files in each folder
-3. Run:
+1. **Create and activate Python virtual environment:**
    ```bash
-   python3 -m scripts.build_recipes_json recipes_data --output data/recipes_import.json
-   ```
-4. Import the new recipes:
-   ```bash
-   python3 -m scripts.migrate_to_db --input data/recipes_import.json --append
+   python3 -m venv venv
+   source venv/bin/activate
    ```
 
----
+2. **Install Python dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   (If you encounter authentication issues, use: `pip install --index-url https://pypi.org/simple Flask flask-cors`)
+
+3. **Install Node.js dependencies:**
+   ```bash
+   npm install
+   ```
+
+4. **Build Tailwind CSS:**
+   ```bash
+   node node_modules/tailwindcss/lib/cli.js -i ./input.css -o ./static/css/tailwind.css
+   ```
+
+### Running the Flask Server (Recommended)
+
+The Flask server is required if you want to add new recipes through the web interface.
+
+1. **Activate virtual environment:**
+   ```bash
+   source venv/bin/activate
+   ```
+
+2. **Start the Flask server:**
+   ```bash
+   python3 app.py
+   ```
+
+3. **Open your browser:**
+   Visit: http://localhost:5001
+
+4. **To stop the server:**
+   Press `Ctrl + C` in the terminal
+
+**Note:** The server runs on port 5001 (instead of 5000) to avoid conflicts with macOS AirPlay Receiver service.
+
+**Quick Start (after initial setup):**
+```bash
+source venv/bin/activate && python3 app.py
+```
+
+**Troubleshooting:**
+- If port 5001 is already in use, you can change the port in `app.py` (line 249)
+- Make sure the virtual environment is activated (you should see `(venv)` in your terminal prompt)
+- If you see "ModuleNotFoundError", make sure you've installed dependencies: `pip install -r requirements.txt`
+
+### Rebuilding Tailwind CSS
+
+If you modify the HTML templates and need to rebuild Tailwind CSS to include new classes:
+
+```bash
+node node_modules/tailwindcss/lib/cli.js -i ./input.css -o ./static/css/tailwind.css
+```
+
+Or for minified version:
+```bash
+node node_modules/tailwindcss/lib/cli.js -i ./input.css -o ./static/css/tailwind.css --minify
+```
+
+## Adding New Recipes
+
+### Method 1: AI-Powered Free Text Parsing (Recommended)
+
+1. Start the Flask server (see above)
+2. Make sure you have set the `OPENAI_API_KEY` environment variable (see Configuration below)
+3. Go to the "ניהול מתכונים" (Manage Recipes) page
+4. In the "הוסף מתכון מטקסט חופשי" section, paste or type your recipe in free text format
+5. Click "פרסם מתכון" (Parse Recipe)
+6. Review the parsed recipe preview
+7. Click "אשר ומלא טופס" (Approve and Fill Form) to automatically fill the form
+8. Review and adjust if needed, then click "שמור מתכון" (Save Recipe)
+
+### Method 2: Manual Form Entry
+
+1. Start the Flask server (see above)
+2. Click the "הוסף מתכון חדש" (Add New Recipe) button
+3. Fill in the form:
+   - Recipe name in Hebrew and English
+   - Emoji (select from dropdown)
+   - Category (Meat/Fish, Pasta & Sauces, Sides, Salads, Soups, Desserts, Holidays & Celebrations)
+   - Recipe key is automatically generated from the English recipe name
+   - Ingredients (one per line, format: `name, amount, unit, category`)
+   - Instructions (one step per line)
+4. Click "שמור מתכון" (Save Recipe)
+5. The recipe will be automatically added to `recipes.json` and appear in the app!
 
 ## Configuration
 
-All configuration is set via environment variables (loaded from `.env`):
+### OpenAI API Key (for AI Recipe Parsing)
 
-| Variable | Required | Purpose |
-|----------|----------|---------|
-| `SECRET_KEY` | Yes | Random secret for session cookies |
-| `ADMIN_PASSWORD_HASH` | Yes | Password hash for admin login (access `/manage`) |
-| `OPENAI_API_KEY` | No | OpenAI API key for AI recipe parsing |
-| `FLASK_DEBUG` | No | Set to `1` for local development (plain http) |
-| `DATABASE_URL` | No | PostgreSQL URL (if not set, uses local SQLite) |
+To use the AI-powered recipe parser, you need to set up an OpenAI API key:
 
----
+1. **Get an API key:**
+   - Sign up at [https://platform.openai.com](https://platform.openai.com)
+   - Go to [API Keys](https://platform.openai.com/api-keys) and create a new key
 
-## Customizing the App
+2. **Set the environment variable:**
+   
+   **Local Development:**
+   ```bash
+   export OPENAI_API_KEY='your-api-key-here'
+   ```
+   
+   Or create a `.env` file in the project root:
+   ```
+   OPENAI_API_KEY=your-api-key-here
+   ```
+   
+   **Render Deployment:**
+   - Go to your Render service dashboard
+   - Navigate to "Environment" tab
+   - Add environment variable: `OPENAI_API_KEY` with your API key value
+   - Save and redeploy
 
-To adapt this app for your own recipe collection, these are the main files to edit:
+**Note:** The AI parser uses `gpt-4o-mini` model which is cost-effective. Without the API key, you can still use the manual form entry method. The parser is limited to admins, 5000 characters per request and 10 requests per hour. Also set a monthly spend limit in your OpenAI account.
 
-**Categories** (Meat/Fish, Pasta & Sauces, Sides, etc.):
-- `recipe_app/recipes_api.py` → `VALID_CATEGORIES`
-- `recipe_app/ai_parser.py` → prompt text and ingredient categories
-- `static/js/common.js` → Hebrew and English category labels
-- `templates/manage.html` → `<select>` options
-- `static/img/categories/` → add or replace `.png` files matching the category keys
+## Admin Login
 
-**App title and branding**:
-- `templates/index.html` → page title, brand name in `<h1>`
-- `static/js/index-i18n.js` → "My Recipe Book" strings
-- Other templates and `static/css/` files
+Viewing recipes is public. The management page (`/manage`) and all write APIs require the admin password. Set these environment variables (locally in `.env`, on Render under "Environment"):
 
-**Languages**: The app is hard-coded for Hebrew and English. Adding a third language requires schema changes (contact the maintainers or see DATABASE_SETUP.md).
+- `SECRET_KEY`: a random secret used to sign the session cookie.
+  `python3 -c "import secrets; print(secrets.token_hex(32))"`
+- `ADMIN_PASSWORD_HASH`: a hash of your admin password (never store the plain password).
+  `python3 -c "from werkzeug.security import generate_password_hash as g; print(g(input()))"`
+  In `.env`, wrap the hash in single quotes.
 
----
+If either is missing, admin login is disabled and the site stays read-only. Set `FLASK_DEBUG=1` for local runs over plain http (production uses a Secure cookie).
 
-## Development
-
-### Run tests
-
-```bash
-pip install -r requirements-dev.txt
-pytest
-npm test
-```
-
-### Rebuild Tailwind CSS (if you modify templates)
-
-```bash
-npm run build:css          # Development
-npm run build:css:min      # Minified (production)
-```
-
----
+Run the tests with `pip install -r requirements-dev.txt` and `pytest`.
 
 ## Project Structure
 
 ```
 RecipeApp/
-├── app.py                  # Entry point
-├── recipe_app/
-│   ├── __init__.py         # Flask app factory
-│   ├── models.py           # Database models
-│   ├── auth.py             # Admin login & CSRF
-│   ├── ai_parser.py        # OpenAI integration
-│   ├── recipes_api.py      # Recipe API endpoints
-│   ├── pages.py            # Page routes
-│   ├── config.py           # Configuration
-│   └── extensions.py       # SQLAlchemy setup
-├── scripts/
-│   ├── build_recipes_json.py   # Convert .docx → JSON
-│   └── migrate_to_db.py        # Import JSON → database
-├── templates/              # HTML templates
-├── static/                 # CSS, JavaScript, images
-├── data/recipes.json       # Sample recipes (seed file)
-├── requirements.txt        # Python dependencies
-├── requirements-dev.txt    # Dev dependencies (tests)
-├── package.json            # Node.js dependencies
-└── DATABASE_SETUP.md       # Production deployment guide
+├── templates/          # HTML templates (Flask)
+│   ├── index.html     # Recipe browsing page
+│   ├── manage.html    # Add / edit / delete recipes
+│   └── share.html     # Shared single-recipe page
+├── static/            # Static files (CSS, JS, images)
+│   ├── css/
+│   │   └── tailwind.css  # Compiled Tailwind CSS
+│   └── js/
+├── data/              # Seed data
+│   └── recipes.json   # Initial recipes, imported by migrate_to_db.py
+├── migrate_to_db.py   # One-time import of recipes.json into the database
+├── DATABASE_SETUP.md  # Database setup guide
+├── app.py             # Flask application (main entry point)
+├── render.yaml        # Render deployment configuration
+├── input.css          # Tailwind CSS source file
+├── tailwind.config.js # Tailwind configuration
+├── package.json       # Node.js dependencies
+├── requirements.txt   # Python dependencies
+└── README.md          # This file
 ```
 
----
+## Recipe Data Format
 
-## Deployment
+Recipes are stored in the database (PostgreSQL, or SQLite locally; see `DATABASE_SETUP.md`). `data/recipes.json` is only the seed file imported by `migrate_to_db.py`. Its structure includes:
+- `recipes`: Recipe data with ingredients and instructions
+- `recipeTranslations`: Recipe names in Hebrew and English
+- `recipeCategoryMap`: Categories and their associated recipes
 
-For production deployment to Render or another hosting platform, see [DATABASE_SETUP.md](DATABASE_SETUP.md).
+## Development Notes
 
-The database stores all recipes. Locally it uses SQLite (`instance/recipes.db`); on Render it uses PostgreSQL. Recipe data is **not** saved to `data/recipes.json` — that file is only used for the initial seed import.
+- The application uses Flask for the backend and serves static files from the `static/` folder
+- Templates are stored in the `templates/` folder
+- Tailwind CSS is built locally (not using CDN) for better reliability
+- The app is fully decoupled - recipes are stored in the database, separate from the HTML
 
----
+## Deployment to Render
 
-## Troubleshooting
+This application is configured for deployment on Render.com.
 
-**"No recipes appear on the home page"**
-- Make sure you've run `python3 -m scripts.migrate_to_db` to load the sample recipes
-- Check that `instance/recipes.db` exists after running the migrate script
-- If using PostgreSQL, verify the `DATABASE_URL` is correct and the database is reachable
+### Prerequisites for Deployment
 
-**"ModuleNotFoundError: docx"**
-- Run `pip install -r requirements.txt` (includes `python-docx`)
+1. **Project Structure:**
+   - Main entry point: `app.py` (Flask app object named `app`)
+   - Static files: `static/` folder
+   - Templates: `templates/` folder
+   - Data directory: `data/` folder (for writable files)
 
-**"Port 5001 is already in use"**
-- Edit `app.py` (line 21) to change the port, or kill the process using that port
+2. **Configuration Files:**
+   - `requirements.txt` - Python dependencies (includes gunicorn)
+   - `render.yaml` - Render deployment configuration
 
-**Admin page (`/manage`) shows "Service Unavailable"**
-- Make sure `.env` has both `SECRET_KEY` and `ADMIN_PASSWORD_HASH` set
-- With `FLASK_DEBUG=1`, you can access it over plain http://localhost:5001
+### Deployment Steps
 
----
+1. **Push to Git Repository:**
+   ```bash
+   git add .
+   git commit -m "Prepare for Render deployment"
+   git push origin main
+   ```
 
-## License
+2. **Deploy on Render:**
+   - Go to [Render Dashboard](https://dashboard.render.com)
+   - Click "New +" → "Web Service"
+   - Connect your Git repository
+   - Render will automatically detect `render.yaml` and configure the service
+   - The service will be deployed automatically
 
-ISC
+3. **What Render Does:**
+   - Installs dependencies from `requirements.txt`
+   - Runs `gunicorn app:app` to start the production server
+   - Creates the `data/` directory at runtime (if it doesn't exist)
+   - Serves the application on a public URL
+
+### Important Notes for Render
+
+- **Data Persistence:** The `data/` directory is created at runtime. Initial `data/recipes.json` is included in the repository for the first deployment.
+- **File Writes:** All write operations (adding/editing/deleting recipes) are saved to `data/recipes.json`
+- **Static Files:** Tailwind CSS is pre-built and stored in `static/css/tailwind.css`
+- **Production Server:** Uses gunicorn (configured in `render.yaml`), Flask dev server only for local development
+- **OpenAI API Key:** Add `OPENAI_API_KEY` environment variable in Render dashboard for AI recipe parsing feature
+
+### Local Development vs Production
+
+- **Local Development:** 
+  - Run `python3 app.py` (uses Flask dev server on port 5001)
+  - Access at: http://localhost:5001
+  - Works independently from the deployed version on Render
+  - Changes are local only until you commit and push to Git
+- **Production (Render):** 
+  - Uses `gunicorn app:app` (configured automatically via `render.yaml`)
+  - Deployed automatically when you push to Git
+  - Accessible via public URL provided by Render
+
+## Firebase accounts
+See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for setting up phone sign-in and the `/account` page.

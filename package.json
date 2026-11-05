@@ -4,9 +4,7 @@
   "description": "The application is used for many things, one of the main things is to quickly find the recipe.",
   "main": "index.js",
   "scripts": {
-    "test": "node --test tests/js/",
-    "build:css": "node node_modules/tailwindcss/lib/cli.js -i ./input.css -o ./static/css/tailwind.css",
-    "build:css:min": "node node_modules/tailwindcss/lib/cli.js -i ./input.css -o ./static/css/tailwind.css --minify"
+    "test": "node --test tests/js/"
   },
   "keywords": [],
   "author": "",
