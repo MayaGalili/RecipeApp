@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>החשבון שלי – מתכונים ונהנים</title>
+<link href="{{ url_for('static', filename='css/tailwind.css') }}" rel="stylesheet">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 p-4">
+<main class="mx-auto mt-10 max-w-md rounded-xl bg-white p-6 shadow-lg">
+<h1 class="mb-2 text-center text-2xl font-bold">החשבון שלי</h1>
+<p class="mb-5 text-center text-gray-600">התחברות באמצעות מספר טלפון</p>
+<div id="signed-out">
+<label class="mb-2 block" for="phone">מספר טלפון כולל קידומת מדינה</label>
+<input id="phone" type="tel" autocomplete="tel" placeholder="+972501234567" class="mb-3 w-full rounded-lg border p-3" dir="ltr">
+<div id="recaptcha-container" class="mb-3"></div>
+<button id="send-code" class="w-full rounded-lg bg-orange-500 p-3 font-semibold text-white">שליחת קוד אימות</button>
+<div id="code-area" class="mt-4 hidden">
+<label for="code" class="mb-2 block">קוד האימות שקיבלת ב־SMS</label>
+<input id="code" inputmode="numeric" autocomplete="one-time-code" class="mb-3 w-full rounded-lg border p-3" dir="ltr">
+<button id="verify-code" class="w-full rounded-lg bg-green-600 p-3 font-semibold text-white">אימות והתחברות</button>
+</div></div>
+<div id="signed-in" class="hidden">
+<p id="account-info" class="mb-4 text-center"></p>
+<h2 class="mb-2 font-semibold">מכשירים שמחוברים לחשבון</h2>
+<ul id="device-list" class="mb-4 list-disc pr-5"></ul>
+<button id="sign-out" class="w-full rounded-lg bg-gray-600 p-3 text-white">התנתקות</button>
+</div>
+<p id="status" role="status" class="mt-4 text-center text-sm text-gray-700" aria-live="polite"></p>
+<div id="firebase-config" data-api-key="AIzaSyA4yuAWG5htgduzkXJrK72iOmRyV8NB5Hg" data-auth-domain="recipe-5f201.firebaseapp.com" data-project-id="recipe-5f201" data-storage-bucket="recipe-5f201.firebasestorage.app" data-messaging-sender-id="989261768170" data-app-id="1:989261768170:web:9060fac1e136999b907e93" data-measurement-id="G-Z8WML32NRD"></div>
+<p class="mt-6 text-center"><a href="{{ url_for('index') }}" class="text-orange-700 underline">חזרה לאתר</a></p>
+</main>
+<script type="module" src="{{ url_for('static', filename='js/firebase-account.js') }}"></script>
+</body></html>
